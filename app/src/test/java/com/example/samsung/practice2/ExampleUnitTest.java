@@ -1,4 +1,4 @@
-package com.example.administrator.bookmanager;
+package com.example.samsung.practice2;
 
 import org.junit.Test;
 
