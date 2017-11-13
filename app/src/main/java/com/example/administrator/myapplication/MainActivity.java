@@ -1,5 +1,6 @@
 package com.example.administrator.myapplication;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -67,6 +68,9 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_finish:
                         _drawerLayout.closeDrawers();
                         break;
+                    case R.id.nav_Account:
+                        Intent _intent=new Intent(MainActivity.this,VerifySmsActivity.class);
+                        startActivity(_intent);break;
                 }
                 return false;
             }
