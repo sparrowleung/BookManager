@@ -23,7 +23,7 @@
 
                 <ImageView
                     android:id="@+id/first_image_new"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@drawable/favorites"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:layout_width="50dp"
@@ -123,7 +123,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
                         />
                 </TableRow>
 

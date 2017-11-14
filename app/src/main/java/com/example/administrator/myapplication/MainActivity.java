@@ -1,4 +1,4 @@
-package com.example.administrator.myapplication.main;
+package com.example.administrator.myapplication;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -20,10 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.administrator.myapplication.R;
-import com.example.administrator.myapplication.VerifySmsActivity;
 import com.example.administrator.myapplication.base.BaseActivity;
 import com.example.administrator.myapplication.borrowbook.BorrowBookFragment;
+import com.example.administrator.myapplication.main.HomeFragment;
 
 import java.util.ArrayList;
 import java.util.List;

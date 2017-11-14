@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -45,9 +46,10 @@ public class CategoryFragment extends BaseFragment {
             _list.add(a1);
             book a2=new book("b",R.mipmap.ic_launcher);
             _list.add(a2);
+            book a3=new book("c",R.mipmap.ic_launcher);
+            _list.add(a3);
         }
         _bookAdapter=new bookAdapter(_list);
         mRecyclerView.setAdapter(_bookAdapter);
-
     }
 }
