@@ -40,7 +40,7 @@ public class CategoryFragment extends BaseFragment {
         mRecyclerView=(RecyclerView) getActivity().findViewById(R.id.category_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         _list=new ArrayList<>();
-        for(int i=0;i<2;i++){
+        for(int i=0;i<4;i++){
             book a1=new book("a",R.mipmap.ic_launcher);
             _list.add(a1);
             book a2=new book("b",R.mipmap.ic_launcher);

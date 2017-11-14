@@ -98,7 +98,12 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onClick(View view){
         switch (view.getId()){
-            case R.id.advice_newbuild: mCommitAdvice.setVisibility(View.VISIBLE);break;
+            case R.id.advice_newbuild:
+                if(mCommitAdvice.getVisibility() ==View.VISIBLE) {
+                    mCommitAdvice.setVisibility(View.GONE);
+                }else {
+                    mCommitAdvice.setVisibility(View.VISIBLE);
+                }break;
             case R.id.advice_commit: mCommitAdvice.setVisibility(View.GONE);break;
         }
     }
