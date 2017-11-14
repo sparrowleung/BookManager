@@ -1,22 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
+    android:layout_height="150dp"
     android:padding="10dp"
-    android:background="@color/colorPrimary">
+    android:background="#FFF">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:id="@+id/icon_image"
+        android:id="@+id/account_image"
         android:src="@mipmap/ic_launcher"
         android:layout_centerInParent="true"/>
     <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_alignBottom="@+id/icon_image"
+        android:layout_alignBottom="@+id/account_image"
         android:layout_alignParentBottom="true">
 
         <TableRow>
@@ -25,13 +24,13 @@
                 android:text="昵称"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FFF"
+                android:textColor="#000"
                 android:textSize="14sp"/>
             <TextView
                 android:text=":"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FFF"
+                android:textColor="#000"
                 android:textSize="14sp"/>
             <TextView
                 android:id="@+id/username"
@@ -40,12 +39,9 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:text="yuyang.liang"
-                android:textColor="#FFF"
+                android:textColor="#000"
                 android:textSize="14sp"/>
         </TableRow>
 
     </TableLayout>
-
-
-
 </RelativeLayout>

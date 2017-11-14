@@ -1,4 +1,4 @@
-package com.example.administrator.myapplication;
+package com.example.administrator.myapplication.main;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -20,9 +20,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.administrator.myapplication.R;
+import com.example.administrator.myapplication.VerifySmsActivity;
 import com.example.administrator.myapplication.base.BaseActivity;
 import com.example.administrator.myapplication.borrowbook.BorrowBookFragment;
-import com.example.administrator.myapplication.main.HomeFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,6 @@ public class MainActivity extends BaseActivity {
             mActionBar.setHomeAsUpIndicator(R.drawable.category);
         }
 
-        _navigationView.setCheckedItem(R.id.nav_LendBook);
         _navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
