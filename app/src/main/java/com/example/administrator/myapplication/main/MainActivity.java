@@ -111,8 +111,6 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem){
         switch (menuItem.getItemId()){
-            case R.id.delete:
-                Toast.makeText(getBaseContext(),"aaa",Toast.LENGTH_SHORT).show();break;
             case R.id.settings:
                 Toast.makeText(getBaseContext(),"aaa",Toast.LENGTH_SHORT).show();break;
             case android.R.id.home:

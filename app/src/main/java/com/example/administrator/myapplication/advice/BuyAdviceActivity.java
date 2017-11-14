@@ -3,6 +3,7 @@ package com.example.administrator.myapplication.advice;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseActivity;
@@ -33,6 +34,13 @@ public class BuyAdviceActivity extends BaseActivity {
 
         BuyAdviceFragment buyAdviceFragment=new BuyAdviceFragment();
         attachFragmentAsSingle(buyAdviceFragment);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case android.R.id.home:finish();break;
+        }
+        return true;
     }
 }
 

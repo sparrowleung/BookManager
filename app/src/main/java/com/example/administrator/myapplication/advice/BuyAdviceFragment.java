@@ -2,6 +2,7 @@ package com.example.administrator.myapplication.advice;
 
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,11 +83,12 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
         mReasonEdit=(EditText) getActivity().findViewById(R.id.advice_reason);
 
         mRecyclerView=(RecyclerView) getActivity().findViewById(R.id.advice_recyclerview);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         _list=new ArrayList<>();
         for(int i=0;i<2;i++){
-            book a1=new book("a",1);
+            book a1=new book("a",R.mipmap.ic_launcher);
             _list.add(a1);
-            book a2=new book("b",2);
+            book a2=new book("b",R.mipmap.ic_launcher);
             _list.add(a2);
         }
         _bookAdapter=new bookAdapter(_list);
