@@ -2,9 +2,7 @@ package com.example.administrator.myapplication.main;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,13 +15,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.example.administrator.myapplication.R;
-import com.example.administrator.myapplication.VerifySmsActivity;
+import com.example.administrator.myapplication.account.AccountActivity;
 import com.example.administrator.myapplication.base.BaseActivity;
 import com.example.administrator.myapplication.borrowbook.BorrowBookFragment;
+import com.example.administrator.myapplication.history.HistoryActivity;
+import com.example.administrator.myapplication.newsandtips.NewsAndTipsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,6 @@ public class MainActivity extends BaseActivity {
     private DrawerLayout _drawerLayout;
     private long mFirstTime;
     private NavigationView _navigationView;
-//    private FloatingActionButton _actionButton;
     private Toolbar _toolBar;
 
     private TabLayout mTabLayout;
@@ -64,30 +62,22 @@ public class MainActivity extends BaseActivity {
         _navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent _intent=new Intent();
                 switch (item.getItemId()) {
-                    case R.id.nav_finish:
-                        _drawerLayout.closeDrawers();
-                        break;
                     case R.id.nav_Account:
-                        Intent _intent=new Intent(MainActivity.this,VerifySmsActivity.class);
-                        startActivity(_intent);break;
+                        _intent=new Intent(MainActivity.this,AccountActivity.class);
+                        break;
+                    case R.id.nav_History:
+                        _intent=new Intent(MainActivity.this,HistoryActivity.class);
+                        break;
+                    case R.id.nav_Notice:
+                        _intent=new Intent(MainActivity.this,NewsAndTipsActivity.class);
+                        break;
                 }
+                startActivity(_intent);
                 return false;
             }
         });
-
-//        _actionButton=(FloatingActionButton) findViewById(R.id.floatb);
-//        _actionButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Snackbar.make(v,"Data delete",Snackbar.LENGTH_SHORT).setAction("Undo", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Toast.makeText(getBaseContext(),"AAA",Toast.LENGTH_SHORT).show();
-//                    }
-//                }).show();
-//            }
-//        });
 
         mTabLayout=(TabLayout) findViewById(R.id.Tab_TabLayout);
         mViewPager=(ViewPager) findViewById(R.id.Tab_ViewPager);

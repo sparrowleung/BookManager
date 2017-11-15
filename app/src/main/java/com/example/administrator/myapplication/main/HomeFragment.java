@@ -15,6 +15,7 @@ import com.example.administrator.myapplication.advice.BuyAdviceActivity;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.category.CategoryActivity;
 import com.example.administrator.myapplication.newbook.NewBookActivity;
+import com.example.administrator.myapplication.newsandtips.NewsAndTipsActivity;
 import com.example.administrator.myapplication.recycleview.book;
 import com.example.administrator.myapplication.recycleview.bookAdapter;
 
@@ -37,6 +38,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     private View mNewbook;
     private View mCategory;
     private View mBuyAdvice;
+    private View mNews;
     private CardView mContent;
     private CardView mNotice;
     private CardView mHotBook;
@@ -54,6 +56,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         mNewbook=(View) getActivity().findViewById(R.id.first_newbook);
         mCategory=(View) getActivity().findViewById(R.id.first_category);
         mBuyAdvice=(View) getActivity().findViewById(R.id.first_advice);
+        mNews=(View) getActivity().findViewById(R.id.table_title);
         mContent=(CardView) getActivity().findViewById(R.id.first_content);
         mContent.setCardElevation(8);
         mContent.setRadius(16);
@@ -79,6 +82,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         mNewbook.setOnClickListener(this);
         mCategory.setOnClickListener(this);
         mBuyAdvice.setOnClickListener(this);
+        mNews.setOnClickListener(this);
     }
 
     public void initbook(){
@@ -91,27 +95,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             _list.add(b3);
         }
     }
-
-//    public void refreshbook(){
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Thread.sleep(2000);
-//                }catch (InterruptedException e){
-//                    e.printStackTrace();
-//                }
-//                getActivity().runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        initbook();
-//                        _adapter.notifyDataSetChanged();
-//                        _swipeRefreshLayout.setRefreshing(false);
-//                    }
-//                });
-//            }
-//        }).start();
-//    }
 
     @Override
     public void onClick(View view){
@@ -126,6 +109,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             case R.id.first_advice:
                 _intent=new Intent(getActivity(),BuyAdviceActivity.class);
                 break;
+            case R.id.table_title:
+                _intent=new Intent(getActivity(), NewsAndTipsActivity.class);
         }
         getActivity().startActivity(_intent);
     }

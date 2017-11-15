@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="180dp"
     android:padding="10dp"
     android:background="#FFF">
 
@@ -9,8 +9,9 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:id="@+id/account_image"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/account"
         android:layout_centerInParent="true"/>
+
     <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,13 +22,13 @@
         <TableRow>
 
             <TextView
-                android:text="昵称"
+                android:text="昵称 "
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#000"
                 android:textSize="14sp"/>
             <TextView
-                android:text=":"
+                android:text=" : "
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#000"

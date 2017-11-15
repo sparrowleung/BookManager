@@ -23,7 +23,7 @@ public class CategoryActivity extends BaseActivity {
 
         upDateActionBar();
 
-        mToolbar=(Toolbar) findViewById(R.id.toolbar_lend);
+        mToolbar=(Toolbar) findViewById(R.id.toolbar_category);
         setSupportActionBar(mToolbar);
         mToolbar.setTitle("图书详细");
         ActionBar mActionBar=getSupportActionBar();
