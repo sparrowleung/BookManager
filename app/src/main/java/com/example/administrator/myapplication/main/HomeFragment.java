@@ -91,11 +91,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
     public void initbook(){
         for(int i=0;i<2;i++){
-            book b1=new book("a",R.mipmap.ic_launcher);
+            book b1=new book("a",R.drawable.account);
             _list.add(b1);
-            book b2=new book("b",R.mipmap.ic_launcher);
+            book b2=new book("b",R.drawable.account);
             _list.add(b2);
-            book b3=new book("c",R.mipmap.ic_launcher);
+            book b3=new book("c",R.drawable.account);
             _list.add(b3);
         }
     }

@@ -1,14 +1,10 @@
-package com.example.administrator.myapplication.account;
+package com.example.administrator.myapplication;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+import android.util.Log;
 import android.widget.Toast;
 
-import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseActivity;
-import com.example.administrator.myapplication.category.CategoryFragment;
 import com.mob.MobSDK;
 
 import cn.smssdk.EventHandler;
@@ -16,37 +12,22 @@ import cn.smssdk.SMSSDK;
 import cn.smssdk.gui.RegisterPage;
 
 /**
- * Created by samsung on 2017/11/14.
+ * Created by 37289 on 2017/11/13.
  */
 
-public class AccountActivity extends BaseActivity {
+public class VerifySmsActivity extends BaseActivity {
 
-    private Toolbar mToolbar;
     private EventHandler _eventHandler;
 
     @Override
     public void onCreate(Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
-        MobSDK.init(AccountActivity.this,"22547eb1b56cc","e4d211713a8d98952bbc877d7265e9ae");
-        setContentView(R.layout.activity_account);
-
-        upDateActionBar();
-
-        mToolbar=(Toolbar) findViewById(R.id.toolbar_account);
-        setSupportActionBar(mToolbar);
-        ActionBar mActionBar=getSupportActionBar();
-        if(mActionBar!=null){
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-            mActionBar.setHomeAsUpIndicator(R.drawable.back);
-        }
-
-//        AccountFragment accountFragment=new AccountFragment();
-//        attachFragmentAsSingle(accountFragment);
+        MobSDK.init(VerifySmsActivity.this,"22547eb1b56cc","e4d211713a8d98952bbc877d7265e9ae");
 
         InitializeSms();
         RegisterPage mRegisterPage =new RegisterPage();
         mRegisterPage.setRegisterCallback(_eventHandler);
-        mRegisterPage.show(AccountActivity.this);
+        mRegisterPage.show(VerifySmsActivity.this);
     }
 
     public void InitializeSms(){
@@ -58,7 +39,7 @@ public class AccountActivity extends BaseActivity {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(AccountActivity.this, "发送验证码成功",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(VerifySmsActivity.this, "发送验证码成功",Toast.LENGTH_SHORT).show();
                             }
                         });
 
@@ -66,9 +47,10 @@ public class AccountActivity extends BaseActivity {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(AccountActivity.this, "手机验证成功",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(VerifySmsActivity.this, "手机验证成功",Toast.LENGTH_SHORT).show();
                             }
                         });
+                        Log.d("VerifySmsActivity","VerifySuccess");
                         finish();
                     }else {
                         ((Throwable)data).printStackTrace();
@@ -83,14 +65,5 @@ public class AccountActivity extends BaseActivity {
     public void onDestroy(){
         super.onDestroy();
         SMSSDK.unregisterEventHandler(_eventHandler);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
-            case android.R.id.home:
-                finish();break;
-        }
-        return true;
     }
 }
