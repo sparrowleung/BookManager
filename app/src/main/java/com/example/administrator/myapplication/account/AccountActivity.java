@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseActivity;
-import com.example.administrator.myapplication.category.CategoryFragment;
 import com.mob.MobSDK;
 
 import cn.smssdk.EventHandler;

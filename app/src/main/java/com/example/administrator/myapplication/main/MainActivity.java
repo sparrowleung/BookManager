@@ -127,9 +127,9 @@ public class MainActivity extends BaseActivity {
 
         private List<Fragment> list;
 
-        TabMainViewPager(FragmentManager fragmentManager, List<Fragment> fragmentslist){
+        TabMainViewPager(FragmentManager fragmentManager, List<Fragment> _fragmentList){
             super(fragmentManager);
-            this.list=fragmentslist;
+            this.list=_fragmentList;
         }
 
         @Override
