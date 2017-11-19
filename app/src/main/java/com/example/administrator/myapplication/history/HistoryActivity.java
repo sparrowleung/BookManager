@@ -21,8 +21,8 @@ public class HistoryActivity extends BaseActivity {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_history);
         mToolbar=(Toolbar) findViewById(R.id.toolbar_history);
-        setSupportActionBar(mToolbar);
         mToolbar.setTitle("借阅历史");
+        setSupportActionBar(mToolbar);
         ActionBar mActionBar=getSupportActionBar();
         if(mActionBar!=null){
             mActionBar.setDisplayHomeAsUpEnabled(true);

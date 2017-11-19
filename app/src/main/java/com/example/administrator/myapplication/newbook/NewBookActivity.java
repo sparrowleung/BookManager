@@ -21,8 +21,8 @@ public class NewBookActivity extends BaseActivity {
 
         upDateActionBar();
         mToolbar=(Toolbar) findViewById(R.id.toolbar_newbook);
-        setSupportActionBar(mToolbar);
         mToolbar.setTitle("新书推荐");
+        setSupportActionBar(mToolbar);
         android.support.v7.app.ActionBar mActionBar=getSupportActionBar();
         if (mActionBar != null){
             mActionBar.setDisplayHomeAsUpEnabled(true);

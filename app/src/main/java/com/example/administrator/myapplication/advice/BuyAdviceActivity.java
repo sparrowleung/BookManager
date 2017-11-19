@@ -24,8 +24,8 @@ public class BuyAdviceActivity extends BaseActivity {
         upDateActionBar();
 
         mToolbar=(Toolbar) findViewById(R.id.toolbar_advice);
-        setSupportActionBar(mToolbar);
         mToolbar.setTitle("购买建议");
+        setSupportActionBar(mToolbar);
         ActionBar mActionBar=getSupportActionBar();
         if(mActionBar!=null){
             mActionBar.setDisplayHomeAsUpEnabled(true);

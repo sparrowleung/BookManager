@@ -21,8 +21,8 @@ public class NewsAndTipsActivity extends BaseActivity {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_news);
         mToolbar=(Toolbar) findViewById(R.id.toolbar_news);
-        setSupportActionBar(mToolbar);
         mToolbar.setTitle("消息通知");
+        setSupportActionBar(mToolbar);
         ActionBar mActionBar=getSupportActionBar();
         if(mActionBar!=null){
             mActionBar.setDisplayHomeAsUpEnabled(true);

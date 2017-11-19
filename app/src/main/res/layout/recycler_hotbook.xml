@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginTop="10dp">
 
     <ImageView
         android:src="@mipmap/ic_launcher"
@@ -18,5 +19,11 @@
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="20dp" />
+
+    <View
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#33331111"/>
 
 </LinearLayout>

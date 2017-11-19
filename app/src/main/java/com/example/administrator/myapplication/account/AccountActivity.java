@@ -32,6 +32,7 @@ public class AccountActivity extends BaseActivity {
         upDateActionBar();
 
         mToolbar=(Toolbar) findViewById(R.id.toolbar_account);
+        mToolbar.setTitle("账号管理");
         setSupportActionBar(mToolbar);
         ActionBar mActionBar=getSupportActionBar();
         if(mActionBar!=null){

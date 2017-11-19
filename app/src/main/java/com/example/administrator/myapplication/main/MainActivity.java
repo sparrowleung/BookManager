@@ -49,16 +49,16 @@ public class MainActivity extends BaseActivity {
         upDateActionBar();
 
         _toolBar=(Toolbar) findViewById(R.id.toolbar);
+        _toolBar.setTitle("图书管理系统");
         setSupportActionBar(_toolBar);
-
-        _drawerLayout=(DrawerLayout) findViewById(R.id.drawer);
-        _navigationView=(NavigationView) findViewById(R.id.nav_view);
         android.support.v7.app.ActionBar mActionBar=getSupportActionBar();
         if(mActionBar!=null){
             mActionBar.setDisplayHomeAsUpEnabled(true);
             mActionBar.setHomeAsUpIndicator(R.drawable.navicon);
         }
 
+        _drawerLayout=(DrawerLayout) findViewById(R.id.drawer);
+        _navigationView=(NavigationView) findViewById(R.id.nav_view);
         _navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
