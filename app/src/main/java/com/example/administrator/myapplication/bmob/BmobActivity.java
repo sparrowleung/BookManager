@@ -19,14 +19,15 @@ public class BmobActivity extends BaseActivity {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_bmob);
         final BookInformation object=new BookInformation();
-        object.setName("钢铁是怎样炼成的");
-        object.setAuthor("Zone-Ball");
+        object.setName("孤岛");
+        object.setAuthor("Stephen Curry");
         object.setPress("中国商务出版社");
         object.setPrice("43.98");
         object.setState("Non");
-        object.setBorrowtime("Non");
+        object.setBorrowtime("Yes");
         object.setBacktime("Non");
-        object.setCategory("technology");
+        object.setCategory("literature");
+        object.setBorrowper("YyLeung");
         object.save(new SaveListener<String>(){
             @Override
             public void done(String objectId,BmobException e) {

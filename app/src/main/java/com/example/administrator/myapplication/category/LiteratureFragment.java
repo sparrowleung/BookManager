@@ -12,10 +12,15 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
+import com.example.administrator.myapplication.bmob.BookInformation;
 import com.example.administrator.myapplication.recycleview.Category;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 
 /**
  * Created by samsung on 2017/11/17.
@@ -42,17 +47,22 @@ public class LiteratureFragment extends BaseFragment {
         _recyclerView=(RecyclerView) getActivity().findViewById(R.id.litera_recylcerview);
         _recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mList=new ArrayList<>();
-        for(int i=0;i<3;i++){
-            Category a1=new Category(R.drawable.book,"钢铁是怎样炼成的","Zone-Ball","LosAngel-Laker","Non");
-            mList.add(a1);
-            Category a2=new Category(R.drawable.book,"佛光普照","Klay-Tompson","GoldenState-Warroior","Non");
-            mList.add(a2);
-            Category a3=new Category(R.drawable.book,"忍者神龟","Resull-WestBokk","Amahool-Thunder","Yes");
-            mList.add(a3);
-        }
-        mCategoryRecyclerView=new CategoryRecyclerView(mList);
-        _recyclerView.setAdapter(mCategoryRecyclerView);
-
+        BmobQuery<BookInformation> bmobQuery=new BmobQuery<BookInformation>();
+        bmobQuery.addWhereEqualTo("category","literature");
+        bmobQuery.setLimit(50);
+        bmobQuery.findObjects(new FindListener<BookInformation>() {
+            @Override
+            public void done(List<BookInformation> object, BmobException e) {
+                if(e==null){
+                    for(BookInformation bookInformation : object){
+                        Category a1=new Category(R.drawable.book,bookInformation.getName(),bookInformation.getAuthor(),bookInformation.getPress(),bookInformation.getState());
+                        mList.add(a1);
+                    }
+                    mCategoryRecyclerView=new CategoryRecyclerView(mList);
+                    _recyclerView.setAdapter(mCategoryRecyclerView);
+                }
+            }
+        });
     }
 
     class CategoryRecyclerView extends RecyclerView.Adapter<CategoryRecyclerView.ViewHolder>{

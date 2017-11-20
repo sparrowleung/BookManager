@@ -40,49 +40,8 @@ public class AccountActivity extends BaseActivity {
             mActionBar.setHomeAsUpIndicator(R.drawable.back);
         }
 
-//        AccountFragment accountFragment=new AccountFragment();
-//        attachFragmentAsSingle(accountFragment);
-
-        InitializeSms();
-        RegisterPage mRegisterPage =new RegisterPage();
-        mRegisterPage.setRegisterCallback(_eventHandler);
-        mRegisterPage.show(AccountActivity.this);
-    }
-
-    public void InitializeSms(){
-        _eventHandler=new EventHandler(){
-            @Override
-            public void afterEvent(int event,int result,Object data){
-                if(result == SMSSDK.RESULT_COMPLETE){
-                    if(event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(AccountActivity.this, "发送验证码成功",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                    }else if(event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE){
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(AccountActivity.this, "手机验证成功",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        finish();
-                    }else {
-                        ((Throwable)data).printStackTrace();
-                    }
-                }
-            }
-        };
-        SMSSDK.registerEventHandler(_eventHandler);
-    }
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        SMSSDK.unregisterEventHandler(_eventHandler);
+        AccountFragment accountFragment=new AccountFragment();
+        attachFragmentAsSingle(accountFragment);
     }
 
     @Override
