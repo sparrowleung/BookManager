@@ -3,20 +3,28 @@ package com.example.administrator.myapplication.category;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
+import com.example.administrator.myapplication.bmob.BookInformation;
 import com.example.administrator.myapplication.recycleview.Category;
 import com.example.administrator.myapplication.recycleview.book;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.QueryListener;
 
 /**
  * Created by samsung on 2017/11/17.
@@ -43,17 +51,22 @@ public class TechnologyFragment extends BaseFragment {
         _recyclerView=(RecyclerView) getActivity().findViewById(R.id.techno_recylcerview);
         _recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mList=new ArrayList<>();
-        for(int i=0;i<3;i++){
-            Category a1=new Category(R.drawable.book,"钢铁是怎样炼成的","Zone-Ball","LosAngel-Laker","Non");
-            mList.add(a1);
-            Category a2=new Category(R.drawable.book,"佛光普照","Klay-Tompson","GoldenState-Warroior","Non");
-            mList.add(a2);
-            Category a3=new Category(R.drawable.book,"忍者神龟","Resull-WestBokk","Amahool-Thunder","Yes");
-            mList.add(a3);
-        }
-        mCategoryRecyclerView=new CategoryRecyclerView(mList);
-        _recyclerView.setAdapter(mCategoryRecyclerView);
-
+        BmobQuery<BookInformation> bmobQuery=new BmobQuery<BookInformation>();
+        bmobQuery.addWhereEqualTo("category","technology");
+        bmobQuery.setLimit(50);
+        bmobQuery.findObjects(new FindListener<BookInformation>() {
+            @Override
+            public void done(List<BookInformation> object, BmobException e) {
+                if(e==null){
+                  for(BookInformation bookInformation : object){
+                      Category a1=new Category(R.drawable.book,bookInformation.getName(),bookInformation.getAuthor(),bookInformation.getPress(),bookInformation.getState());
+                      mList.add(a1);
+                  }
+                    mCategoryRecyclerView=new CategoryRecyclerView(mList);
+                    _recyclerView.setAdapter(mCategoryRecyclerView);
+                }
+            }
+        });
     }
 
     class CategoryRecyclerView extends RecyclerView.Adapter<CategoryRecyclerView.ViewHolder>{

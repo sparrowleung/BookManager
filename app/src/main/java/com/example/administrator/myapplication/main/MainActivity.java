@@ -20,12 +20,16 @@ import android.widget.Toast;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.account.AccountActivity;
 import com.example.administrator.myapplication.base.BaseActivity;
+import com.example.administrator.myapplication.bmob.BmobActivity;
 import com.example.administrator.myapplication.borrowbook.BorrowBookFragment;
 import com.example.administrator.myapplication.history.HistoryActivity;
 import com.example.administrator.myapplication.newsandtips.NewsAndTipsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.bmob.v3.Bmob;
+
 
 public class MainActivity extends BaseActivity {
 
@@ -44,6 +48,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bmob.initialize(MainActivity.this,"3027c605e33c5f3be61405857d181153");
         setContentView(R.layout.activity_main);
 
         upDateActionBar();
@@ -102,7 +107,9 @@ public class MainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem){
         switch (menuItem.getItemId()){
             case R.id.settings:
-                Toast.makeText(getBaseContext(),"aaa",Toast.LENGTH_SHORT).show();break;
+                Intent intent=new Intent(MainActivity.this, BmobActivity.class);
+                startActivity(intent);
+                break;
             case android.R.id.home:
                 _drawerLayout.openDrawer(GravityCompat.START);break;
         }

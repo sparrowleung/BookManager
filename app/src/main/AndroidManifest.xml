@@ -76,6 +76,13 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".bmob.BmobActivity">
+            <intent-filter>
+                <action android:name="com.android.yuyangliang.BmobActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
 
     </application>
 
