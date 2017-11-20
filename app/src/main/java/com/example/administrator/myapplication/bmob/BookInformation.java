@@ -1,11 +1,8 @@
 package com.example.administrator.myapplication.bmob;
 
-import android.os.Bundle;
 
-import com.example.administrator.myapplication.base.BaseActivity;
-
-import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.datatype.BmobFile;
 
 /**
  * Created by samsung on 2017/11/20.
@@ -21,6 +18,8 @@ public class BookInformation extends BmobObject {
     private String borrowtime;
     private String backtime;
     private String category;
+    private String borrowper;
+    private BmobFile photo;
 
     public String getName(){
         return name;
@@ -84,5 +83,21 @@ public class BookInformation extends BmobObject {
 
     public void setCategory(String category){
         this.category=category;
+    }
+
+    public String getBorrowper(){
+        return borrowper;
+    }
+
+    public void setBorrowper(String borrowper){
+        this.borrowper=borrowper;
+    }
+
+    public BmobFile getPhoto(){
+        return photo;
+    }
+
+    public void setPhoto(BmobFile photo){
+        this.photo=photo;
     }
 }
