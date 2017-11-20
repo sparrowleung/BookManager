@@ -41,14 +41,7 @@ public class BorrowBookFragment extends BaseFragment {
     public void onActivityCreated(Bundle saveInstanceState){
         super.onActivityCreated(saveInstanceState);
         mContent=(CardView) getActivity().findViewById(R.id.borrow_card1);
-        mContent.setRadius(16);
-        mContent.setCardElevation(16);
-        mContent.setContentPadding(6,6,6,6);
-
         mBookDetail=(CardView) getActivity().findViewById(R.id.borrow_card2);
-        mBookDetail.setRadius(16);
-        mBookDetail.setCardElevation(16);
-        mBookDetail.setContentPadding(6,6,6,6);
 
         mDetail=(View) getActivity().findViewById(R.id.borrow_detail);
         mDetail.setOnClickListener(new View.OnClickListener() {
