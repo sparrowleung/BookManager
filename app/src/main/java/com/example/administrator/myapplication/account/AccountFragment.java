@@ -35,7 +35,7 @@ public class AccountFragment extends BaseFragment {
     private CardView mCardView2;
 
     private ImageView mImageView;
-    private ImageView mNewsSetting;
+
 
     private EditText mEditPassword;
     private EditText mEditNickName;
@@ -68,7 +68,6 @@ public class AccountFragment extends BaseFragment {
         mCommit=(View) getActivity().findViewById(R.id.news_commit);
 
         mImageView=(ImageView) getActivity().findViewById(R.id.news_image);
-        mNewsSetting=(ImageView) getActivity().findViewById(R.id.news_setting);
 
         mEditPassword=(EditText) getActivity().findViewById(R.id.news_passwrod);
         mEditNickName=(EditText) getActivity().findViewById(R.id.news_nickname);
