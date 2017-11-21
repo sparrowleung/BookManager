@@ -1,18 +1,18 @@
 package com.example.administrator.myapplication.account;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseActivity;
 import com.mob.MobSDK;
 
+import cn.bmob.v3.BmobUser;
 import cn.smssdk.EventHandler;
-import cn.smssdk.SMSSDK;
-import cn.smssdk.gui.RegisterPage;
 
 /**
  * Created by samsung on 2017/11/14.
@@ -40,8 +40,15 @@ public class AccountActivity extends BaseActivity {
             mActionBar.setHomeAsUpIndicator(R.drawable.back);
         }
 
-        AccountFragment accountFragment=new AccountFragment();
-        attachFragmentAsSingle(accountFragment);
+        UserInformation myUser= BmobUser.getCurrentUser(UserInformation.class);
+        if(myUser != null){
+            AccountFragment accountFragment=new AccountFragment();
+            attachFragmentAsSingle(accountFragment);
+        }else {
+            AccountLoginFragment accountLoginFragment=new AccountLoginFragment();
+            attachFragmentAsSingle(accountLoginFragment);
+        }
+
     }
 
     @Override

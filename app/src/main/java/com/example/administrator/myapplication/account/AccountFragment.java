@@ -38,23 +38,18 @@ public class AccountFragment extends BaseFragment {
     private Button mPhoneVerify;
     private EventHandler _eventHandler;
 
-    private EditText mEditName;
+
     private EditText mEditPassword;
-    private EditText mEditEmail;
     private EditText mEditPhone;
     private EditText mEditNickName;
-    private EditText mEditSex;
     private EditText mEditPart;
     private EditText mEditTg;
     private TextView mNickName;
     private TextView mNumbers;
 
-    private String _name;
     private String _nickName;
-    private String _email;
     private String _password;
     private String _phoneNum;
-    private String _sex;
     private String _part;
     private String _teamGroup;
 
@@ -79,43 +74,24 @@ public class AccountFragment extends BaseFragment {
         mNewsSetting=(ImageView) getActivity().findViewById(R.id.news_setting);
         mPhoneVerify=(Button) getActivity().findViewById(R.id.news_register);
 
-        mEditName=(EditText) getActivity().findViewById(R.id.news_name);
         mEditPassword=(EditText) getActivity().findViewById(R.id.news_passwrod);
-        mEditEmail=(EditText) getActivity().findViewById(R.id.news_email);
         mEditPhone=(EditText) getActivity().findViewById(R.id.news_phone);
         mEditNickName=(EditText) getActivity().findViewById(R.id.news_nickname);
-        mEditSex=(EditText) getActivity().findViewById(R.id.news_sex);
         mEditPart=(EditText) getActivity().findViewById(R.id.news_part);
         mEditTg=(EditText) getActivity().findViewById(R.id.news_tg);
         mNickName=(TextView) getActivity().findViewById(R.id.news_account);
         mNumbers=(TextView) getActivity().findViewById(R.id.news_number);
 
-        _name=mEditName.getText().toString();
-        _email=mEditEmail.getText().toString();
         _nickName=mEditNickName.getText().toString();
         _password=mEditPassword.getText().toString();
         _phoneNum=mEditPhone.getText().toString();
-        _sex=mEditSex.getText().toString();
         _part=mEditPart.getText().toString();
         _teamGroup=mEditTg.getText().toString();
 
         mCommit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BmobUser mUser=new BmobUser();
-                mUser.setUsername(_name);
-                mUser.setPassword(_password);
-                mUser.setEmail(_email);
-                mUser.signUp(new SaveListener<UserInformation>() {
-                    @Override
-                    public void done(UserInformation user,BmobException e){
-                        if(e==null){
-                            Toast.makeText(getContext(),"注册成功",Toast.LENGTH_SHORT).show();
-                        }else {
-                            Toast.makeText(getContext(),"该账号已存在",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+
             }
         });
 

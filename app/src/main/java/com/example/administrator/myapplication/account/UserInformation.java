@@ -8,27 +8,12 @@ import cn.bmob.v3.datatype.BmobFile;
  */
 
 public class UserInformation extends BmobUser {
-    private String phoneNum;
-    private String phoneNumStatus;
+
+
     private String part;
-    private String teamgroup;
+    private String teamGroup;
     private BmobFile image;
 
-    public void setPhoneNum(String phoneNum){
-        this.phoneNum=phoneNum;
-    }
-
-    public String getPhoneNum(){
-        return phoneNum;
-    }
-
-    public void setPhoneNumStatus(String phoneNumStatus){
-        this.phoneNumStatus=phoneNumStatus;
-    }
-
-    public String getPhoneNumStatus(){
-        return  phoneNumStatus;
-    }
 
     public void setPart(String part){
         this.part=part;
@@ -38,12 +23,12 @@ public class UserInformation extends BmobUser {
         return part;
     }
 
-    public void setTeamgroup(String teamgroup){
-        this.teamgroup=teamgroup;
+    public void setTeamgroup(String teamGroup){
+        this.teamGroup=teamGroup;
     }
 
     public String getTeamgroup(){
-        return teamgroup;
+        return teamGroup;
     }
 
     public void setImage(BmobFile image){
