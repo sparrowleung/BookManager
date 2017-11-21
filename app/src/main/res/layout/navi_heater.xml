@@ -1,23 +1,25 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
-    android:padding="10dp"
+    android:layout_height="200dp"
     android:background="#FFF">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/account_image"
         android:src="@drawable/account"
         android:layout_centerInParent="true"/>
 
     <TableLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_centerHorizontal="true"
+        android:id="@+id/nav_heart"
         android:layout_alignBottom="@+id/account_image"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        >
 
         <TableRow>
 
@@ -45,4 +47,11 @@
         </TableRow>
 
     </TableLayout>
+
+    <View
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#22221111"/>
 </RelativeLayout>

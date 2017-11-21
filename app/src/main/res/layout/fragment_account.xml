@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <android.support.v7.widget.CardView
         android:id="@+id/news_card1"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="101dp"
+        android:layout_marginTop="5dp"
+        app:cardElevation="8dp"
         >
 
         <LinearLayout
@@ -27,7 +31,7 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_gravity="center_horizontal"
-                    android:src="@mipmap/ic_launcher" />
+                    android:src="@drawable/account" />
 
             </LinearLayout>
 
@@ -55,6 +59,14 @@
                         android:layout_weight="2"
                         android:layout_height="wrap_content"
                         android:id="@+id/news_account"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
 
 
@@ -86,15 +98,16 @@
 
                     <ImageView
                         android:id="@+id/news_setting"
+                        android:layout_width="20dp"
+                        android:layout_height="15dp"
                         android:layout_gravity="end"
                         android:layout_marginRight="10dp"
-                        android:src="@drawable/setting"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp" />
+                        android:src="@drawable/setting" />
                 </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
+
 
     </android.support.v7.widget.CardView>
 
@@ -105,6 +118,7 @@
         android:layout_weight="1">
 
         <LinearLayout
+            android:visibility="gone"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -113,33 +127,6 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:text="手机 ："
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="20dp" />
-
-                    <EditText
-                        android:id="@+id/news_phone"
-                        android:layout_width="0dp"
-                        android:layout_weight="2"
-                        android:layout_height="wrap_content" />
-
-                    <Button
-                        android:id="@+id/news_register"
-                        android:text="验证"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
-
 
                     <LinearLayout
                         android:layout_width="match_parent"

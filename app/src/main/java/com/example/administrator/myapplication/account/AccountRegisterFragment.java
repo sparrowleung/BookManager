@@ -1,6 +1,8 @@
 package com.example.administrator.myapplication.account;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,8 @@ public class AccountRegisterFragment extends BaseFragment {
     private View _rootView;
     private EventHandler _eventHandler;
     private Boolean phoneVerify=false;
+    private int SENDSUCCESS=1;
+    private int VERIFYSUCCESS=2;
 
     private EditText mPhoneNum;
     private EditText mPassword;
@@ -45,6 +49,7 @@ public class AccountRegisterFragment extends BaseFragment {
 
     private Button mPhoneVer;
     private Button mRegister;
+
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
@@ -73,38 +78,13 @@ public class AccountRegisterFragment extends BaseFragment {
             }
         });
 
-        _verifyCode=mVerifyCode.getText().toString();
-        SMSSDK.submitVerificationCode("86",_phoneNum,_verifyCode);
+
         mRegister=(Button) getActivity().findViewById(R.id.register_register);
         mRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                _password=mPassword.getText().toString();
-                _name=mName.getText().toString();
-                _part=mPart.getText().toString();
-                _team=mTeam.getText().toString();
-                Log.d("BACED",_verifyCode+phoneVerify);
-                if(phoneVerify) {
-                    UserInformation userInformation = new UserInformation();
-                    userInformation.setPart(_part);
-                    userInformation.setTeamgroup(_team);
-                    userInformation.setUsername(_name);
-                    userInformation.setMobilePhoneNumber(_phoneNum);
-                    userInformation.setMobilePhoneNumberVerified(phoneVerify);
-                    userInformation.setPassword(_password);
-                    userInformation.signUp(new SaveListener<UserInformation>() {
-                        @Override
-                        public void done(UserInformation object,BmobException e){
-                            if(e == null){
-                                Toast.makeText(getContext(),"注册成功",Toast.LENGTH_SHORT).show();
-                            }else {
-                                Toast.makeText(getContext(),"信息有误，注册失败",Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }else{
-                    Toast.makeText(getContext(),"手机验证失败，请重新验证",Toast.LENGTH_SHORT).show();
-                }
+                _verifyCode=mVerifyCode.getText().toString();
+                SMSSDK.submitVerificationCode("86",_phoneNum,_verifyCode);
             }
         });
     }
@@ -113,25 +93,41 @@ public class AccountRegisterFragment extends BaseFragment {
         _eventHandler=new EventHandler(){
             @Override
             public void afterEvent(int event,int result,Object data){
+                final Message _message=new Message();
                 if(result == SMSSDK.RESULT_COMPLETE){
                     if(event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
-                        Toast.makeText(getContext(), "发送验证码成功",Toast.LENGTH_SHORT).show();
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
 
-                            }
-                        });
+                        _message.what=1;
+                        handler.sendMessage(_message);
+                        Log.d("BACED",_phoneNum);
 
                     }else if(event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE){
                         phoneVerify=true;
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
+                        _password=mPassword.getText().toString();
+                        _name=mName.getText().toString();
+                        _part=mPart.getText().toString();
+                        _team=mTeam.getText().toString();
+                        Log.d("BACED",_verifyCode+phoneVerify);
 
-                                Toast.makeText(getContext(), "手机验证成功",Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        UserInformation userInformation = new UserInformation();
+                        userInformation.setPart(_part);
+                        userInformation.setTeamgroup(_team);
+                        userInformation.setUsername(_name);
+                        userInformation.setMobilePhoneNumber(_phoneNum);
+                        userInformation.setMobilePhoneNumberVerified(phoneVerify);
+                        userInformation.setPassword(_password);
+                        userInformation.signUp(new SaveListener<UserInformation>() {
+                                @Override
+                                public void done(UserInformation object,BmobException e){
+                                    if(e == null){
+                                        _message.what=2;
+                                        onDestroy();
+                                    }else {
+                                        _message.what=3;
+                                    }
+                                    handler.sendMessage(_message);
+                                }
+                            });
                     }else {
                         ((Throwable)data).printStackTrace();
                     }
@@ -140,6 +136,25 @@ public class AccountRegisterFragment extends BaseFragment {
         };
         SMSSDK.registerEventHandler(_eventHandler);
     }
+
+
+    public Handler handler=new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    Log.d("BACED","SendSuccess");
+                    Toast.makeText(getContext(), "发送验证码成功", Toast.LENGTH_SHORT).show();break;
+                case 2:
+                    Log.d("BACED","VerifySuccess");
+                    Toast.makeText(getContext(),"注册成功",Toast.LENGTH_SHORT).show();break;
+                case 3:
+                    Log.d("BACED","VerifyFail");
+                    Toast.makeText(getContext(),"信息有误，注册失败",Toast.LENGTH_SHORT).show();break;
+            }
+            return false;
+        }
+    });
 
     @Override
     public void onDestroy(){

@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
@@ -35,12 +36,8 @@ public class AccountFragment extends BaseFragment {
 
     private ImageView mImageView;
     private ImageView mNewsSetting;
-    private Button mPhoneVerify;
-    private EventHandler _eventHandler;
-
 
     private EditText mEditPassword;
-    private EditText mEditPhone;
     private EditText mEditNickName;
     private EditText mEditPart;
     private EditText mEditTg;
@@ -72,19 +69,20 @@ public class AccountFragment extends BaseFragment {
 
         mImageView=(ImageView) getActivity().findViewById(R.id.news_image);
         mNewsSetting=(ImageView) getActivity().findViewById(R.id.news_setting);
-        mPhoneVerify=(Button) getActivity().findViewById(R.id.news_register);
 
         mEditPassword=(EditText) getActivity().findViewById(R.id.news_passwrod);
-        mEditPhone=(EditText) getActivity().findViewById(R.id.news_phone);
         mEditNickName=(EditText) getActivity().findViewById(R.id.news_nickname);
         mEditPart=(EditText) getActivity().findViewById(R.id.news_part);
         mEditTg=(EditText) getActivity().findViewById(R.id.news_tg);
         mNickName=(TextView) getActivity().findViewById(R.id.news_account);
         mNumbers=(TextView) getActivity().findViewById(R.id.news_number);
 
+        BmobUser _user=BmobUser.getCurrentUser();
+        mNickName.setText(_user.getUsername());
+        mNumbers.setText(_user.getMobilePhoneNumber());
+
         _nickName=mEditNickName.getText().toString();
         _password=mEditPassword.getText().toString();
-        _phoneNum=mEditPhone.getText().toString();
         _part=mEditPart.getText().toString();
         _teamGroup=mEditTg.getText().toString();
 
@@ -95,50 +93,5 @@ public class AccountFragment extends BaseFragment {
             }
         });
 
-        mPhoneVerify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                InitializeSms();
-                RegisterPage mRegisterPage =new RegisterPage();
-                mRegisterPage.setRegisterCallback(_eventHandler);
-                mRegisterPage.show(getContext());
-            }
-        });
     }
-
-    public void InitializeSms(){
-        _eventHandler=new EventHandler(){
-            @Override
-            public void afterEvent(int event,int result,Object data){
-                if(result == SMSSDK.RESULT_COMPLETE){
-                    if(event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getContext(), "发送验证码成功",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                    }else if(event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE){
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getContext(), "手机验证成功",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }else {
-                        ((Throwable)data).printStackTrace();
-                    }
-                }
-            }
-        };
-        SMSSDK.registerEventHandler(_eventHandler);
-    }
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        SMSSDK.unregisterEventHandler(_eventHandler);
-    }
-
 }
