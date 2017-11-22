@@ -68,7 +68,6 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onActivityCreated(Bundle saveInstanceState){
         super.onActivityCreated(saveInstanceState);
-
         init();
     }
 
