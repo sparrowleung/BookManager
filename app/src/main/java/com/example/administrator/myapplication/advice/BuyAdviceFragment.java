@@ -1,6 +1,7 @@
 package com.example.administrator.myapplication.advice;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,6 +43,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
 
     private CardView mShowAdvice;
     private CardView mCommitAdvice;
+    private SwipeRefreshLayout mSwipeRefresh;
 
     private EditText mNameEdit;
     private EditText mAuthorEdit;
@@ -91,6 +93,17 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
         mPressEdit=(EditText) getActivity().findViewById(R.id.advice_press);
         mPriceEdit=(EditText) getActivity().findViewById(R.id.advice_price);
         mReasonEdit=(EditText) getActivity().findViewById(R.id.advice_reason);
+
+        mSwipeRefresh=(SwipeRefreshLayout) getActivity().findViewById(R.id.advice_swipe);
+        mSwipeRefresh.setColorSchemeResources(R.color.smssdk_gray);
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                _list.clear();
+                Bquery();
+                mSwipeRefresh.setRefreshing(false);
+            }
+        });
 
         mRecyclerView=(RecyclerView) getActivity().findViewById(R.id.advice_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -143,6 +156,11 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
                 else{
                     Toast.makeText(getContext(),"请先登录账号",Toast.LENGTH_SHORT).show();
                 }
+                mNameEdit.setText(null);
+                mAuthorEdit.setText(null);
+                mPressEdit.setText(null);
+                mPriceEdit.setText(null);
+                mReasonEdit.setText(null);
                 _list.clear();
                 Bquery();
                 mCommitAdvice.setVisibility(View.GONE);break;

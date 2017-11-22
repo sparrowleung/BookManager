@@ -3,10 +3,10 @@
     xmlns:app1="http://schemas.android.com/apk/res-auto">
 
 
-    <item
-        android:id="@+id/settings"
-        android:icon="@drawable/setting"
-        android:title="Settings"
-        app1:showAsAction="always" />
+    <!--<item-->
+        <!--android:id="@+id/settings"-->
+        <!--android:icon="@drawable/setting"-->
+        <!--android:title="Settings"-->
+        <!--app1:showAsAction="always" />-->
 
 </menu>

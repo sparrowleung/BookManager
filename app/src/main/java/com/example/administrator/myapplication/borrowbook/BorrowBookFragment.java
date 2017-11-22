@@ -1,6 +1,5 @@
 package com.example.administrator.myapplication.borrowbook;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,9 +11,7 @@ import android.widget.TextView;
 
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
-import com.example.administrator.myapplication.bmob.BookInformation;
-import com.example.administrator.myapplication.category.TechnologyFragment;
-import com.example.administrator.myapplication.recycleview.Category;
+import com.example.administrator.myapplication.category.BookInformation;
 import com.example.administrator.myapplication.recycleview.book;
 import com.example.administrator.myapplication.recycleview.bookAdapter;
 

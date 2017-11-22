@@ -1,4 +1,4 @@
-package com.example.administrator.myapplication.bmob;
+package com.example.administrator.myapplication.category;
 
 
 import cn.bmob.v3.BmobObject;

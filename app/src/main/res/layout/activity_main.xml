@@ -36,7 +36,6 @@
                 android:background="#FFFF"
                 >
             </android.support.design.widget.TabLayout>
-
         </android.support.design.widget.AppBarLayout>
 
 

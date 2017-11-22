@@ -3,20 +3,16 @@ package com.example.administrator.myapplication.category;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
-import com.example.administrator.myapplication.bmob.BookInformation;
 import com.example.administrator.myapplication.recycleview.Category;
-import com.example.administrator.myapplication.recycleview.book;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +20,6 @@ import java.util.List;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.QueryListener;
 
 /**
  * Created by samsung on 2017/11/17.

@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
-import com.example.administrator.myapplication.bmob.BookInformation;
 import com.example.administrator.myapplication.recycleview.Category;
 
 import java.util.ArrayList;
