@@ -1,5 +1,6 @@
 package com.example.administrator.myapplication.account;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,8 +31,6 @@ public class AccountRegisterFragment extends BaseFragment {
     private View _rootView;
     private EventHandler _eventHandler;
     private Boolean phoneVerify=false;
-    private int SENDSUCCESS=1;
-    private int VERIFYSUCCESS=2;
 
     private EditText mPhoneNum;
     private EditText mPassword;
@@ -147,7 +146,12 @@ public class AccountRegisterFragment extends BaseFragment {
                     Toast.makeText(getContext(), "发送验证码成功", Toast.LENGTH_SHORT).show();break;
                 case 2:
                     Log.d("BACED","VerifySuccess");
-                    Toast.makeText(getContext(),"注册成功",Toast.LENGTH_SHORT).show();break;
+                    Toast.makeText(getContext(),"注册成功",Toast.LENGTH_SHORT).show();
+                    Intent intent = getContext().getPackageManager()
+                            .getLaunchIntentForPackage(getContext().getPackageName());
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    break;
                 case 3:
                     Log.d("BACED","VerifyFail");
                     Toast.makeText(getContext(),"信息有误，注册失败",Toast.LENGTH_SHORT).show();break;

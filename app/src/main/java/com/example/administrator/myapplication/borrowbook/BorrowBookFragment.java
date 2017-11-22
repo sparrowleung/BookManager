@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
@@ -41,6 +42,7 @@ public class BorrowBookFragment extends BaseFragment {
     private List<book> _list;
 
     private TextView mBookCount;
+    private TextView mAccountName;
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
@@ -67,6 +69,14 @@ public class BorrowBookFragment extends BaseFragment {
 
             }
         });
+
+        mAccountName=(TextView) getActivity().findViewById(R.id.borrow_account);
+        BmobUser _user=BmobUser.getCurrentUser();
+        if(_user != null){
+            if(_user.getUsername() != null){
+                mAccountName.setText(_user.getUsername());
+            }
+        }
 
         mRecyclerView=(RecyclerView) getActivity().findViewById(R.id.recyclerview_detail);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

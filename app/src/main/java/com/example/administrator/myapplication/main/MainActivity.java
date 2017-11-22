@@ -12,13 +12,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +33,7 @@ import java.util.List;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.b.V;
 
 
 public class MainActivity extends BaseActivity {
@@ -46,6 +45,8 @@ public class MainActivity extends BaseActivity {
     private TextView _heaterName;
     private ImageView _hearterImage;
     private View _heartLayout;
+    private View _unLogin;
+    private View _heartName;
 
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
@@ -107,14 +108,21 @@ public class MainActivity extends BaseActivity {
         mTabLayout.getTabAt(1).setText("已借书籍");
 
         _heartLayout=_navigationView.inflateHeaderView(R.layout.navi_heater);
+        _heartName=(View) _heartLayout.findViewById(R.id.nav_heart);
         _heaterName=(TextView) _heartLayout.findViewById(R.id.username);
+        _unLogin=(View) _heartLayout.findViewById(R.id.nav_unlogin);
         _hearterImage=(ImageView) _heartLayout.findViewById(R.id.account_image);
 
-        BmobUser _user=BmobUser.getCurrentUser();
-        if(_user.getUsername()!=null){
-            _heaterName.setText(_user.getUsername());
+        BmobUser _user = BmobUser.getCurrentUser();
+        if(_user!=null) {
+            if (_user.getUsername() != null) {
+                _unLogin.setVisibility(View.GONE);
+                _heartName.setVisibility(View.VISIBLE);
+                _heaterName.setText(_user.getUsername());
+            }
         }else {
-            _heaterName.setText("未登陆");
+            _heartName.setVisibility(View.GONE);
+           _unLogin.setVisibility(View.VISIBLE);
         }
     }
 

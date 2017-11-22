@@ -11,17 +11,16 @@
         android:src="@drawable/account"
         android:layout_centerInParent="true"/>
 
-    <TableLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="30dp"
+        android:gravity="center_vertical"
         android:layout_centerHorizontal="true"
         android:id="@+id/nav_heart"
         android:layout_alignBottom="@+id/account_image"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
         >
-
-        <TableRow>
 
             <TextView
                 android:text="昵称 "
@@ -44,9 +43,30 @@
                 android:text="yuyang.liang"
                 android:textColor="#000"
                 android:textSize="14sp"/>
-        </TableRow>
 
-    </TableLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:gravity="center_vertical"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/nav_unlogin"
+        android:layout_alignBottom="@+id/account_image"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        >
+
+        <TextView
+            android:text="未登录"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:textSize="14sp"/>
+
+    </LinearLayout>
+
 
     <View
         android:layout_alignParentBottom="true"

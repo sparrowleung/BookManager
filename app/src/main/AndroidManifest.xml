@@ -29,7 +29,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.example.administrator.myapplication.advice.BuyAdviceActivity">
+        <activity android:name="com.example.administrator.myapplication.advice.BuyAdviceActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="com.android.yuyangliang.BuyAdviceActivity"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -50,11 +52,6 @@
             </intent-filter>
         </activity>
 
-        <!--<activity android:name="com.mob.tools.MobUIShell"-->
-            <!--android:theme="@android:style/Theme.Translucent.NoTitleBar"-->
-            <!--android:configChanges="keyboardHidden|orientation|screenSize"-->
-            <!--android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>-->
-
         <activity android:name=".history.HistoryActivity">
             <intent-filter>
                 <action android:name="com.android.yuyangliang.HistoryActivity"/>
@@ -69,9 +66,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".account.AccountActivity">
+        <activity android:name=".account.AccountActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:configChanges="orientation|keyboardHidden">
             <intent-filter>
-                <action android:name="com.android.yuyangliang.AccountActivity"/>
+                <action android:name="com.android.yuyangliang.AccountActivity"
+                    />
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>

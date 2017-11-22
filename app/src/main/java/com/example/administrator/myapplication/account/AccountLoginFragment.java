@@ -1,5 +1,6 @@
 package com.example.administrator.myapplication.account;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -47,10 +48,8 @@ public class AccountLoginFragment extends BaseFragment {
 
         mPhoneNum=(EditText) getActivity().findViewById(R.id.login_phoneNum);
         mPassword=(EditText) getActivity().findViewById(R.id.login_password);
-        _phoneNum=mPhoneNum.getText().toString();
-        _password=mPassword.getText().toString();
-
         mRegister=(Button) getActivity().findViewById(R.id.login_register);
+
         mRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,16 +65,17 @@ public class AccountLoginFragment extends BaseFragment {
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                _phoneNum=mPhoneNum.getText().toString();
+                _password=mPassword.getText().toString();
                 BmobUser.loginByAccount(_phoneNum, _password, new LogInListener<UserInformation>() {
                     @Override
                     public void done(UserInformation user, BmobException e){
                         if(e == null){
                             Toast.makeText(getContext(),"登录成功",Toast.LENGTH_SHORT).show();
-                            AccountFragment accountFragment=new AccountFragment();
-                            FragmentManager fragmentManager=getFragmentManager();
-                            FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.container,accountFragment);
-                            fragmentTransaction.commit();
+                            Intent intent = getContext().getPackageManager()
+                                    .getLaunchIntentForPackage(getContext().getPackageName());
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
                         }else {
                             Toast.makeText(getContext(),"登录失败，请输入正确信息",Toast.LENGTH_SHORT).show();
                         }
