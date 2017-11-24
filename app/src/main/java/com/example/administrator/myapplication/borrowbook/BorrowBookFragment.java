@@ -40,6 +40,7 @@ public class BorrowBookFragment extends BaseFragment {
 
     private TextView mBookCount;
     private TextView mAccountName;
+    private BmobUser _user;
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
@@ -61,14 +62,17 @@ public class BorrowBookFragment extends BaseFragment {
                     mBookDetail.setVisibility(View.GONE);
                 }else {
                     mBookDetail.setVisibility(View.VISIBLE);
-
+                    if (_list.size() > 0) {
+                        Bquery();
+                        _bookAdapter.notifyDataSetChanged();
+                    }
                 }
 
             }
         });
 
         mAccountName=(TextView) getActivity().findViewById(R.id.borrow_account);
-        BmobUser _user=BmobUser.getCurrentUser();
+        _user=BmobUser.getCurrentUser();
         if(_user != null){
             if(_user.getUsername() != null){
                 mAccountName.setText(_user.getUsername());
@@ -78,8 +82,13 @@ public class BorrowBookFragment extends BaseFragment {
         mRecyclerView=(RecyclerView) getActivity().findViewById(R.id.recyclerview_detail);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         _list=new ArrayList<>();
+        Bquery();
+    }
+
+    public void Bquery(){
+        _list.clear();
         BmobQuery<BookInformation> bmobQuery=new BmobQuery<BookInformation>();
-        bmobQuery.addWhereEqualTo("borrowper","YyLeung");
+        bmobQuery.addWhereEqualTo("borrowper",_user.getUsername());
         bmobQuery.setLimit(50);
         bmobQuery.findObjects(new FindListener<BookInformation>() {
             @Override
@@ -93,7 +102,6 @@ public class BorrowBookFragment extends BaseFragment {
                     mBookCount.setText(Integer.toString(object.size()));
                     _bookAdapter=new bookAdapter(_list);
                     mRecyclerView.setAdapter(_bookAdapter);
-
                 }
             }
         });

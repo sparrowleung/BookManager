@@ -19,8 +19,8 @@
                 android:layout_weight="7"
                 android:hint="用户登录"
                 android:textColor="#17abe3"
-                android:textSize="20dp"
-                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_height="25dp"
                 />
             <TextView
                 android:layout_width="0dp"
@@ -39,7 +39,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="5"
                 android:hint="Mobile/手机号码"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:layout_height="wrap_content"
                 />
             <TextView
@@ -59,13 +59,14 @@
                 android:layout_width="0dp"
                 android:layout_weight="5"
                 android:hint="Password/密码"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:layout_height="wrap_content"
                 />
             <Button
 
                 android:text="注册"
                 android:id="@+id/login_register"
+                android:textSize="14sp"
                 android:gravity="center"
                 android:background="?android:attr/selectableItemBackground"
                 android:layout_width="0dp"
@@ -81,6 +82,7 @@
 
             <Button
                 android:text="登录"
+                android:textSize="14sp"
                 android:id="@+id/login_login"
                 android:background="?android:attr/selectableItemBackground"
                 android:layout_width="0dp"

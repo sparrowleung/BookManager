@@ -45,16 +45,18 @@
                   android:layout_height="wrap_content">
                   <TextView
                       android:text="昵        称 ："
+                      android:textSize="14sp"
                       android:layout_width="0dp"
                       android:layout_weight="1"
-                      android:layout_height="wrap_content"
+                      android:layout_height="20dp"
                       />
                   <TextView
                       android:text="yuyang.liang"
                       android:paddingLeft="5dp"
                       android:layout_width="0dp"
                       android:layout_weight="2"
-                      android:layout_height="wrap_content"
+                      android:layout_height="20dp"
+                      android:textSize="14sp"
                       android:id="@+id/borrow_account"/>
               </LinearLayout>
 
@@ -73,30 +75,34 @@
                   android:layout_height="wrap_content">
                   <TextView
                       android:text="已借书籍 ："
+                      android:textSize="14sp"
                       android:layout_width="0dp"
                       android:layout_weight="1"
-                      android:layout_height="wrap_content"
+                      android:layout_height="20dp"
                       />
                   <TextView
                       android:text="5"
                       android:paddingLeft="5dp"
                       android:layout_width="0dp"
                       android:layout_weight="2"
-                      android:layout_height="wrap_content"
+                      android:layout_height="20dp"
+                      android:textSize="14sp"
                       android:id="@+id/borrow_lendcount"/>
               </LinearLayout>
 
               <LinearLayout
+                  android:layout_marginRight="30dp"
                   android:orientation="horizontal"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content">
                   <TextView
                       android:id="@+id/borrow_detail"
+                      android:textSize="14sp"
                       android:text="详情"
                       android:gravity="end"
-                      android:paddingRight="10dp"
+
                       android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
+                      android:layout_height="20dp"
                       />
               </LinearLayout>
 

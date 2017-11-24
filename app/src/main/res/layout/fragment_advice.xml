@@ -227,6 +227,7 @@
 
                             <TextView
                                 android:text="提议栏"
+                                android:textSize="15sp"
                                 android:textStyle="bold"
                                 android:paddingLeft="5dp"
                                 android:layout_gravity="center"
@@ -238,12 +239,13 @@
                             <Button
                                 android:text="新建"
                                 android:background="?android:attr/selectableItemBackground"
+                                android:textSize="14sp"
                                 android:id="@+id/advice_newbuild"
                                 android:gravity="center"
                                 android:layout_gravity="center_horizontal"
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="50dp" />
                         </LinearLayout>
 
                         <View

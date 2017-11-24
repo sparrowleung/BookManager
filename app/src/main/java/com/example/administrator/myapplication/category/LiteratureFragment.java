@@ -102,7 +102,11 @@ public class LiteratureFragment extends BaseFragment {
             viewHolder._name.setText(_category.getName());
             viewHolder._author.setText(_category.getAuthor());
             viewHolder._press.setText(_category.getPress());
-            viewHolder._status.setText(_category.getStatus());
+            if(_category.getStatus()) {
+                viewHolder._status.setText("可      借");
+            }else {
+                viewHolder._status.setText("已借出");
+            }
             Glide.with(getContext()).load(_category.getImageId()).into(viewHolder._image);
         }
 

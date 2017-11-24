@@ -32,10 +32,11 @@
                 <TextView
                     android:text="新书推荐"
                     android:layout_centerVertical="true"
+                    android:textSize="14sp"
                     android:gravity="center"
                     android:layout_below="@+id/first_image_new"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="20dp" />
 
             </RelativeLayout>
 
@@ -56,11 +57,12 @@
 
                 <TextView
                     android:text="图书详细"
+                    android:textSize="14sp"
                     android:layout_centerVertical="true"
                     android:layout_below="@+id/first_image_lend"
                     android:gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="20dp" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -80,11 +82,12 @@
 
                 <TextView
                     android:text="购买建议"
+                    android:textSize="14sp"
                     android:layout_centerVertical="true"
                     android:layout_below="@+id/first_image_advice"
                     android:gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="20dp" />
             </RelativeLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>

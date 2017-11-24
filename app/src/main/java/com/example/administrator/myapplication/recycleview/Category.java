@@ -12,9 +12,9 @@ public class Category {
     String _name;
     String _author;
     String _press;
-    String _status;
+    Boolean _status;
 
-    public Category(int image,String name,String author,String press,String status){
+    public Category(int image,String name,String author,String press,Boolean status){
         this._image=image;
         this._name=name;
         this._author=author;
@@ -38,7 +38,7 @@ public class Category {
         return _press;
     }
 
-    public String getStatus(){
+    public Boolean getStatus(){
         return _status;
     }
 

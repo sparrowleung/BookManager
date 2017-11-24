@@ -1,6 +1,8 @@
 package com.example.administrator.myapplication.category;
 
 
+import java.util.Date;
+
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobFile;
 
@@ -12,11 +14,12 @@ public class BookInformation extends BmobObject {
 
     private String name;
     private String author;
+    private int borrowcount;
     private String press;
-    private String price;
-    private String state;
-    private String borrowtime;
-    private String backtime;
+    private Double price;
+    private Boolean state;
+    private Date borrowtime;
+    private Date backtime;
     private String category;
     private String borrowper;
     private BmobFile photo;
@@ -45,35 +48,35 @@ public class BookInformation extends BmobObject {
         this.press=press;
     }
 
-    public String getPrice(){
+    public Double getPrice(){
         return  price;
     }
 
-    public void setPrice(String price){
+    public void setPrice(Double price){
         this.price=price;
     }
 
-    public String getState(){
+    public Boolean  getState(){
         return state;
     }
 
-    public void setState(String state){
+    public void setState(Boolean  state){
         this.state=state;
     }
 
-    public String getBorrowtime(){
+    public Date getBorrowtime(){
         return borrowtime;
     }
 
-    public void setBorrowtime(String borrowtime){
+    public void setBorrowtime(Date borrowtime){
         this.borrowtime=borrowtime;
     }
 
-    public String getBacktime(){
+    public Date getBacktime(){
         return backtime;
     }
 
-    public void setBacktime(String backtime){
+    public void setBacktime(Date backtime){
         this.backtime=backtime;
     }
 
@@ -91,6 +94,14 @@ public class BookInformation extends BmobObject {
 
     public void setBorrowper(String borrowper){
         this.borrowper=borrowper;
+    }
+
+    public int getBorrowcount(){
+        return borrowcount;
+    }
+
+    public void setBorrowcount(int borrowcount){
+        this.borrowcount=borrowcount;
     }
 
     public BmobFile getPhoto(){

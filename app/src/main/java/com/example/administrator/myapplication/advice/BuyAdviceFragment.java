@@ -99,9 +99,24 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                _list.clear();
-                Bquery();
-                mSwipeRefresh.setRefreshing(false);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try{
+                            Thread.sleep(2000);
+                        }catch (InterruptedException e){
+                            e.printStackTrace();
+                        }
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Bquery();
+                                _adviceAdapter.notifyDataSetChanged();
+                                mSwipeRefresh.setRefreshing(false);
+                            }
+                        });
+                    }
+                }).start();
             }
         });
 
@@ -161,13 +176,12 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
                 mPressEdit.setText(null);
                 mPriceEdit.setText(null);
                 mReasonEdit.setText(null);
-                _list.clear();
-                Bquery();
                 mCommitAdvice.setVisibility(View.GONE);break;
         }
     }
 
     public void Bquery(){
+        _list.clear();
         BmobQuery<AdviceInformation> _query=new BmobQuery<>();
         _query.findObjects(new FindListener<AdviceInformation>() {
             @Override

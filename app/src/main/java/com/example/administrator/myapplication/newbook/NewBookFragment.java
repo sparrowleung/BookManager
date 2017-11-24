@@ -13,10 +13,15 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
+import com.example.administrator.myapplication.category.BookInformation;
 import com.example.administrator.myapplication.recycleview.book;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 
 /**
  * Created by Administrator on 2017/10/30.
@@ -27,6 +32,7 @@ public class NewBookFragment extends BaseFragment{
     private View _rootView;
     private RecyclerView mRecyclerView;
     private List<book> _list;
+    private NewBookAdapter _newBookAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
@@ -41,16 +47,23 @@ public class NewBookFragment extends BaseFragment{
         mRecyclerView=(RecyclerView) getActivity().findViewById(R.id.newbook_recyclerview);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         _list=new ArrayList<>();
-        for(int i=0;i<3;i++){
-            book a1=new book("abcdd",R.mipmap.ic_launcher);
-            _list.add(a1);
-            book a2=new book("zddss",R.drawable.book);
-            _list.add(a2);
-            book a3=new book("fdsss",R.drawable.account);
-            _list.add(a3);
-        }
-        NewBookAdapter _newBookAdapter=new NewBookAdapter(_list);
-        mRecyclerView.setAdapter(_newBookAdapter);
+        BmobQuery<BookInformation> _query=new BmobQuery<>();
+        _query.order("-createdAt");
+        _query.findObjects(new FindListener<BookInformation>() {
+            @Override
+            public void done(List<BookInformation> list, BmobException e) {
+                if(e == null){
+                    for(int i=0;i<10;i++) {
+                        BookInformation object=list.get(i);
+                        book _book = new book(object.getName(), R.drawable.account);
+                        _list.add(_book);
+                    }
+                }
+                _newBookAdapter=new NewBookAdapter(_list);
+                mRecyclerView.setAdapter(_newBookAdapter);
+            }
+        });
+
     }
 
 
@@ -84,7 +97,7 @@ public class NewBookFragment extends BaseFragment{
 
         @Override
         public void onBindViewHolder(ViewHolder viewHolder,int position){
-            int heights=(int) (200 + Math.random() * 300);
+            int heights=(int) (300 + Math.random() * 300);
             book _book=mList.get(position);
             viewHolder._textView.setText(_book.getBookName());
             Glide.with(getContext()).load(_book.getBookViewId()).into(viewHolder._imageView);
