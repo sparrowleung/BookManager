@@ -103,95 +103,38 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
-                <TableRow
-                    android:id="@+id/table_title"
+              <LinearLayout
+                  android:id="@+id/table_title"
+                  android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
                         android:text="通知"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"
                         android:gravity="center_vertical"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_width="0dp"
                         android:layout_weight="6"
-                        android:layout_height="30dp"/>
+                        android:layout_height="40dp"/>
 
                     <ImageView
                         android:src="@drawable/more"
                         android:layout_gravity="center_vertical"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_height="30dp"
+                        android:layout_height="20dp"
                         />
-                </TableRow>
+              </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#33331111"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycle_newslist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <TableRow
-                    android:id="@+id/table_Notice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:text="消息Title"
-                            android:textSize="16sp"
-                            android:id="@+id/first_title1"
-                            android:textColor="#000"
-                            android:layout_marginLeft="10dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+            </android.support.v7.widget.RecyclerView>
 
-                        <TextView
-                            android:text="消息SubTitle"
-                            android:layout_marginLeft="15dp"
-                            android:id="@+id/first_subtitle1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </TableRow>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#33331111"/>
-
-                <TableRow
-                    android:id="@+id/table_Notice2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:text="消息Title"
-                            android:textSize="16sp"
-                            android:textColor="#000"
-                            android:id="@+id/first_title2"
-                            android:layout_marginLeft="10dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:text="消息SubTitle"
-                            android:layout_marginLeft="15dp"
-                            android:id="@+id/first_subtitle2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </TableRow>
-            </TableLayout>
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -208,12 +151,12 @@
             android:layout_height="wrap_content">
             <TextView
                 android:text="热门书籍"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="10dp"
                 android:gravity="center_vertical"
                 android:layout_width="match_parent"
-                android:layout_height="30dp" />
+                android:layout_height="40dp" />
 
             <View
                 android:layout_width="match_parent"
@@ -222,7 +165,7 @@
 
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycle_view"
+                android:id="@+id/recycle_hotlist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"

@@ -1,11 +1,10 @@
 package com.example.administrator.myapplication.main;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,14 +16,21 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.advice.BuyAdviceActivity;
 import com.example.administrator.myapplication.base.BaseFragment;
+import com.example.administrator.myapplication.category.BookInformation;
 import com.example.administrator.myapplication.category.CategoryActivity;
 import com.example.administrator.myapplication.newbook.NewBookActivity;
 import com.example.administrator.myapplication.newsandtips.NewsAndTipsActivity;
-import com.example.administrator.myapplication.recycleview.book;
-import com.example.administrator.myapplication.recycleview.bookAdapter;
+import com.example.administrator.myapplication.newsandtips.NewsTipsInformation;
+import com.example.administrator.myapplication.recycleview.News;
+import com.example.administrator.myapplication.recycleview.NewsTipsAdapter;
+import com.example.administrator.myapplication.recycleview.Book;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 
 /**
  * Created by Administrator on 2017/10/30.
@@ -33,11 +39,13 @@ import java.util.List;
 public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
     private View _rootView;
-    private SwipeRefreshLayout _swipeRefreshLayout;
-    private RecyclerView _recyclerView;
+    private RecyclerView _bookRecyclerView;
+    private RecyclerView _newsRecyclerView;
 
-    private List<book> _list=new ArrayList<>();
+    private List<Book> _bookList=new ArrayList<>();
+    private List<News> _newsList=new ArrayList<>();
     private HotBook _adapter;
+    private NewsTipsAdapter _newsAdapter;
 
     private View mNewbook;
     private View mCategory;
@@ -74,30 +82,18 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         mHotBook.setRadius(8);
         mHotBook.setCardElevation(8);
 
-
-        initbook();
-
-        _recyclerView=(RecyclerView) _rootView.findViewById(R.id.recycle_view);
+        _bookRecyclerView=(RecyclerView) _rootView.findViewById(R.id.recycle_hotlist);
         GridLayoutManager gridLayoutManager=new GridLayoutManager(getContext(),3);
-        _recyclerView.setLayoutManager(gridLayoutManager);
-        _adapter=new HotBook(_list);
-        _recyclerView.setAdapter(_adapter);
+        _bookRecyclerView.setLayoutManager(gridLayoutManager);
+
+        _newsRecyclerView=(RecyclerView) _rootView.findViewById(R.id.recycle_newslist);
+        _newsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        Bquery();
 
         mNewbook.setOnClickListener(this);
         mCategory.setOnClickListener(this);
         mBuyAdvice.setOnClickListener(this);
         mNews.setOnClickListener(this);
-    }
-
-    public void initbook(){
-        for(int i=0;i<2;i++){
-            book b1=new book("a",R.drawable.account);
-            _list.add(b1);
-            book b2=new book("b",R.drawable.account);
-            _list.add(b2);
-            book b3=new book("c",R.drawable.account);
-            _list.add(b3);
-        }
     }
 
     @Override
@@ -119,9 +115,59 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         getActivity().startActivity(_intent);
     }
 
+    public void Bquery(){
+        if(_bookList.size() > 0) {
+            _bookList.clear();
+        }
+        if(_newsList.size() > 0) {
+            _newsList.clear();
+        }
+        BmobQuery<BookInformation> _query=new BmobQuery<>();
+        _query.order("borrowcount");
+        _query.findObjects(new FindListener<BookInformation>() {
+            @Override
+            public void done(List<BookInformation> list, BmobException e) {
+                if(list.size() >= 6) {
+                    for (int i = 0; i < 6; i++) {
+                        Book _book = new Book(list.get(i).getName(), R.drawable.account);
+                        _bookList.add(_book);
+                    }
+                }else {
+                    for(BookInformation object : list){
+                        Book _book = new Book(object.getName(), R.drawable.account);
+                        _bookList.add(_book);
+                    }
+                }
+                _adapter=new HotBook(_bookList);
+                _bookRecyclerView.setAdapter(_adapter);
+            }
+        });
+
+        BmobQuery<NewsTipsInformation> _newsQuery=new BmobQuery<>();
+        _newsQuery.order("-createAt");
+        _newsQuery.findObjects(new FindListener<NewsTipsInformation>() {
+            @Override
+            public void done(List<NewsTipsInformation> list, BmobException e) {
+                if(list.size() >=2){
+                    for(int i=0;i<2;i++){
+                        News _news=new News(list.get(i).getTitle(),list.get(i).getSubTitle());
+                        _newsList.add(_news);
+                    }
+                }else {
+                    for(NewsTipsInformation object : list){
+                        News _news=new News(object.getTitle(),object.getSubTitle());
+                        _newsList.add(_news);
+                    }
+                }
+                _newsAdapter=new NewsTipsAdapter(_newsList);
+                _newsRecyclerView.setAdapter(_newsAdapter);
+            }
+        });
+    }
+
     class HotBook extends RecyclerView.Adapter<HotBook.ViewHolder>{
 
-        private List<book> _list;
+        private List<Book> _list;
 
        class ViewHolder extends RecyclerView.ViewHolder{
            private ImageView _imageView;
@@ -134,7 +180,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
            }
        }
 
-       public HotBook(List<book> mList){
+       public HotBook(List<Book> mList){
            _list=mList;
        }
 
@@ -147,7 +193,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
        @Override
         public void onBindViewHolder(ViewHolder viewHolder,int position){
-            book mBook=_list.get(position);
+            Book mBook=_list.get(position);
             viewHolder._textView.setText(mBook.getBookName());
             Glide.with(getContext()).load(mBook.getBookViewId()).into(viewHolder._imageView);
        }

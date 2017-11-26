@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.category.BookInformation;
-import com.example.administrator.myapplication.recycleview.book;
-import com.example.administrator.myapplication.recycleview.bookAdapter;
+import com.example.administrator.myapplication.recycleview.Book;
+import com.example.administrator.myapplication.recycleview.BookAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +35,8 @@ public class BorrowBookFragment extends BaseFragment {
     private View mDetail;
     private RecyclerView mRecyclerView;
 
-    private bookAdapter _bookAdapter;
-    private List<book> _list;
+    private BookAdapter _bookAdapter;
+    private List<Book> _list;
 
     private TextView mBookCount;
     private TextView mAccountName;
@@ -71,22 +71,29 @@ public class BorrowBookFragment extends BaseFragment {
             }
         });
 
+        mRecyclerView=(RecyclerView) getActivity().findViewById(R.id.recyclerview_detail);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        _list=new ArrayList<>();
+
         mAccountName=(TextView) getActivity().findViewById(R.id.borrow_account);
         _user=BmobUser.getCurrentUser();
         if(_user != null){
             if(_user.getUsername() != null){
                 mAccountName.setText(_user.getUsername());
+                Bquery();
             }
+        }else {
+            mAccountName.setText("未登录");
+            mBookCount.setText(" ");
         }
 
-        mRecyclerView=(RecyclerView) getActivity().findViewById(R.id.recyclerview_detail);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        _list=new ArrayList<>();
-        Bquery();
+
     }
 
     public void Bquery(){
-        _list.clear();
+        if(_list!=null) {
+            _list.clear();
+        }
         BmobQuery<BookInformation> bmobQuery=new BmobQuery<BookInformation>();
         bmobQuery.addWhereEqualTo("borrowper",_user.getUsername());
         bmobQuery.setLimit(50);
@@ -96,11 +103,11 @@ public class BorrowBookFragment extends BaseFragment {
                 if(e==null){
 
                     for(BookInformation bookInformation : object){
-                        book a1=new book(bookInformation.getName(),R.drawable.book);
+                        Book a1=new Book(bookInformation.getName(),R.drawable.book);
                         _list.add(a1);
                     }
                     mBookCount.setText(Integer.toString(object.size()));
-                    _bookAdapter=new bookAdapter(_list);
+                    _bookAdapter=new BookAdapter(_list);
                     mRecyclerView.setAdapter(_bookAdapter);
                 }
             }

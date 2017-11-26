@@ -6,7 +6,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +17,10 @@ import android.widget.Toast;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.recycleview.Advice;
-import com.example.administrator.myapplication.recycleview.book;
-import com.example.administrator.myapplication.recycleview.bookAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
@@ -132,8 +128,10 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
             case R.id.advice_newbuild:
                 if(mCommitAdvice.getVisibility() ==View.VISIBLE) {
                     mCommitAdvice.setVisibility(View.GONE);
+                    mNewBuild.setText("新建");
                 }else {
                     mCommitAdvice.setVisibility(View.VISIBLE);
+                    mNewBuild.setText("收起");
                 }break;
             case R.id.advice_commit:
                 BmobUser _user=BmobUser.getCurrentUser();
@@ -181,7 +179,9 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
     }
 
     public void Bquery(){
-        _list.clear();
+        if(_list!=null) {
+            _list.clear();
+        }
         BmobQuery<AdviceInformation> _query=new BmobQuery<>();
         _query.findObjects(new FindListener<AdviceInformation>() {
             @Override

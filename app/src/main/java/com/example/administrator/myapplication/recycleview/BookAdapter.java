@@ -18,10 +18,10 @@ import java.util.List;
  * Created by 37289 on 2017/11/11.
  */
 
-public class bookAdapter extends RecyclerView.Adapter<bookAdapter.ViewHolder> {
+public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     private Context context;
-    private List<book> mbook;
+    private List<Book> mbook;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         CardView cardView;
@@ -36,7 +36,7 @@ public class bookAdapter extends RecyclerView.Adapter<bookAdapter.ViewHolder> {
         }
     }
 
-    public bookAdapter(List<book> bookList){
+    public BookAdapter(List<Book> bookList){
         mbook=bookList;
     }
 
@@ -52,7 +52,7 @@ public class bookAdapter extends RecyclerView.Adapter<bookAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position){
-        book books=mbook.get(position);
+        Book books=mbook.get(position);
         holder.bookname.setText(books.getBookName());
         Glide.with(context).load(books.getBookViewId()).into(holder.bookView);
     }

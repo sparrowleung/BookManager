@@ -158,7 +158,6 @@
             android:layout_weight="1">
 
             <LinearLayout
-
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -171,18 +170,29 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1"
+                            />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight="1"
-                            android:text="密码 ：" />
+                            android:gravity="center"
+                            android:text="密码：" />
 
                         <EditText
                             android:id="@+id/account_passwrod"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="3" />
+                            android:layout_weight="4" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1"
+                            />
 
                     </LinearLayout>
 
@@ -190,18 +200,29 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight="1"
-                            android:text="昵称 ：" />
+                            />
+
+                        <TextView
+                            android:gravity="center"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1"
+                            android:text="昵称：" />
 
                         <EditText
                             android:id="@+id/account_nickname"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="3" />
+                            android:layout_weight="4" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1"
+                            />
 
                     </LinearLayout>
 
@@ -209,18 +230,29 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight="1"
-                            android:text="部门 ：" />
+                            />
+
+                        <TextView
+                            android:gravity="center"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1"
+                            android:text="部门：" />
 
                         <EditText
                             android:id="@+id/account_part"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="3" />
+                            android:layout_weight="4" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1"
+                            />
 
                     </LinearLayout>
 
@@ -232,30 +264,58 @@
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_weight="1"
-                            android:text="TG ：" />
+                            />
+                        <TextView
+                            android:gravity="center"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1"
+                            android:text="T   G：" />
 
                         <EditText
                             android:id="@+id/account_tg"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="3" />
+                            android:layout_weight="4" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1"
+                            />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="30dp">
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1"
+                            />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1"
+                            />
 
                         <Button
                             android:id="@+id/account_commit"
                             android:background="?android:attr/selectableItemBackground"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
+                            android:layout_weight="4"
                             android:layout_height="wrap_content"
                             android:gravity="end|center"
-
                             android:paddingRight="10dp"
-                            android:text="修改"
-                            android:textStyle="bold" />
+                            android:text="修改" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="1"
+                            />
                     </LinearLayout>
 
                 </LinearLayout>

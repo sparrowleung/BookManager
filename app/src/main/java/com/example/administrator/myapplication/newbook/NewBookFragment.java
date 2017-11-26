@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.category.BookInformation;
-import com.example.administrator.myapplication.recycleview.book;
+import com.example.administrator.myapplication.recycleview.Book;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class NewBookFragment extends BaseFragment{
 
     private View _rootView;
     private RecyclerView mRecyclerView;
-    private List<book> _list;
+    private List<Book> _list;
     private NewBookAdapter _newBookAdapter;
 
     @Override
@@ -55,7 +55,7 @@ public class NewBookFragment extends BaseFragment{
                 if(e == null){
                     for(int i=0;i<10;i++) {
                         BookInformation object=list.get(i);
-                        book _book = new book(object.getName(), R.drawable.account);
+                        Book _book = new Book(object.getName(), R.drawable.account);
                         _list.add(_book);
                     }
                 }
@@ -69,7 +69,7 @@ public class NewBookFragment extends BaseFragment{
 
     class NewBookAdapter extends RecyclerView.Adapter<NewBookAdapter.ViewHolder>{
 
-        private List<book> mList;
+        private List<Book> mList;
 
         class ViewHolder extends RecyclerView.ViewHolder{
             ImageView _imageView;
@@ -84,7 +84,7 @@ public class NewBookFragment extends BaseFragment{
             }
         }
 
-        public NewBookAdapter(List<book> _list){
+        public NewBookAdapter(List<Book> _list){
             this.mList=_list;
         }
 
@@ -98,7 +98,7 @@ public class NewBookFragment extends BaseFragment{
         @Override
         public void onBindViewHolder(ViewHolder viewHolder,int position){
             int heights=(int) (300 + Math.random() * 300);
-            book _book=mList.get(position);
+            Book _book=mList.get(position);
             viewHolder._textView.setText(_book.getBookName());
             Glide.with(getContext()).load(_book.getBookViewId()).into(viewHolder._imageView);
             ViewGroup.LayoutParams _layoutParams=viewHolder._imageView.getLayoutParams();

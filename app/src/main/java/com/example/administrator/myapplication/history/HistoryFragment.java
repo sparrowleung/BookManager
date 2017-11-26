@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
-import com.example.administrator.myapplication.recycleview.book;
-import com.example.administrator.myapplication.recycleview.bookAdapter;
+import com.example.administrator.myapplication.recycleview.Book;
+import com.example.administrator.myapplication.recycleview.BookAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +26,9 @@ public class HistoryFragment extends BaseFragment {
 
     private View _rootView;
 
-    private List<book> mList;
+    private List<Book> mList;
     private RecyclerView mRecyclerView;
-    private bookAdapter mAdapter;
+    private BookAdapter mAdapter;
 
     private CardView mCard1;
     private CardView mCard2;
@@ -51,14 +51,14 @@ public class HistoryFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mList=new ArrayList<>();
         for(int i=0;i<6;i++){
-            book b1=new book("a",R.mipmap.ic_launcher);
+            Book b1=new Book("a",R.mipmap.ic_launcher);
             mList.add(b1);
-            book b2=new book("b",R.mipmap.ic_launcher);
+            Book b2=new Book("b",R.mipmap.ic_launcher);
             mList.add(b2);
-            book b3=new book("c",R.mipmap.ic_launcher);
+            Book b3=new Book("c",R.mipmap.ic_launcher);
             mList.add(b3);
         }
-        mAdapter=new bookAdapter(mList);
+        mAdapter=new BookAdapter(mList);
         mRecyclerView.setAdapter(mAdapter);
 
         mCard1=(CardView) getActivity().findViewById(R.id.history_card1);
