@@ -48,14 +48,16 @@
                       android:textSize="14sp"
                       android:layout_width="0dp"
                       android:layout_weight="1"
-                      android:layout_height="20dp"
+                      android:layout_height="25dp"
+                      android:gravity="center_vertical"
                       />
                   <TextView
                       android:text="yuyang.liang"
-                      android:paddingLeft="5dp"
+                      android:gravity="center_vertical"
+                      android:layout_marginLeft="5dp"
                       android:layout_width="0dp"
                       android:layout_weight="2"
-                      android:layout_height="20dp"
+                      android:layout_height="25dp"
                       android:textSize="14sp"
                       android:id="@+id/borrow_account"/>
               </LinearLayout>
@@ -75,17 +77,19 @@
                   android:layout_height="wrap_content">
                   <TextView
                       android:text="已借书籍 ："
+                      android:gravity="center_vertical"
                       android:textSize="14sp"
                       android:layout_width="0dp"
                       android:layout_weight="1"
-                      android:layout_height="20dp"
+                      android:layout_height="25dp"
                       />
                   <TextView
                       android:text="5"
-                      android:paddingLeft="5dp"
+                      android:layout_marginLeft="5dp"
+                      android:gravity="center_vertical"
                       android:layout_width="0dp"
                       android:layout_weight="2"
-                      android:layout_height="20dp"
+                      android:layout_height="25dp"
                       android:textSize="14sp"
                       android:id="@+id/borrow_lendcount"/>
               </LinearLayout>

@@ -25,21 +25,21 @@
             <TextView
                 android:text="昵称 "
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
+                android:layout_height="25dp"
                 android:textColor="#000"
                 android:textSize="14sp"/>
             <TextView
                 android:text=" : "
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
+                android:layout_height="25dp"
                 android:textColor="#000"
                 android:textSize="14sp"/>
             <TextView
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
+                android:layout_height="25dp"
                 android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
+
                 android:text="yuyang.liang"
                 android:textColor="#000"
                 android:textSize="14sp"/>
