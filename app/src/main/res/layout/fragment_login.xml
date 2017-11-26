@@ -64,6 +64,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="5"
                     android:hint="Password/密码"
+                    android:inputType="textPassword"
                     android:textSize="15sp"
                     android:layout_height="wrap_content"
                     />
