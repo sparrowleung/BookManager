@@ -1,8 +1,19 @@
 package com.example.administrator.myapplication.account;
 
+import android.Manifest;
+import android.content.ContentUris;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -17,15 +28,21 @@ import android.widget.Toast;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 
+import java.io.File;
+
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.b.V;
+import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
+import cn.bmob.v3.listener.UploadFileListener;
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 import cn.smssdk.gui.RegisterPage;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by samsung on 2017/11/16.
@@ -35,6 +52,7 @@ public class AccountFragment extends BaseFragment {
 
     private View _rootView;
     private View mCommit;
+    private View mExchange;
 
     private CardView mCardView1;
     private CardView mCardView2;
@@ -54,6 +72,8 @@ public class AccountFragment extends BaseFragment {
     private String _password;
     private String _part;
     private String _teamGroup;
+    private String mImagePath;
+    private Uri mUri;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
@@ -73,6 +93,7 @@ public class AccountFragment extends BaseFragment {
         mCardView3=(CardView) getActivity().findViewById(R.id.account_card3);
         mCardView4=(CardView) getActivity().findViewById(R.id.account_card4);
         mCommit=(View) getActivity().findViewById(R.id.account_commit);
+        mExchange=(View) getActivity().findViewById(R.id.account_changeIamge);
 
         mImageView=(ImageView) getActivity().findViewById(R.id.account_image);
 
@@ -151,5 +172,73 @@ public class AccountFragment extends BaseFragment {
             }
         });
 
+        mExchange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+                }else {
+                    Intent _intent = new Intent("android.intent.action.GET_CONTENT");
+                    _intent.setType("image/*");
+                    startActivityForResult(_intent, 2);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        switch (requestCode){
+            case 2:
+                if(resultCode == RESULT_OK) {
+                    mUri = data.getData();
+                    if (DocumentsContract.isDocumentUri(getContext(), mUri)) {
+                        String docId = DocumentsContract.getDocumentId(mUri);
+                        if ("com.android.providers.media.documents".equals(mUri.getAuthority())) {
+                            String _id = docId.split(":")[1];
+                            String _selection = MediaStore.Images.Media._ID + "=" + _id;
+                            mImagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, _selection);
+                        } else if ("com.android.providers.downloads.documents".equals(mUri.getAuthority())) {
+                            Uri _uri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(docId));
+                            mImagePath = getImagePath(_uri, null);
+                        }
+                    } else if ("content".equalsIgnoreCase(mUri.getScheme())) {
+                        mImagePath = getImagePath(mUri, null);
+                    } else if ("file".equalsIgnoreCase(mUri.getScheme())) {
+                        mImagePath = mUri.getPath();
+                    }
+
+                    if (mImagePath != null) {
+                        Bitmap _bitmap = BitmapFactory.decodeFile(mImagePath);
+                        mImageView.setImageBitmap(_bitmap);
+                    }
+
+                    BmobUser _bUser = BmobUser.getCurrentUser();
+                    BmobFile _file = new BmobFile(_bUser.getUsername()+"'s photo",null,new File(mImagePath).toString());
+                    UserInformation _user = new UserInformation();
+                    _user.setImage(_file);
+                    _user.update(_bUser.getObjectId(),new UpdateListener() {
+                        @Override
+                        public void done(BmobException e) {
+                            if(e == null){
+                                Toast.makeText(getContext(),"更换头像成功",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    break;
+                }
+        }
+    }
+
+    public String getImagePath(Uri uri,String selection){
+        String _path = null;
+        Cursor _cursor = getContext().getContentResolver().query(uri,null,selection,null,null);
+        if(_cursor != null){
+            if(_cursor.moveToFirst()){
+                _path = _cursor.getString(_cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+            _cursor.close();
+        }
+        return _path;
     }
 }

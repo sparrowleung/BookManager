@@ -123,7 +123,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             _newsList.clear();
         }
         BmobQuery<BookInformation> _query=new BmobQuery<>();
-        _query.order("borrowcount");
+        _query.order("-borrowcount");
         _query.findObjects(new FindListener<BookInformation>() {
             @Override
             public void done(List<BookInformation> list, BmobException e) {

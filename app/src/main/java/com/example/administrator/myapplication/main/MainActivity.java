@@ -80,9 +80,9 @@ public class MainActivity extends BaseActivity {
                     case R.id.nav_Account:
                         _intent=new Intent(MainActivity.this,AccountActivity.class);
                         break;
-                    case R.id.nav_History:
-                        _intent=new Intent(MainActivity.this,HistoryActivity.class);
-                        break;
+//                    case R.id.nav_History:
+//                        _intent=new Intent(MainActivity.this,HistoryActivity.class);
+//                        break;
                     case R.id.nav_Notice:
                         _intent=new Intent(MainActivity.this,NewsAndTipsActivity.class);
                         break;
