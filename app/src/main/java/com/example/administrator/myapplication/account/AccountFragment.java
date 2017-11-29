@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,12 +30,15 @@ import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 
 import java.io.File;
+import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.b.V;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.DownloadFileListener;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
@@ -240,5 +244,33 @@ public class AccountFragment extends BaseFragment {
             _cursor.close();
         }
         return _path;
+    }
+
+    public void Bquery(){
+        BmobQuery<UserInformation> _query = new BmobQuery<>();
+        _query.findObjects(new FindListener<UserInformation>() {
+            @Override
+            public void done(List<UserInformation> list, BmobException e) {
+                if(e == null){
+                    Log.d("AccountFragment+","get picture success");
+                    for(UserInformation object : list){
+                        BmobFile _file = object.getImage();
+                        if(_file != null){
+                            _file.download(new DownloadFileListener() {
+                                @Override
+                                public void done(String s, BmobException e) {
+                                    
+                                }
+
+                                @Override
+                                public void onProgress(Integer integer, long l) {
+
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        });
     }
 }
