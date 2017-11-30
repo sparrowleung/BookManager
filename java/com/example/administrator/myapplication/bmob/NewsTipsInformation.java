@@ -1,4 +1,4 @@
-package com.example.administrator.myapplication.newsandtips;
+package com.example.administrator.myapplication.bmob;
 
 import cn.bmob.v3.BmobObject;
 

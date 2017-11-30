@@ -1,4 +1,4 @@
-package com.example.administrator.myapplication.account;
+package com.example.administrator.myapplication.bmob;
 
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
