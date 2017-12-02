@@ -17,10 +17,13 @@ import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.advice.BuyAdviceActivity;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
+import com.example.administrator.myapplication.borrowbook.BookDetailActivity;
 import com.example.administrator.myapplication.category.CategoryActivity;
+import com.example.administrator.myapplication.category.TechnologyFragment;
 import com.example.administrator.myapplication.newbook.NewBookActivity;
 import com.example.administrator.myapplication.newsandtips.NewsAndTipsActivity;
 import com.example.administrator.myapplication.bmob.NewsTipsInformation;
+import com.example.administrator.myapplication.recycleview.Category;
 import com.example.administrator.myapplication.recycleview.News;
 import com.example.administrator.myapplication.recycleview.NewsTipsAdapter;
 import com.example.administrator.myapplication.recycleview.Book;
@@ -172,11 +175,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
        class ViewHolder extends RecyclerView.ViewHolder{
            private ImageView _imageView;
            private TextView _textView;
+           private View _view;
 
           public ViewHolder(View view){
-               super(view);
-               _imageView=(ImageView) view.findViewById(R.id.hotbook_image);
-               _textView=(TextView) view.findViewById(R.id.hotbook_text);
+              super(view);
+              _view = view;
+              _imageView=(ImageView) view.findViewById(R.id.hotbook_image);
+              _textView=(TextView) view.findViewById(R.id.hotbook_text);
            }
        }
 
@@ -187,7 +192,17 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
        @Override
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int ViewType){
            View view=LayoutInflater.from(getContext()).inflate(R.layout.recycler_hotbook,viewGroup,false);
-           ViewHolder viewHolder=new ViewHolder(view);
+           final ViewHolder viewHolder=new ViewHolder(view);
+           viewHolder._view.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   int position = viewHolder.getAdapterPosition();
+                   Book _hot= _list.get(position);
+                   Intent _intent=new Intent(getActivity(), BookDetailActivity.class);
+                   _intent.putExtra("bookName",_hot.getBookName());
+                   startActivity(_intent);
+               }
+           });
            return viewHolder;
        }
 

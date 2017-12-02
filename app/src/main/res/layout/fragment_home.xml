@@ -32,7 +32,7 @@
                 <TextView
                     android:text="新书推荐"
                     android:layout_centerVertical="true"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:gravity="center"
                     android:layout_below="@+id/first_image_new"
                     android:layout_width="match_parent"
@@ -57,7 +57,7 @@
 
                 <TextView
                     android:text="图书详细"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:layout_centerVertical="true"
                     android:layout_below="@+id/first_image_lend"
                     android:gravity="center"
@@ -82,7 +82,7 @@
 
                 <TextView
                     android:text="购买建议"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:layout_centerVertical="true"
                     android:layout_below="@+id/first_image_advice"
                     android:gravity="center"
@@ -111,6 +111,7 @@
                     android:layout_height="wrap_content">
                     <TextView
                         android:text="通知"
+                        android:textColor="#1296db"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:gravity="center_vertical"
@@ -152,6 +153,7 @@
             <TextView
                 android:text="热门书籍"
                 android:textSize="14sp"
+                android:textColor="#1296db"
                 android:textStyle="bold"
                 android:layout_marginLeft="10dp"
                 android:gravity="center_vertical"

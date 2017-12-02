@@ -34,6 +34,7 @@ public class BookDetailFragment extends BaseFragment {
     private TextView mPress;
     private TextView mCategory;
     private TextView mState;
+    private TextView mBorrowper;
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
@@ -54,11 +55,18 @@ public class BookDetailFragment extends BaseFragment {
         mPress = (TextView) getActivity().findViewById(R.id.detail_press);
         mCategory = (TextView) getActivity().findViewById(R.id.detail_category);
         mState = (TextView) getActivity().findViewById(R.id.detail_state);
+        mBorrowper = (TextView) getActivity().findViewById(R.id.detail_borrowper);
 
         BmobQuery<BookInformation> _query = new BmobQuery<>();
-        _query.addWhereEqualTo("name",mBookName);
-        _query.addWhereEqualTo("author",mBookAuthor);
-        _query.addWhereEqualTo("press",mBookPress);
+        if(!mBookName.equals(null)) {
+            _query.addWhereEqualTo("name", mBookName);
+        }
+        if(!mBookName.equals(null)) {
+            _query.addWhereEqualTo("author", mBookAuthor);
+        }
+        if(!mBookName.equals(null)) {
+            _query.addWhereEqualTo("press", mBookPress);
+        }
         _query.findObjects(new FindListener<BookInformation>() {
             @Override
             public void done(List<BookInformation> list, BmobException e) {
@@ -68,6 +76,7 @@ public class BookDetailFragment extends BaseFragment {
                     mAuthor.setText(object.getAuthor());
                     mPress.setText(object.getPress());
                     mCategory.setText(object.getCategory());
+                    mBorrowper.setText(object.getBorrowper());
                     if(object.getState()) {
                         mState.setText("可借阅");
                     }else {

@@ -1,5 +1,6 @@
 package com.example.administrator.myapplication.category;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
+import com.example.administrator.myapplication.borrowbook.BookDetailActivity;
 import com.example.administrator.myapplication.recycleview.Category;
 
 import java.util.ArrayList;
@@ -75,6 +77,7 @@ public class TechnologyFragment extends BaseFragment {
             TextView _author;
             TextView _press;
             TextView _status;
+            View _view;
 
             public ViewHolder(View view){
                 super(view);
@@ -83,6 +86,7 @@ public class TechnologyFragment extends BaseFragment {
                 _author=(TextView)view.findViewById(R.id.category_author);
                 _press=(TextView) view.findViewById(R.id.category_press);
                 _status=(TextView) view.findViewById(R.id.category_status);
+                _view =view;
             }
         }
 
@@ -93,7 +97,19 @@ public class TechnologyFragment extends BaseFragment {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup,int type){
             View view=LayoutInflater.from(getContext()).inflate(R.layout.recycler_category,viewGroup,false);
-            ViewHolder viewHolder=new ViewHolder(view);
+            final ViewHolder viewHolder=new ViewHolder(view);
+            viewHolder._view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = viewHolder.getAdapterPosition();
+                    Category _category=_list.get(position);
+                    Intent _intent=new Intent(getActivity(), BookDetailActivity.class);
+                    _intent.putExtra("bookName",_category.getName());
+                    _intent.putExtra("bookAuthor",_category.getAuthor());
+                    _intent.putExtra("bookPress",_category.getPress());
+                    startActivity(_intent);
+                }
+            });
             return viewHolder;
         }
 
