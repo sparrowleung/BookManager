@@ -75,7 +75,11 @@ public class BookDetailFragment extends BaseFragment {
                     mName.setText(object.getName());
                     mAuthor.setText(object.getAuthor());
                     mPress.setText(object.getPress());
-                    mCategory.setText(object.getCategory());
+                    if(object.getCategory().equals("literature")){
+                        mCategory.setText("文学");
+                    }else {
+                        mCategory.setText("技术");
+                    }
                     mBorrowper.setText(object.getBorrowper());
                     if(object.getState()) {
                         mState.setText("可借阅");
