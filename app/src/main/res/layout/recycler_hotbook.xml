@@ -4,26 +4,28 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginTop="10dp">
+    android:layout_marginBottom="10dp">
+
+    <View
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#33331111"/>
 
     <ImageView
         android:src="@mipmap/ic_launcher"
         android:id="@+id/hotbook_image"
         android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+        android:layout_height="60dp"/>
 
     <TextView
         android:text="1231313"
+        android:textSize="12sp"
         android:id="@+id/hotbook_text"
+        android:ellipsize="end"
         android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="20dp" />
-
-    <View
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#33331111"/>
+        android:layout_height="30dp" />
 
 </LinearLayout>

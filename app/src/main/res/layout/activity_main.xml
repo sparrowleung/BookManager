@@ -24,7 +24,7 @@
                 android:layout_height="?actionBarSize"
                 android:background="#FFFF"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:layout_scrollFlags="snap"
                 >
             </android.support.v7.widget.Toolbar>
 

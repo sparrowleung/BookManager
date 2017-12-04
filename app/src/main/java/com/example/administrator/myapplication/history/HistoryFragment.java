@@ -1,5 +1,7 @@
 package com.example.administrator.myapplication.history;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,10 +12,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
+import com.example.administrator.myapplication.borrowbook.BookDetailActivity;
 import com.example.administrator.myapplication.recycleview.Book;
-import com.example.administrator.myapplication.recycleview.BookAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,5 +69,62 @@ public class HistoryFragment extends BaseFragment {
         mImageView=(ImageView) getActivity().findViewById(R.id.hotbook_image);
         mName=(TextView) getActivity().findViewById(R.id.history_account);
         mBookNumber=(TextView) getActivity().findViewById(R.id.history_lendcount);
+    }
+
+    class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
+
+        private Context context;
+        private List<Book> mbook;
+
+         class ViewHolder extends RecyclerView.ViewHolder{
+            View _view;
+            CardView cardView;
+            ImageView bookView;
+            TextView bookname;
+
+            public ViewHolder(View view){
+                super(view);
+                _view=view;
+                cardView=(CardView) view;
+                bookname=(TextView) view.findViewById(R.id.book_name);
+                bookView=(ImageView) view.findViewById(R.id.book_image);
+            }
+        }
+
+        public BookAdapter(List<Book> bookList){
+            mbook=bookList;
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType){
+            if(context==null){
+                context=viewGroup.getContext();
+            }
+            View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fruit_cardview,viewGroup,false);
+            final ViewHolder holder=new ViewHolder(view);
+            holder._view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int _position = holder.getAdapterPosition();
+                    Book _books = mbook.get(_position);
+                    Intent _intent = new Intent(getActivity(), BookDetailActivity.class);
+                    _intent.putExtra("bookname",_books.getBookName());
+
+                }
+            });
+            return  holder;
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position){
+            Book books=mbook.get(position);
+            holder.bookname.setText(books.getBookName());
+            Glide.with(context).load(books.getBookViewId()).into(holder.bookView);
+        }
+
+        @Override
+        public int getItemCount(){
+            return mbook.size();
+        }
     }
 }

@@ -97,7 +97,7 @@ public class BookDetailActivity extends BaseActivity{
                         @Override
                         public void done(BmobException e) {
                             if (e == null) {
-                                Toast.makeText(BookDetailActivity.this, "借阅成功", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(BookDetailActivity.this, "归还成功", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
