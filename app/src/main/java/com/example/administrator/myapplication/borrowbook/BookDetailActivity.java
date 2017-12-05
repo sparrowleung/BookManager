@@ -7,6 +7,7 @@ import android.preference.DialogPreference;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -20,9 +21,12 @@ import com.example.administrator.myapplication.bmob.BookInformation;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 /**
@@ -36,6 +40,8 @@ public class BookDetailActivity extends BaseActivity{
     private Button mBack;
     private BmobUser mUser;
     private Date mDate;
+    private String mBookObjectId;
+    private String mBorrowper;
 
     @Override
     public void onCreate(Bundle saveInstanceState){
@@ -60,6 +66,16 @@ public class BookDetailActivity extends BaseActivity{
         mDate = new Date(System.currentTimeMillis());
 
         final BookInformation _book = new BookInformation();
+        BmobQuery<BookInformation> _query = new BmobQuery<>();
+        _query.addWhereEqualTo("name",getIntent().getStringExtra("bookName"));
+        _query.addWhereEqualTo("author",getIntent().getStringExtra("bookAuthor"));
+        _query.findObjects(new FindListener<BookInformation>() {
+            @Override
+            public void done(List<BookInformation> list, BmobException e) {
+                mBookObjectId = list.get(0).getObjectId();
+                mBorrowper = list.get(0).getBorrowper();
+            }
+        });
         mBorrow = (Button) findViewById(R.id.detail_borrow);
         mBorrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,18 +83,23 @@ public class BookDetailActivity extends BaseActivity{
                 if(mUser == null){
                     AccountLogin();
                 }else {
-                    _book.setBorrowcount(_book.getBorrowcount() + 1);
-                    _book.setBorrowper(mUser.getUsername());
-                    _book.setState(false);
-                    _book.setBorrowtime(mDate);
-                    _book.update(mUser.getObjectId(), new UpdateListener() {
-                        @Override
-                        public void done(BmobException e) {
-                            if (e == null) {
-                                Toast.makeText(BookDetailActivity.this, "借阅成功", Toast.LENGTH_SHORT).show();
+                    if (mBorrowper.equals(null)) {
+                        _book.setBorrowcount(_book.getBorrowcount() + 1);
+                        _book.setBorrowper(mUser.getUsername());
+                        _book.setState(false);
+                        _book.setBorrowtime(mDate);
+                        _book.update(mBookObjectId, new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+                                if (e == null) {
+                                    Toast.makeText(BookDetailActivity.this, "借阅成功", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                    });
+                        });
+                        finish();
+                    }else {
+                        Toast.makeText(BookDetailActivity.this, "书本已被借阅", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -89,11 +110,11 @@ public class BookDetailActivity extends BaseActivity{
                 if(mUser == null){
                     AccountLogin();
                 }else {
-                    _book.setBorrowper(null);
+                    _book.setBorrowper(" ");
                     _book.setState(true);
-                    _book.setBorrowtime(null);
+                    _book.setBorrowtime(new Date(System.currentTimeMillis()));
                     _book.setBacktime(mDate);
-                    _book.update(mUser.getObjectId(), new UpdateListener() {
+                    _book.update(mBookObjectId, new UpdateListener() {
                         @Override
                         public void done(BmobException e) {
                             if (e == null) {
@@ -101,6 +122,7 @@ public class BookDetailActivity extends BaseActivity{
                             }
                         }
                     });
+                    finish();
                 }
             }
         });

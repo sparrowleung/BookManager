@@ -95,6 +95,7 @@ public class AccountFragment extends BaseFragment {
 
         mImageView=(ImageView) getActivity().findViewById(R.id.account_image);
 
+
         mEditPassword=(EditText) getActivity().findViewById(R.id.account_passwrod);
         mEditNickName=(EditText) getActivity().findViewById(R.id.account_nickname);
         mEditPart=(EditText) getActivity().findViewById(R.id.account_part);
@@ -105,12 +106,27 @@ public class AccountFragment extends BaseFragment {
         BmobUser _user=BmobUser.getCurrentUser();
         mNickName.setText(_user.getUsername());
         mNumbers.setText(_user.getMobilePhoneNumber());
+        BmobQuery<UserInformation> _query = new BmobQuery<>();
+        _query.addWhereEqualTo("username",_user.getUsername());
+        _query.findObjects(new FindListener<UserInformation>() {
+            @Override
+            public void done(List<UserInformation> list, BmobException e) {
+                if (e == null) {
+                    mEditNickName.setHint(list.get(0).getUsername());
+                    mEditPart.setHint(list.get(0).getPart());
+                    mEditTg.setHint(list.get(0).getTeamgroup());
+                }
+            }
+        });
+
+
 
         mCardView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mCardView3.getVisibility() == View.GONE){
                     mCardView3.setVisibility(View.VISIBLE);
+
                 }else {
                     mCardView3.setVisibility(View.GONE);
                 }
@@ -130,7 +146,7 @@ public class AccountFragment extends BaseFragment {
                 _user.setPassword(_password);
                 _user.setPart(_part);
                 _user.setTeamgroup(_teamGroup);
-                _user.update(new UpdateListener() {
+                _user.update(_user.getObjectId(),new UpdateListener() {
                     @Override
                     public void done(BmobException e) {
                         if(e==null){

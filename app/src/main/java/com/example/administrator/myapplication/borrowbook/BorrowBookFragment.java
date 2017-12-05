@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,6 @@ public class BorrowBookFragment extends BaseFragment {
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
         _rootView=layoutInflater.inflate(R.layout.fragment_borrow,container,false);
         return _rootView;
-
     }
 
     public void onActivityCreated(Bundle saveInstanceState){
