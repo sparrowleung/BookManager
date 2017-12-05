@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -146,7 +145,7 @@ public class BorrowBookFragment extends BaseFragment {
             if(context==null){
                 context=viewGroup.getContext();
             }
-            View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fruit_cardview,viewGroup,false);
+            View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_borrowbook,viewGroup,false);
             final ViewHolder holder=new ViewHolder(view);
             holder._view.setOnClickListener(new View.OnClickListener() {
                 @Override

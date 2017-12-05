@@ -100,7 +100,7 @@ public class HistoryFragment extends BaseFragment {
             if(context==null){
                 context=viewGroup.getContext();
             }
-            View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fruit_cardview,viewGroup,false);
+            View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_borrowbook,viewGroup,false);
             final ViewHolder holder=new ViewHolder(view);
             holder._view.setOnClickListener(new View.OnClickListener() {
                 @Override
