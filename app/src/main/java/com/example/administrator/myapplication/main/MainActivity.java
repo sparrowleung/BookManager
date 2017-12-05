@@ -24,7 +24,6 @@ import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.account.AccountActivity;
 import com.example.administrator.myapplication.base.BaseActivity;
 import com.example.administrator.myapplication.borrowbook.BorrowBookFragment;
-import com.example.administrator.myapplication.history.HistoryActivity;
 import com.example.administrator.myapplication.newsandtips.NewsAndTipsActivity;
 
 import java.util.ArrayList;
@@ -105,7 +104,7 @@ public class MainActivity extends BaseActivity {
         mTabLayout.getTabAt(0).setText("主        页");
         mTabLayout.getTabAt(1).setText("已借书籍");
 
-        _heartLayout=_navigationView.inflateHeaderView(R.layout.navi_heater);
+        _heartLayout=_navigationView.inflateHeaderView(R.layout.navigation_heater);
         _heartName=(View) _heartLayout.findViewById(R.id.nav_heart);
         _heaterName=(TextView) _heartLayout.findViewById(R.id.username);
         _unLogin=(View) _heartLayout.findViewById(R.id.nav_unlogin);
