@@ -1,6 +1,7 @@
 package com.example.administrator.myapplication.main;
 
 import android.content.Intent;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -12,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,14 +25,22 @@ import android.widget.Toast;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.account.AccountActivity;
 import com.example.administrator.myapplication.base.BaseActivity;
+import com.example.administrator.myapplication.bmob.UserInformation;
 import com.example.administrator.myapplication.borrowbook.BorrowBookFragment;
 import com.example.administrator.myapplication.newsandtips.NewsAndTipsActivity;
 
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.DownloadFileListener;
+import cn.bmob.v3.listener.FindListener;
 
 
 public class MainActivity extends BaseActivity {
@@ -101,6 +111,7 @@ public class MainActivity extends BaseActivity {
         TabMainViewPager tabMainViewPager=new TabMainViewPager(getSupportFragmentManager(),mFragmentList);
         mViewPager.setAdapter(tabMainViewPager);
         mTabLayout.setupWithViewPager(mViewPager);
+        mTabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.tby));
         mTabLayout.getTabAt(0).setText("主        页");
         mTabLayout.getTabAt(1).setText("已借书籍");
 
@@ -121,6 +132,8 @@ public class MainActivity extends BaseActivity {
             _heartName.setVisibility(View.GONE);
            _unLogin.setVisibility(View.VISIBLE);
         }
+
+        DownloadPicture();
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
@@ -173,6 +186,49 @@ public class MainActivity extends BaseActivity {
             return list.size();
         }
 
+    }
+
+    public void DownloadPicture(){
+        BmobQuery<UserInformation> _query = new BmobQuery<>();
+        BmobUser _user = BmobUser.getCurrentUser();
+        _query.addWhereEqualTo("username",_user.getUsername());
+        _query.findObjects(new FindListener<UserInformation>() {
+            @Override
+            public void done(List<UserInformation> list, BmobException e) {
+                if(e == null) {
+                    for (UserInformation object : list) {
+                        BmobFile _file = object.getImage();
+
+                        if (_file != null) {
+                            String _url = _file.getFileUrl();
+                            Log.d("MainActivity_lyy","File url = "+_url);
+                            final File _save = new File(Environment.getExternalStorageDirectory(),_file.getFilename());
+                            _file.download(_save, new DownloadFileListener() {
+                                @Override
+                                public void done(String s, BmobException e) {
+                                    if (e == null) {
+                                        Toast.makeText(MainActivity.this, "下载完成", Toast.LENGTH_SHORT).show();
+                                        Log.d("MainActivity_lyy", "save File = " + _save);
+                                    } else {
+                                        Log.d("MainActivity_lyy", "error message1 " + e.getMessage() + " errorCode1 = " + e.getErrorCode());
+                                    }
+                                }
+
+                                @Override
+                                public void onProgress(Integer integer, long l) {
+
+                                }
+                            });
+                        } else {
+                            Log.d("MainActivity_lyy", "The file is null");
+                        }
+                    }
+                }
+                else{
+                    Log.d("MainActivity_lyy", "error message " + e.getMessage() + " errorCode = " + e.getErrorCode());
+                }
+            }
+        });
     }
 
 }

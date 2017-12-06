@@ -6,186 +6,199 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/first_content"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <RelativeLayout
-                android:id="@+id/first_newbook"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/first_image_new"
-                    android:src="@drawable/favorites"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp" />
-
-                <TextView
-                    android:text="新书推荐"
-                    android:layout_marginTop="10dp"
-                    android:textStyle="bold"
-                    android:layout_centerVertical="true"
-                    android:textSize="12sp"
-                    android:gravity="center"
-                    android:layout_below="@+id/first_image_new"
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/first_category"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/first_image_lend"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/category" />
-
-
-                <TextView
-                    android:layout_marginTop="10dp"
-                    android:textStyle="bold"
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_below="@+id/first_image_lend"
-                    android:layout_centerVertical="true"
-                    android:gravity="center"
-                    android:text="图书详细"
-                    android:textSize="12sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/first_advice"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/first_image_advice"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/comments" />
-
-
-                <TextView
-                    android:text="购买建议"
-                    android:layout_marginTop="10dp"
-                    android:textStyle="bold"
-                    android:textSize="12sp"
-                    android:layout_centerVertical="true"
-                    android:layout_below="@+id/first_image_advice"
-                    android:gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp" />
-            </RelativeLayout>
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/first_notice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
-
+        android:layout_height="match_parent">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-
-              <RelativeLayout
-                  android:id="@+id/table_title"
-                  android:layout_width="match_parent"
-                  android:layout_height="40dp"
-                  android:paddingStart="24dp"
-                  android:paddingEnd="24dp">
-                    <TextView
-                        android:text="通知"
-                        android:textColor="#1296db"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:gravity="center_vertical"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                    <ImageView
-                        android:src="@drawable/more"
-                        android:layout_gravity="center_vertical"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        />
-              </RelativeLayout>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycle_newslist"
+            <android.support.v7.widget.CardView
+                android:id="@+id/first_content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="150dp"
+                >
 
-            </android.support.v7.widget.RecyclerView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <RelativeLayout
+                        android:id="@+id/first_newbook"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/first_image_new"
+                            android:src="@drawable/favorites"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp" />
+
+                        <TextView
+                            android:text="新书推荐"
+                            android:layout_marginTop="10dp"
+                            android:textStyle="bold"
+                            android:layout_centerVertical="true"
+                            android:textSize="12sp"
+                            android:gravity="center"
+                            android:layout_below="@+id/first_image_new"
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/first_category"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/first_image_lend"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/category" />
 
 
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
+                        <TextView
+                            android:layout_marginTop="10dp"
+                            android:textStyle="bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp"
+                            android:layout_below="@+id/first_image_lend"
+                            android:layout_centerVertical="true"
+                            android:gravity="center"
+                            android:text="图书详细"
+                            android:textSize="12sp" />
+                    </RelativeLayout>
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/first_hotbook"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+                    <RelativeLayout
+                        android:id="@+id/first_advice"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp">
-                <TextView
-                    android:text="热门书籍"
-                    android:textColor="#1296db"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:gravity="center_vertical"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </RelativeLayout>
+                        <ImageView
+                            android:id="@+id/first_image_advice"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/comments" />
 
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycle_hotlist"
+                        <TextView
+                            android:text="购买建议"
+                            android:layout_marginTop="10dp"
+                            android:textStyle="bold"
+                            android:textSize="12sp"
+                            android:layout_centerVertical="true"
+                            android:layout_below="@+id/first_image_advice"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/first_notice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                >
-            </android.support.v7.widget.RecyclerView>
+                android:layout_marginTop="20dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <RelativeLayout
+                        android:id="@+id/table_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="24dp">
+                        <TextView
+                            android:text="通知"
+                            android:textColor="@color/tby"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:gravity="center_vertical"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <ImageView
+                            android:src="@drawable/more"
+                            android:layout_gravity="center_vertical"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            />
+                    </RelativeLayout>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycle_newslist"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    </android.support.v7.widget.RecyclerView>
+
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/first_hotbook"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="24dp">
+                        <TextView
+                            android:text="热门书籍"
+                            android:textColor="@color/tby"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:gravity="center_vertical"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </RelativeLayout>
+
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycle_hotlist"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        >
+                    </android.support.v7.widget.RecyclerView>
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+
         </LinearLayout>
+    </ScrollView>
 
 
-    </android.support.v7.widget.CardView>
+
 
 </LinearLayout>
