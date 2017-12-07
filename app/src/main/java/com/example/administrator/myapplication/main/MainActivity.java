@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.account.AccountActivity;
 import com.example.administrator.myapplication.base.BaseActivity;
@@ -57,6 +58,7 @@ public class MainActivity extends BaseActivity {
 
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
+    private String _url;
 
     private List<Fragment> mFragmentList;
     private HomeFragment mFirstPageFragment;
@@ -133,7 +135,6 @@ public class MainActivity extends BaseActivity {
            _unLogin.setVisibility(View.VISIBLE);
         }
 
-        DownloadPicture();
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
@@ -188,47 +189,10 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    public void DownloadPicture(){
-        BmobQuery<UserInformation> _query = new BmobQuery<>();
-        BmobUser _user = BmobUser.getCurrentUser();
-        _query.addWhereEqualTo("username",_user.getUsername());
-        _query.findObjects(new FindListener<UserInformation>() {
-            @Override
-            public void done(List<UserInformation> list, BmobException e) {
-                if(e == null) {
-                    for (UserInformation object : list) {
-                        BmobFile _file = object.getImage();
+    public interface ImageDownloadCallBack{
+        void onDownloadSuccess(File file);
 
-                        if (_file != null) {
-                            String _url = _file.getFileUrl();
-                            Log.d("MainActivity_lyy","File url = "+_url);
-                            final File _save = new File(Environment.getExternalStorageDirectory(),_file.getFilename());
-                            _file.download(_save, new DownloadFileListener() {
-                                @Override
-                                public void done(String s, BmobException e) {
-                                    if (e == null) {
-                                        Toast.makeText(MainActivity.this, "下载完成", Toast.LENGTH_SHORT).show();
-                                        Log.d("MainActivity_lyy", "save File = " + _save);
-                                    } else {
-                                        Log.d("MainActivity_lyy", "error message1 " + e.getMessage() + " errorCode1 = " + e.getErrorCode());
-                                    }
-                                }
-
-                                @Override
-                                public void onProgress(Integer integer, long l) {
-
-                                }
-                            });
-                        } else {
-                            Log.d("MainActivity_lyy", "The file is null");
-                        }
-                    }
-                }
-                else{
-                    Log.d("MainActivity_lyy", "error message " + e.getMessage() + " errorCode = " + e.getErrorCode());
-                }
-            }
-        });
+        void onDownloadFFailed();
     }
 
 }
