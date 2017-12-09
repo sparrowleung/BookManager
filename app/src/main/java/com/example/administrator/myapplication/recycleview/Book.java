@@ -1,5 +1,7 @@
 package com.example.administrator.myapplication.recycleview;
 
+import cn.bmob.v3.datatype.BmobFile;
+
 /**
  * Created by 37289 on 2017/11/11.
  */
@@ -7,9 +9,9 @@ package com.example.administrator.myapplication.recycleview;
 public class Book {
 
     String bookName;
-    int bookViewId;
+    BmobFile bookViewId;
 
-    public Book(String bookName, int bookViewId){
+    public Book(String bookName, BmobFile bookViewId){
         this.bookName=bookName;
         this.bookViewId=bookViewId;
     }
@@ -18,7 +20,7 @@ public class Book {
         return bookName;
     }
 
-    public int getBookViewId(){
+    public BmobFile getBookViewId(){
         return bookViewId;
     }
 

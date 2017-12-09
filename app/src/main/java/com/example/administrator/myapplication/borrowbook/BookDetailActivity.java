@@ -74,6 +74,7 @@ public class BookDetailActivity extends BaseActivity{
             public void done(List<BookInformation> list, BmobException e) {
                 mBookObjectId = list.get(0).getObjectId();
                 mBorrowper = list.get(0).getBorrowper();
+                Log.d("BookDetailActivity_lyy","borrowper = "+mBorrowper+" borrowId = "+mBookObjectId);
             }
         });
         mBorrow = (Button) findViewById(R.id.detail_borrow);
@@ -83,7 +84,7 @@ public class BookDetailActivity extends BaseActivity{
                 if(mUser == null){
                     AccountLogin();
                 }else {
-                    if (mBorrowper.equals(null)) {
+                    if (mBorrowper.equals("")) {
                         _book.setBorrowcount(_book.getBorrowcount() + 1);
                         _book.setBorrowper(mUser.getUsername());
                         _book.setState(false);
@@ -96,6 +97,7 @@ public class BookDetailActivity extends BaseActivity{
                                 }
                             }
                         });
+                        setResult(RESULT_OK);
                         finish();
                     }else {
                         Toast.makeText(BookDetailActivity.this, "书本已被借阅", Toast.LENGTH_SHORT).show();
@@ -110,7 +112,7 @@ public class BookDetailActivity extends BaseActivity{
                 if(mUser == null){
                     AccountLogin();
                 }else {
-                    _book.setBorrowper(" ");
+                    _book.setBorrowper("");
                     _book.setState(true);
                     _book.setBorrowtime(new Date(System.currentTimeMillis()));
                     _book.setBacktime(mDate);
@@ -122,6 +124,7 @@ public class BookDetailActivity extends BaseActivity{
                             }
                         }
                     });
+                    setResult(RESULT_OK);
                     finish();
                 }
             }

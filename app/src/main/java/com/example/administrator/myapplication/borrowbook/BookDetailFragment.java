@@ -5,8 +5,10 @@ import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
@@ -35,6 +37,7 @@ public class BookDetailFragment extends BaseFragment {
     private TextView mCategory;
     private TextView mState;
     private TextView mBorrowper;
+    private ImageView mImageView;
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
@@ -56,6 +59,7 @@ public class BookDetailFragment extends BaseFragment {
         mCategory = (TextView) getActivity().findViewById(R.id.detail_category);
         mState = (TextView) getActivity().findViewById(R.id.detail_state);
         mBorrowper = (TextView) getActivity().findViewById(R.id.detail_borrowper);
+        mImageView = (ImageView) getActivity().findViewById(R.id.detail_image);
 
         BmobQuery<BookInformation> _query = new BmobQuery<>();
         if(!mBookName.equals(null)) {
@@ -86,6 +90,7 @@ public class BookDetailFragment extends BaseFragment {
                     }else {
                         mState.setText("已外借");
                     }
+                    Glide.with(getContext()).load(object.getPhoto().getFileUrl()).into(mImageView);
                 }
             }
         });

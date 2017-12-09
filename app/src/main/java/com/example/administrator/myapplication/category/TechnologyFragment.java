@@ -24,6 +24,8 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * Created by samsung on 2017/11/17.
  */
@@ -34,7 +36,7 @@ public class TechnologyFragment extends BaseFragment {
 
     private RecyclerView _recyclerView;
     private List<Category> mList;
-    private CategoryRecyclerView mCategoryRecyclerView;
+    private CategoryAdapter mCategoryAdapter;
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
@@ -49,25 +51,54 @@ public class TechnologyFragment extends BaseFragment {
         _recyclerView=(RecyclerView) getActivity().findViewById(R.id.techno_recylcerview);
         _recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mList=new ArrayList<>();
-        BmobQuery<BookInformation> bmobQuery=new BmobQuery<BookInformation>();
+        Bquery();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        switch (requestCode){
+            case 1:
+                if(resultCode == RESULT_OK){
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(200);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                    Bquery();
+                    mCategoryAdapter.notifyDataSetChanged();
+                }
+                break;
+        }
+    }
+
+    public void Bquery(){
+        if(mList.size() > 0){
+            mList.clear();
+        }
+        BmobQuery<BookInformation> bmobQuery=new BmobQuery<>();
         bmobQuery.addWhereEqualTo("category","technology");
         bmobQuery.setLimit(50);
         bmobQuery.findObjects(new FindListener<BookInformation>() {
             @Override
             public void done(List<BookInformation> object, BmobException e) {
                 if(e==null){
-                  for(BookInformation bookInformation : object){
-                      Category a1=new Category(R.drawable.book,bookInformation.getName(),bookInformation.getAuthor(),bookInformation.getPress(),bookInformation.getState());
-                      mList.add(a1);
-                  }
-                    mCategoryRecyclerView=new CategoryRecyclerView(mList);
-                    _recyclerView.setAdapter(mCategoryRecyclerView);
+                    for(BookInformation bookInformation : object){
+                        Category a1=new Category(bookInformation.getPhoto(),bookInformation.getName(),bookInformation.getAuthor(),bookInformation.getPress(),bookInformation.getState());
+                        mList.add(a1);
+                    }
+                    mCategoryAdapter=new CategoryAdapter(mList);
+                    _recyclerView.setAdapter(mCategoryAdapter);
                 }
             }
         });
     }
 
-    class CategoryRecyclerView extends RecyclerView.Adapter<CategoryRecyclerView.ViewHolder>{
+    class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder>{
 
         private List<Category> _list;
 
@@ -90,7 +121,7 @@ public class TechnologyFragment extends BaseFragment {
             }
         }
 
-        public CategoryRecyclerView(List<Category> Categorylist){
+        public CategoryAdapter(List<Category> Categorylist){
             _list=Categorylist;
         }
 
@@ -107,7 +138,7 @@ public class TechnologyFragment extends BaseFragment {
                     _intent.putExtra("bookName",_category.getName());
                     _intent.putExtra("bookAuthor",_category.getAuthor());
                     _intent.putExtra("bookPress",_category.getPress());
-                    startActivity(_intent);
+                    startActivityForResult(_intent,1);
                 }
             });
             return viewHolder;
@@ -120,11 +151,11 @@ public class TechnologyFragment extends BaseFragment {
             viewHolder._author.setText(_category.getAuthor());
             viewHolder._press.setText(_category.getPress());
             if(_category.getStatus()) {
-                viewHolder._status.setText("可      借");
+                viewHolder._status.setText("可    借");
             }else {
                 viewHolder._status.setText("已借出");
             }
-            Glide.with(getContext()).load(_category.getImageId()).into(viewHolder._image);
+            Glide.with(getContext()).load(_category.getImageId().getFileUrl()).into(viewHolder._image);
         }
 
         @Override

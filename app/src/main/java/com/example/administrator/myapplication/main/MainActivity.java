@@ -58,7 +58,6 @@ public class MainActivity extends BaseActivity {
 
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
-    private String _url;
 
     private List<Fragment> mFragmentList;
     private HomeFragment mFirstPageFragment;
@@ -130,10 +129,12 @@ public class MainActivity extends BaseActivity {
                 _heartName.setVisibility(View.VISIBLE);
                 _heaterName.setText(_user.getUsername());
             }
+            DownloadPicture();
         }else {
             _heartName.setVisibility(View.GONE);
            _unLogin.setVisibility(View.VISIBLE);
         }
+
 
     }
 
@@ -189,10 +190,28 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    public interface ImageDownloadCallBack{
-        void onDownloadSuccess(File file);
+    public void DownloadPicture(){
+        BmobQuery<UserInformation> _query = new BmobQuery<>();
+        BmobUser _user = BmobUser.getCurrentUser();
+        _query.addWhereEqualTo("username",_user.getUsername());
+        _query.findObjects(new FindListener<UserInformation>() {
+            @Override
+            public void done(List<UserInformation> list, BmobException e) {
+                if(e == null) {
+                    for (UserInformation object : list) {
+                        BmobFile _file = object.getImage();
 
-        void onDownloadFFailed();
+                        if (_file != null) {
+                            String _url = _file.getFileUrl();
+                            Glide.with(getApplicationContext()).load(_url).into(_hearterImage);
+                        }
+                    }
+                }
+                else{
+                    Log.d("MainActivity_lyy", "error message " + e.getMessage() + " errorCode = " + e.getErrorCode());
+                }
+            }
+        });
     }
 
 }

@@ -23,6 +23,7 @@
             android:layout_height="wrap_content"
            >
             <ImageView
+                android:layout_marginTop="20dp"
                 android:id="@+id/recycler_newbook_image"
                 android:src="@drawable/book"
                 android:layout_gravity="center"

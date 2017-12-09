@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.bmob.UserInformation;
 import com.example.administrator.myapplication.base.BaseFragment;
@@ -39,6 +40,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.DownloadFileListener;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
+import cn.bmob.v3.listener.UploadFileListener;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -71,6 +73,8 @@ public class AccountFragment extends BaseFragment {
     private String _part;
     private String _teamGroup;
     private String mImagePath;
+
+    private BmobUser mUser;
     private Uri mUri;
 
     @Override
@@ -95,7 +99,6 @@ public class AccountFragment extends BaseFragment {
 
         mImageView=(ImageView) getActivity().findViewById(R.id.account_image);
 
-
         mEditPassword=(EditText) getActivity().findViewById(R.id.account_passwrod);
         mEditNickName=(EditText) getActivity().findViewById(R.id.account_nickname);
         mEditPart=(EditText) getActivity().findViewById(R.id.account_part);
@@ -103,11 +106,11 @@ public class AccountFragment extends BaseFragment {
         mNickName=(TextView) getActivity().findViewById(R.id.account_account);
         mNumbers=(TextView) getActivity().findViewById(R.id.account_number);
 
-        BmobUser _user=BmobUser.getCurrentUser();
-        mNickName.setText(_user.getUsername());
-        mNumbers.setText(_user.getMobilePhoneNumber());
+        mUser=BmobUser.getCurrentUser();
+        mNickName.setText(mUser.getUsername());
+        mNumbers.setText(mUser.getMobilePhoneNumber());
         BmobQuery<UserInformation> _query = new BmobQuery<>();
-        _query.addWhereEqualTo("username",_user.getUsername());
+        _query.addWhereEqualTo("username",mUser.getUsername());
         _query.findObjects(new FindListener<UserInformation>() {
             @Override
             public void done(List<UserInformation> list, BmobException e) {
@@ -115,6 +118,7 @@ public class AccountFragment extends BaseFragment {
                     mEditNickName.setHint(list.get(0).getUsername());
                     mEditPart.setHint(list.get(0).getPart());
                     mEditTg.setHint(list.get(0).getTeamgroup());
+                    Glide.with(getContext()).load(list.get(0).getImage().getFileUrl()).into(mImageView);
                 }
             }
         });
@@ -227,20 +231,36 @@ public class AccountFragment extends BaseFragment {
                         mImageView.setImageBitmap(_bitmap);
                     }
 
-                    BmobUser _bUser = BmobUser.getCurrentUser();
-                    BmobFile _file = new BmobFile(_bUser.getUsername()+"'s photo",null,new File(mImagePath).toString());
-                    UserInformation _user = new UserInformation();
-                    _user.setImage(_file);
-                    _user.update(_bUser.getObjectId(),new UpdateListener() {
+
+                    File file = new File(mImagePath);
+                    final BmobFile _file = new BmobFile(file);
+                    _file.uploadblock(new UploadFileListener() {
                         @Override
                         public void done(BmobException e) {
                             if(e == null){
                                 Toast.makeText(getContext(),"更换头像成功",Toast.LENGTH_SHORT).show();
+                                 UserInformation _user = new UserInformation();
+                                _user.setImage(_file);
+                                _user.update(mUser.getObjectId(),new UpdateListener() {
+                                    @Override
+                                    public void done(BmobException e) {
+                                        if(e == null){
+                                            Toast.makeText(getContext(),"更换头像成功",Toast.LENGTH_SHORT).show();
+                                            Intent _intent = getContext().getPackageManager()
+                                                    .getLaunchIntentForPackage(getContext().getPackageName());
+                                            _intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(_intent);
+                                        }else {
+                                            Log.d("AccountFragment+","errorMessage = "+e.getMessage()+" errorCode = "+e.getErrorCode());
+                                        }
+                                    }
+                                });
+                            }else {
+                                Log.d("AccountFragment+","errorMessage = "+e.getMessage()+" errorCode = "+e.getErrorCode());
                             }
                         }
                     });
-                    break;
-                }
+                } break;
         }
     }
 
@@ -256,31 +276,4 @@ public class AccountFragment extends BaseFragment {
         return _path;
     }
 
-    public void Bquery(){
-        BmobQuery<UserInformation> _query = new BmobQuery<>();
-        _query.findObjects(new FindListener<UserInformation>() {
-            @Override
-            public void done(List<UserInformation> list, BmobException e) {
-                if(e == null){
-                    Log.d("AccountFragment+","get picture success");
-                    for(UserInformation object : list){
-                        BmobFile _file = object.getImage();
-                        if(_file != null){
-                            _file.download(new DownloadFileListener() {
-                                @Override
-                                public void done(String s, BmobException e) {
-                                    
-                                }
-
-                                @Override
-                                public void onProgress(Integer integer, long l) {
-
-                                }
-                            });
-                        }
-                    }
-                }
-            }
-        });
-    }
 }

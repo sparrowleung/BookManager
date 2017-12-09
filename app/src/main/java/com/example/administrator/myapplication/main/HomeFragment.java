@@ -132,12 +132,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             public void done(List<BookInformation> list, BmobException e) {
                 if(list.size() >= 6) {
                     for (int i = 0; i < 6; i++) {
-                        Book _book = new Book(list.get(i).getName(), R.drawable.account);
+                        Book _book = new Book(list.get(i).getName(),list.get(i).getPhoto());
                         _bookList.add(_book);
                     }
                 }else {
                     for(BookInformation object : list){
-                        Book _book = new Book(object.getName(), R.drawable.account);
+                        Book _book = new Book(object.getName(), object.getPhoto());
                         _bookList.add(_book);
                     }
                 }
@@ -210,7 +210,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         public void onBindViewHolder(ViewHolder viewHolder,int position){
             Book mBook=_list.get(position);
             viewHolder._textView.setText(mBook.getBookName());
-            Glide.with(getContext()).load(mBook.getBookViewId()).into(viewHolder._imageView);
+            Glide.with(getContext()).load(mBook.getBookViewId().getFileUrl()).into(viewHolder._imageView);
        }
 
        @Override

@@ -1,5 +1,6 @@
 package com.example.administrator.myapplication.newbook;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
+import com.example.administrator.myapplication.borrowbook.BookDetailActivity;
 import com.example.administrator.myapplication.recycleview.Book;
 
 import java.util.ArrayList;
@@ -55,7 +57,7 @@ public class NewBookFragment extends BaseFragment{
                 if(e == null){
                     for(int i=0;i<10;i++) {
                         BookInformation object=list.get(i);
-                        Book _book = new Book(object.getName(), R.drawable.account);
+                        Book _book = new Book(object.getName(), object.getPhoto());
                         _list.add(_book);
                     }
                 }
@@ -72,12 +74,14 @@ public class NewBookFragment extends BaseFragment{
         private List<Book> mList;
 
         class ViewHolder extends RecyclerView.ViewHolder{
+            View _view;
             ImageView _imageView;
             TextView _textView;
             CardView _cardView;
 
             public ViewHolder(View view){
                 super(view);
+                _view = view;
                 _imageView=(ImageView) view.findViewById(R.id.recycler_newbook_image);
                 _textView=(TextView) view.findViewById(R.id.recycler_newbook_text);
                 _cardView=(CardView) view.findViewById(R.id.recycler_newbook_cardview);
@@ -91,7 +95,17 @@ public class NewBookFragment extends BaseFragment{
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup,int type){
             View _view=LayoutInflater.from(getContext()).inflate(R.layout.recycler_newbook,viewGroup,false);
-            ViewHolder _viewHolder=new ViewHolder(_view);
+            final ViewHolder _viewHolder=new ViewHolder(_view);
+            _viewHolder._view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int _position = _viewHolder.getAdapterPosition();
+                    Book _books = mList.get(_position);
+                    Intent _intent = new Intent(getActivity(), BookDetailActivity.class);
+                    _intent.putExtra("bookName",_books.getBookName());
+                    startActivity(_intent);
+                }
+            });
             return _viewHolder;
         }
 
@@ -100,7 +114,7 @@ public class NewBookFragment extends BaseFragment{
             int heights=(int) (300 + Math.random() * 300);
             Book _book=mList.get(position);
             viewHolder._textView.setText(_book.getBookName());
-            Glide.with(getContext()).load(_book.getBookViewId()).into(viewHolder._imageView);
+            Glide.with(getContext()).load(_book.getBookViewId().getFileUrl()).into(viewHolder._imageView);
             ViewGroup.LayoutParams _layoutParams=viewHolder._imageView.getLayoutParams();
             _layoutParams.height=heights;
             viewHolder._imageView.setLayoutParams(_layoutParams);

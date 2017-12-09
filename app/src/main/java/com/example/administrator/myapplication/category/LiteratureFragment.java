@@ -26,6 +26,8 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * Created by samsung on 2017/11/17.
  */
@@ -51,7 +53,11 @@ public class LiteratureFragment extends BaseFragment {
         _recyclerView=(RecyclerView) getActivity().findViewById(R.id.litera_recylcerview);
         _recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mList=new ArrayList<>();
-        BmobQuery<BookInformation> bmobQuery=new BmobQuery<BookInformation>();
+        Bquery();
+    }
+
+    public void Bquery(){
+        BmobQuery<BookInformation> bmobQuery=new BmobQuery<>();
         bmobQuery.addWhereEqualTo("category","literature");
         bmobQuery.setLimit(50);
         bmobQuery.findObjects(new FindListener<BookInformation>() {
@@ -59,7 +65,7 @@ public class LiteratureFragment extends BaseFragment {
             public void done(List<BookInformation> object, BmobException e) {
                 if(e==null){
                     for(BookInformation bookInformation : object){
-                        Category a1=new Category(R.drawable.book,bookInformation.getName(),bookInformation.getAuthor(),bookInformation.getPress(),bookInformation.getState());
+                        Category a1=new Category(bookInformation.getPhoto(),bookInformation.getName(),bookInformation.getAuthor(),bookInformation.getPress(),bookInformation.getState());
                         mList.add(a1);
                     }
                     mCategoryRecyclerView=new CategoryRecyclerView(mList);
@@ -67,6 +73,28 @@ public class LiteratureFragment extends BaseFragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        switch (requestCode){
+            case 1:
+                if(resultCode == RESULT_OK){
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(200);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                            Bquery();
+                            mCategoryRecyclerView.notifyDataSetChanged();
+                        }
+                    }).start();
+                }
+                break;
+        }
     }
 
     class CategoryRecyclerView extends RecyclerView.Adapter<CategoryRecyclerView.ViewHolder>{
@@ -109,13 +137,11 @@ public class LiteratureFragment extends BaseFragment {
                     _intent.putExtra("bookName",_category.getName());
                     _intent.putExtra("bookAuthor",_category.getAuthor());
                     _intent.putExtra("bookPress",_category.getPress());
-                    startActivity(_intent);
+                    startActivityForResult(_intent,1);
                 }
             });
             return viewHolder;
         }
-
-
 
         @Override
         public void onBindViewHolder(ViewHolder viewHolder, int position){
@@ -124,11 +150,11 @@ public class LiteratureFragment extends BaseFragment {
             viewHolder._author.setText(_category.getAuthor());
             viewHolder._press.setText(_category.getPress());
             if(_category.getStatus()) {
-                viewHolder._status.setText("可      借");
+                viewHolder._status.setText("可    借");
             }else {
                 viewHolder._status.setText("已借出");
             }
-            Glide.with(getContext()).load(_category.getImageId()).into(viewHolder._image);
+            Glide.with(getContext()).load(_category.getImageId().getFileUrl()).into(viewHolder._image);
         }
 
         @Override

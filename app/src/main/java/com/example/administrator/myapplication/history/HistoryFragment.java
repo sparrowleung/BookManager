@@ -53,14 +53,6 @@ public class HistoryFragment extends BaseFragment {
         mRecyclerView=(RecyclerView) getActivity().findViewById(R.id.recyclerview_history);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mList=new ArrayList<>();
-        for(int i=0;i<6;i++){
-            Book b1=new Book("a",R.mipmap.ic_launcher);
-            mList.add(b1);
-            Book b2=new Book("b",R.mipmap.ic_launcher);
-            mList.add(b2);
-            Book b3=new Book("c",R.mipmap.ic_launcher);
-            mList.add(b3);
-        }
         mAdapter=new BookAdapter(mList);
         mRecyclerView.setAdapter(mAdapter);
 

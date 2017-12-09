@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,13 +18,16 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
+import com.example.administrator.myapplication.bmob.UserInformation;
 import com.example.administrator.myapplication.recycleview.Book;
+import com.example.administrator.myapplication.recycleview.Category;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
@@ -35,14 +40,15 @@ public class BorrowBookFragment extends BaseFragment {
     private View _rootView;
     private CardView mContent;
     private CardView mBookDetail;
-    private View mDetail;
+    private Button mDetail;
     private RecyclerView mRecyclerView;
 
     private BookAdapter _bookAdapter;
-    private List<Book> _list;
+    private List<Category> _list;
 
     private TextView mBookCount;
     private TextView mAccountName;
+    private ImageView mAccountImage;
     private BmobUser _user;
 
     @Override
@@ -53,20 +59,23 @@ public class BorrowBookFragment extends BaseFragment {
 
     public void onActivityCreated(Bundle saveInstanceState){
         super.onActivityCreated(saveInstanceState);
-        mContent=(CardView) getActivity().findViewById(R.id.borrow_card1);
-        mBookDetail=(CardView) getActivity().findViewById(R.id.borrow_card2);
-        mBookCount=(TextView) getActivity().findViewById(R.id.borrow_lendcount);
-        mDetail=(View) getActivity().findViewById(R.id.borrow_detail);
+
+        mContent = (CardView) getActivity().findViewById(R.id.borrow_card1);
+        mBookDetail = (CardView) getActivity().findViewById(R.id.borrow_card2);
+        mBookCount = (TextView) getActivity().findViewById(R.id.borrow_lendcount);
+        mDetail = (Button) getActivity().findViewById(R.id.borrow_detail);
+        mAccountImage = (ImageView) getActivity().findViewById(R.id.borrow_image);
+        _user=BmobUser.getCurrentUser();
         mDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mBookDetail.getVisibility() == View.VISIBLE){
                     mBookDetail.setVisibility(View.GONE);
                 }else {
-                    if (_list.size() > 0) {
-                        mBookDetail.setVisibility(View.VISIBLE);
+                    if (_user != null) {
                         Bquery();
                         _bookAdapter.notifyDataSetChanged();
+                        mBookDetail.setVisibility(View.VISIBLE);
                     }
                 }
 
@@ -78,11 +87,12 @@ public class BorrowBookFragment extends BaseFragment {
         _list=new ArrayList<>();
 
         mAccountName=(TextView) getActivity().findViewById(R.id.borrow_account);
-        _user=BmobUser.getCurrentUser();
+
         if(_user != null){
             if(_user.getUsername() != null){
                 mAccountName.setText(_user.getUsername());
                 Bquery();
+                DownloadImage();
             }
         }else {
             mAccountName.setText("未登录");
@@ -96,7 +106,7 @@ public class BorrowBookFragment extends BaseFragment {
         if(_list!=null) {
             _list.clear();
         }
-        BmobQuery<BookInformation> bmobQuery=new BmobQuery<BookInformation>();
+        BmobQuery<BookInformation> bmobQuery=new BmobQuery<>();
         bmobQuery.addWhereEqualTo("borrowper",_user.getUsername());
         bmobQuery.setLimit(50);
         bmobQuery.findObjects(new FindListener<BookInformation>() {
@@ -105,7 +115,7 @@ public class BorrowBookFragment extends BaseFragment {
                 if(e==null){
 
                     for(BookInformation bookInformation : object){
-                        Book a1=new Book(bookInformation.getName(),R.drawable.book);
+                        Category a1=new Category(bookInformation.getPhoto(),bookInformation.getName(),bookInformation.getAuthor(),bookInformation.getPress(),bookInformation.getState());
                         _list.add(a1);
                     }
                     mBookCount.setText(Integer.toString(object.size()));
@@ -116,16 +126,33 @@ public class BorrowBookFragment extends BaseFragment {
         });
     }
 
+    public void DownloadImage(){
+        BmobQuery<UserInformation> _query = new BmobQuery<>();
+        _query.addWhereEqualTo("username",_user.getUsername());
+        _query.findObjects(new FindListener<UserInformation>() {
+            @Override
+            public void done(List<UserInformation> list, BmobException e) {
+                if(e == null) {
+                    Glide.with(getContext()).load(list.get(0).getImage().getFileUrl()).into(mAccountImage);
+                }
+                else{
+                    Log.d("BorrowBookFragment_lyy", "error message " + e.getMessage() + " errorCode = " + e.getErrorCode());
+                }
+            }
+        });
+    }
+
     class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
         private Context context;
-        private List<Book> mbook;
+        private List<Category> mbook;
 
          class ViewHolder extends RecyclerView.ViewHolder{
             View _view;
             CardView cardView;
             ImageView bookView;
             TextView bookname;
+            TextView bookauthor;
 
             public ViewHolder(View view){
                 super(view);
@@ -133,10 +160,11 @@ public class BorrowBookFragment extends BaseFragment {
                 cardView=(CardView) view;
                 bookname=(TextView) view.findViewById(R.id.book_name);
                 bookView=(ImageView) view.findViewById(R.id.book_image);
+                bookauthor=(TextView) view.findViewById(R.id.book_author);
             }
         }
 
-        public BookAdapter(List<Book> bookList){
+        public BookAdapter(List<Category> bookList){
             mbook=bookList;
         }
 
@@ -151,9 +179,9 @@ public class BorrowBookFragment extends BaseFragment {
                 @Override
                 public void onClick(View v) {
                     int _position = holder.getAdapterPosition();
-                    Book _books = mbook.get(_position);
+                    Category _category = mbook.get(_position);
                     Intent _intent = new Intent(getActivity(), BookDetailActivity.class);
-                    _intent.putExtra("bookName",_books.getBookName());
+                    _intent.putExtra("bookName",_category.getName());
                     startActivity(_intent);
                 }
             });
@@ -162,9 +190,10 @@ public class BorrowBookFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position){
-            Book books=mbook.get(position);
-            holder.bookname.setText(books.getBookName());
-            Glide.with(context).load(books.getBookViewId()).into(holder.bookView);
+            Category _category=mbook.get(position);
+            holder.bookname.setText(_category.getName());
+            holder.bookauthor.setText(_category.getAuthor());
+            Glide.with(context).load(_category.getImageId().getFileUrl()).into(holder.bookView);
         }
 
         @Override

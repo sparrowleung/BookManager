@@ -6,17 +6,21 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.AdviceInformation;
+import com.example.administrator.myapplication.bmob.UserInformation;
 import com.example.administrator.myapplication.recycleview.Advice;
 
 import java.util.ArrayList;
@@ -209,6 +213,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
             private TextView mPress;
             private TextView mAdvicer;
             private TextView mPrice;
+            private ImageView mImage;
 
             public ViewHolder(View view){
                 super(view);
@@ -217,6 +222,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
                 mPress=(TextView) view.findViewById(R.id.adviceRe_press);
                 mAdvicer=(TextView) view.findViewById(R.id.adviceRe_advicer);
                 mPrice=(TextView) view.findViewById(R.id.adviceRe_price);
+                mImage = (ImageView) view.findViewById(R.id.adviceRe_image);
             }
         }
 
@@ -232,13 +238,26 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder viewHolder,int position){
+        public void onBindViewHolder(final ViewHolder viewHolder,int position){
             Advice _advice=_list.get(position);
             viewHolder.mName.setText(_advice.getName());
             viewHolder.mAuthor.setText(_advice.getAuthor());
             viewHolder.mPress.setText(_advice.getAuthor());
             viewHolder.mAdvicer.setText(_advice.getAdvicer());
             viewHolder.mPrice.setText(_advice.getPrice());
+            BmobQuery<UserInformation> _user = new BmobQuery<>();
+            _user.addWhereEqualTo("username",_advice.getAdvicer());
+            _user.findObjects(new FindListener<UserInformation>() {
+                @Override
+                public void done(List<UserInformation> list, BmobException e) {
+                    if(e == null){
+                        Glide.with(getContext()).load(list.get(0).getImage().getFileUrl()).into(viewHolder.mImage);
+                    }else {
+                        Log.d("BuyAdviceFragment","errorMessage = "+e.getMessage()+" errorCode = "+e.getErrorCode());
+                    }
+                }
+            });
+
         }
 
         @Override
