@@ -25,48 +25,48 @@ import cn.bmob.v3.listener.LogInListener;
 
 public class AccountLoginFragment extends BaseFragment {
 
-    private View _rootView;
-    private EditText mPhoneNum;
-    private EditText mPassword;
+    private View mRootView;
+    private EditText mEditPhoneNum;
+    private EditText mEditPassword;
     private Button mRegister;
     private Button mLogin;
 
-    private String _phoneNum;
-    private String _password;
+    private String mPhoneNum;
+    private String mPassword;
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
         super.onCreateView(layoutInflater,container,saveInstanceState);
-        _rootView=layoutInflater.inflate(R.layout.fragment_login,container,false);
-        return _rootView;
+        mRootView = layoutInflater.inflate(R.layout.fragment_login,container,false);
+        return mRootView;
     }
 
     @Override
     public void onActivityCreated(Bundle saveInstanceState){
         super.onActivityCreated(saveInstanceState);
 
-        mPhoneNum=(EditText) getActivity().findViewById(R.id.login_phoneNum);
-        mPassword=(EditText) getActivity().findViewById(R.id.login_password);
-        mRegister=(Button) getActivity().findViewById(R.id.login_register);
+        mEditPhoneNum = (EditText) getActivity().findViewById(R.id.login_phoneNum);
+        mEditPassword = (EditText) getActivity().findViewById(R.id.login_password);
+        mRegister = (Button) getActivity().findViewById(R.id.login_register);
 
         mRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AccountRegisterFragment registerFragment=new AccountRegisterFragment();
-                FragmentManager fragmentManager=getFragmentManager();
-                FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.container,registerFragment);
+                AccountRegisterFragment registerFragment = new AccountRegisterFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.container, registerFragment);
                 fragmentTransaction.commit();
             }
         });
 
-        mLogin=(Button) getActivity().findViewById(R.id.login_login);
+        mLogin = (Button) getActivity().findViewById(R.id.login_login);
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                _phoneNum=mPhoneNum.getText().toString();
-                _password=mPassword.getText().toString();
-                BmobUser.loginByAccount(_phoneNum, _password, new LogInListener<UserInformation>() {
+                mPhoneNum = mEditPhoneNum.getText().toString();
+                mPassword = mEditPassword.getText().toString();
+                BmobUser.loginByAccount(mPhoneNum, mPassword, new LogInListener<UserInformation>() {
                     @Override
                     public void done(UserInformation user, BmobException e){
                         if(e == null){

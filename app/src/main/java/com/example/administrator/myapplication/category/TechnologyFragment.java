@@ -1,9 +1,11 @@
 package com.example.administrator.myapplication.category;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import com.example.administrator.myapplication.borrowbook.BookDetailActivity;
 import com.example.administrator.myapplication.recycleview.Category;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -32,26 +35,38 @@ import static android.app.Activity.RESULT_OK;
 
 public class TechnologyFragment extends BaseFragment {
 
-    private View _rootView;
+    private View mRootView;
 
-    private RecyclerView _recyclerView;
+    private RecyclerView mRecyclerView;
     private List<Category> mList;
     private CategoryAdapter mCategoryAdapter;
-
+    private String _TAG = TechnologyFragment.class.getSimpleName();
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
-        _rootView=layoutInflater.inflate(R.layout.fragment_technology,container,false);
-        return _rootView;
+        mRootView = layoutInflater.inflate(R.layout.fragment_technology,container,false);
+        return mRootView;
     }
 
     @Override
-    public void onActivityCreated(Bundle saveInstanceState){
+    public void onActivityCreated(Bundle saveInstanceState) {
         super.onActivityCreated(saveInstanceState);
 
-        _recyclerView=(RecyclerView) getActivity().findViewById(R.id.techno_recylcerview);
-        _recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mList=new ArrayList<>();
-        Bquery();
+        mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.techno_recylcerview);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mList = new ArrayList<>();
+
+        InitSharePreferences(_TAG);
+        if (mSet != null) {
+            mSave.addAll(mSet);
+            for (int i = 0; i < mSave.size(); i++) {
+                mList.add(i, mGson.fromJson(mSave.get(i), Category.class));
+            }
+            mCategoryAdapter = new CategoryAdapter(mList);
+            mRecyclerView.setAdapter(mCategoryAdapter);
+            Log.d(_TAG,"has download to local");
+        } else {
+            Bquery();
+        }
     }
 
     @Override
@@ -80,19 +95,24 @@ public class TechnologyFragment extends BaseFragment {
         if(mList.size() > 0){
             mList.clear();
         }
-        BmobQuery<BookInformation> bmobQuery=new BmobQuery<>();
+        BmobQuery<BookInformation> bmobQuery = new BmobQuery<>();
         bmobQuery.addWhereEqualTo("category","technology");
         bmobQuery.setLimit(50);
         bmobQuery.findObjects(new FindListener<BookInformation>() {
             @Override
             public void done(List<BookInformation> object, BmobException e) {
-                if(e==null){
-                    for(BookInformation bookInformation : object){
-                        Category a1=new Category(bookInformation.getPhoto(),bookInformation.getName(),bookInformation.getAuthor(),bookInformation.getPress(),bookInformation.getState());
+                if(e == null){
+                    mSave = new ArrayList<>(object.size());
+                    for(int i = 0; i < object.size(); i++){
+                        Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor(),
+                                object.get(i).getPress(),object.get(i).getState());
                         mList.add(a1);
+                        mSave.add(i, mGson.toJson(a1));
                     }
-                    mCategoryAdapter=new CategoryAdapter(mList);
-                    _recyclerView.setAdapter(mCategoryAdapter);
+                    mSet.addAll(mSave);
+                    mEditor.putStringSet(_TAG, mSet).apply();
+                    mCategoryAdapter = new CategoryAdapter(mList);
+                    mRecyclerView.setAdapter(mCategoryAdapter);
                 }
             }
         });
@@ -112,17 +132,17 @@ public class TechnologyFragment extends BaseFragment {
 
             public ViewHolder(View view){
                 super(view);
-                _image=(ImageView) view.findViewById(R.id.category_image);
-                _name=(TextView) view.findViewById(R.id.category_name);
-                _author=(TextView)view.findViewById(R.id.category_author);
-                _press=(TextView) view.findViewById(R.id.category_press);
-                _status=(TextView) view.findViewById(R.id.category_status);
-                _view =view;
+                _image = (ImageView) view.findViewById(R.id.category_image);
+                _name = (TextView) view.findViewById(R.id.category_name);
+                _author = (TextView)view.findViewById(R.id.category_author);
+                _press = (TextView) view.findViewById(R.id.category_press);
+                _status = (TextView) view.findViewById(R.id.category_status);
+                _view = view;
             }
         }
 
         public CategoryAdapter(List<Category> Categorylist){
-            _list=Categorylist;
+            _list = Categorylist;
         }
 
         @Override
@@ -146,7 +166,7 @@ public class TechnologyFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(ViewHolder viewHolder,int position){
-            Category _category=_list.get(position);
+            Category _category = _list.get(position);
             viewHolder._name.setText(_category.getName());
             viewHolder._author.setText(_category.getAuthor());
             viewHolder._press.setText(_category.getPress());

@@ -37,14 +37,14 @@ import cn.bmob.v3.listener.FindListener;
 
 public class BorrowBookFragment extends BaseFragment {
 
-    private View _rootView;
+    private View mRootView;
     private CardView mContent;
     private CardView mBookDetail;
     private Button mDetail;
     private RecyclerView mRecyclerView;
 
-    private BookAdapter _bookAdapter;
-    private List<Category> _list;
+    private BookAdapter mBookAdapter;
+    private List<Category> mList;
 
     private TextView mBookCount;
     private TextView mAccountName;
@@ -53,8 +53,8 @@ public class BorrowBookFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
-        _rootView=layoutInflater.inflate(R.layout.fragment_borrow,container,false);
-        return _rootView;
+        mRootView=layoutInflater.inflate(R.layout.fragment_borrow,container,false);
+        return mRootView;
     }
 
     public void onActivityCreated(Bundle saveInstanceState){
@@ -65,7 +65,7 @@ public class BorrowBookFragment extends BaseFragment {
         mBookCount = (TextView) getActivity().findViewById(R.id.borrow_lendcount);
         mDetail = (Button) getActivity().findViewById(R.id.borrow_detail);
         mAccountImage = (ImageView) getActivity().findViewById(R.id.borrow_image);
-        _user=BmobUser.getCurrentUser();
+        _user = BmobUser.getCurrentUser();
         mDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,7 +74,7 @@ public class BorrowBookFragment extends BaseFragment {
                 }else {
                     if (_user != null) {
                         Bquery();
-                        _bookAdapter.notifyDataSetChanged();
+                        mBookAdapter.notifyDataSetChanged();
                         mBookDetail.setVisibility(View.VISIBLE);
                     }
                 }
@@ -82,11 +82,11 @@ public class BorrowBookFragment extends BaseFragment {
             }
         });
 
-        mRecyclerView=(RecyclerView) getActivity().findViewById(R.id.recyclerview_detail);
+        mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.recyclerview_detail);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        _list=new ArrayList<>();
+        mList=new ArrayList<>();
 
-        mAccountName=(TextView) getActivity().findViewById(R.id.borrow_account);
+        mAccountName = (TextView) getActivity().findViewById(R.id.borrow_account);
 
         if(_user != null){
             if(_user.getUsername() != null){
@@ -103,10 +103,10 @@ public class BorrowBookFragment extends BaseFragment {
     }
 
     public void Bquery(){
-        if(_list!=null) {
-            _list.clear();
+        if(mList != null) {
+            mList.clear();
         }
-        BmobQuery<BookInformation> bmobQuery=new BmobQuery<>();
+        BmobQuery<BookInformation> bmobQuery = new BmobQuery<>();
         bmobQuery.addWhereEqualTo("borrowper",_user.getUsername());
         bmobQuery.setLimit(50);
         bmobQuery.findObjects(new FindListener<BookInformation>() {
@@ -115,12 +115,12 @@ public class BorrowBookFragment extends BaseFragment {
                 if(e==null){
 
                     for(BookInformation bookInformation : object){
-                        Category a1=new Category(bookInformation.getPhoto(),bookInformation.getName(),bookInformation.getAuthor(),bookInformation.getPress(),bookInformation.getState());
-                        _list.add(a1);
+                        Category a1 = new Category(bookInformation.getPhoto(),bookInformation.getName(),bookInformation.getAuthor(),bookInformation.getPress(),bookInformation.getState());
+                        mList.add(a1);
                     }
                     mBookCount.setText(Integer.toString(object.size()));
-                    _bookAdapter=new BookAdapter(_list);
-                    mRecyclerView.setAdapter(_bookAdapter);
+                    mBookAdapter = new BookAdapter(mList);
+                    mRecyclerView.setAdapter(mBookAdapter);
                 }
             }
         });
@@ -156,25 +156,25 @@ public class BorrowBookFragment extends BaseFragment {
 
             public ViewHolder(View view){
                 super(view);
-                _view=view;
-                cardView=(CardView) view;
-                bookname=(TextView) view.findViewById(R.id.book_name);
-                bookView=(ImageView) view.findViewById(R.id.book_image);
-                bookauthor=(TextView) view.findViewById(R.id.book_author);
+                _view = view;
+                cardView = (CardView) view;
+                bookname = (TextView) view.findViewById(R.id.book_name);
+                bookView = (ImageView) view.findViewById(R.id.book_image);
+                bookauthor = (TextView) view.findViewById(R.id.book_author);
             }
         }
 
         public BookAdapter(List<Category> bookList){
-            mbook=bookList;
+            mbook = bookList;
         }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType){
-            if(context==null){
-                context=viewGroup.getContext();
+            if(context == null){
+                context = viewGroup.getContext();
             }
-            View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_borrowbook,viewGroup,false);
-            final ViewHolder holder=new ViewHolder(view);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_borrowbook,viewGroup,false);
+            final ViewHolder holder = new ViewHolder(view);
             holder._view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -190,7 +190,7 @@ public class BorrowBookFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position){
-            Category _category=mbook.get(position);
+            Category _category = mbook.get(position);
             holder.bookname.setText(_category.getName());
             holder.bookauthor.setText(_category.getAuthor());
             Glide.with(context).load(_category.getImageId().getFileUrl()).into(holder.bookView);

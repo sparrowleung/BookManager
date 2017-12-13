@@ -27,23 +27,23 @@ import cn.smssdk.SMSSDK;
 
 public class AccountRegisterFragment extends BaseFragment {
 
-    private View _rootView;
+    private View mRootView;
     private EventHandler _eventHandler;
     private Boolean phoneVerify=false;
 
-    private EditText mPhoneNum;
-    private EditText mPassword;
-    private EditText mVerifyCode;
-    private EditText mName;
-    private EditText mPart;
-    private EditText mTeam;
+    private EditText mEditPhoneNum;
+    private EditText mEditPassword;
+    private EditText mEditVerifyCode;
+    private EditText mEditName;
+    private EditText mEditPart;
+    private EditText mEditTeam;
 
-    private String _phoneNum;
-    private String _password;
-    private String _verifyCode;
-    private String _name;
-    private String _part;
-    private String _team;
+    private String mPhoneNum;
+    private String mPassword;
+    private String mVerifyCode;
+    private String mName;
+    private String mPart;
+    private String mTeam;
 
     private Button mPhoneVer;
     private Button mRegister;
@@ -51,38 +51,37 @@ public class AccountRegisterFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
-        super.onCreateView(layoutInflater,container,saveInstanceState);
-        _rootView=layoutInflater.inflate(R.layout.fragment_register,container,false);
-        return _rootView;
+        mRootView = layoutInflater.inflate(R.layout.fragment_register,container,false);
+        return mRootView;
     }
 
     @Override
     public void onActivityCreated(Bundle saveInstanceState){
         super.onActivityCreated(saveInstanceState);
-        mPhoneNum=(EditText) getActivity().findViewById(R.id.register_phone);
-        mPassword=(EditText) getActivity().findViewById(R.id.register_password);
-        mVerifyCode=(EditText) getActivity().findViewById(R.id.register_veifycode);
-        mName=(EditText) getActivity().findViewById(R.id.register_name);
-        mPart=(EditText) getActivity().findViewById(R.id.register_part);
-        mTeam=(EditText) getActivity().findViewById(R.id.register_tg);
+        mEditPhoneNum = (EditText) getActivity().findViewById(R.id.register_phone);
+        mEditPassword = (EditText) getActivity().findViewById(R.id.register_password);
+        mEditVerifyCode = (EditText) getActivity().findViewById(R.id.register_veifycode);
+        mEditName = (EditText) getActivity().findViewById(R.id.register_name);
+        mEditPart = (EditText) getActivity().findViewById(R.id.register_part);
+        mEditTeam = (EditText) getActivity().findViewById(R.id.register_tg);
 
         InitializeSms();
-        mPhoneVer=(Button) getActivity().findViewById(R.id.register_verb);
+        mPhoneVer = (Button) getActivity().findViewById(R.id.register_verb);
         mPhoneVer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                _phoneNum=mPhoneNum.getText().toString();
-                SMSSDK.getVerificationCode("86",_phoneNum);
+                mPhoneNum = mEditPhoneNum.getText().toString();
+                SMSSDK.getVerificationCode("86", mPhoneNum);
             }
         });
 
 
-        mRegister=(Button) getActivity().findViewById(R.id.register_register);
+        mRegister = (Button) getActivity().findViewById(R.id.register_register);
         mRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                _verifyCode=mVerifyCode.getText().toString();
-                SMSSDK.submitVerificationCode("86",_phoneNum,_verifyCode);
+                mVerifyCode = mEditVerifyCode.getText().toString();
+                SMSSDK.submitVerificationCode("86", mPhoneNum, mVerifyCode);
             }
         });
     }
@@ -91,37 +90,36 @@ public class AccountRegisterFragment extends BaseFragment {
         _eventHandler=new EventHandler(){
             @Override
             public void afterEvent(int event,int result,Object data){
-                final Message _message=new Message();
+                final Message _message = new Message();
                 if(result == SMSSDK.RESULT_COMPLETE){
                     if(event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
 
                         _message.what=1;
                         handler.sendMessage(_message);
-                        Log.d("BACED",_phoneNum);
 
                     }else if(event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE){
-                        phoneVerify=true;
-                        _password=mPassword.getText().toString();
-                        _name=mName.getText().toString();
-                        _part=mPart.getText().toString();
-                        _team=mTeam.getText().toString();
-                        Log.d("BACED",_verifyCode+phoneVerify);
+                        phoneVerify = true;
+                        mPassword = mEditPassword.getText().toString();
+                        mName = mEditName.getText().toString();
+                        mPart = mEditPart.getText().toString();
+                        mTeam = mEditTeam.getText().toString();
+                        Log.d("BACED", mVerifyCode + phoneVerify);
 
                         UserInformation userInformation = new UserInformation();
-                        userInformation.setPart(_part);
-                        userInformation.setTeamgroup(_team);
-                        userInformation.setUsername(_name);
-                        userInformation.setMobilePhoneNumber(_phoneNum);
+                        userInformation.setPart(mPart);
+                        userInformation.setTeamgroup(mTeam );
+                        userInformation.setUsername(mName);
+                        userInformation.setMobilePhoneNumber(mPhoneNum);
                         userInformation.setMobilePhoneNumberVerified(phoneVerify);
-                        userInformation.setPassword(_password);
+                        userInformation.setPassword(mPassword);
                         userInformation.signUp(new SaveListener<UserInformation>() {
                                 @Override
                                 public void done(UserInformation object,BmobException e){
                                     if(e == null){
-                                        _message.what=2;
+                                        _message.what = 2;
                                         onDestroy();
                                     }else {
-                                        _message.what=3;
+                                        _message.what = 3;
                                     }
                                     handler.sendMessage(_message);
                                 }
@@ -141,18 +139,15 @@ public class AccountRegisterFragment extends BaseFragment {
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    Log.d("BACED","SendSuccess");
                     Toast.makeText(getContext(), "发送验证码成功", Toast.LENGTH_SHORT).show();break;
                 case 2:
-                    Log.d("BACED","VerifySuccess");
-                    Toast.makeText(getContext(),"注册成功",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),"注册成功", Toast.LENGTH_SHORT).show();
                     Intent intent = getContext().getPackageManager()
                             .getLaunchIntentForPackage(getContext().getPackageName());
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     break;
                 case 3:
-                    Log.d("BACED","VerifyFail");
                     Toast.makeText(getContext(),"信息有误，注册失败",Toast.LENGTH_SHORT).show();break;
             }
             return false;

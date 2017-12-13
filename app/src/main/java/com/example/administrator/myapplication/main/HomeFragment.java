@@ -1,11 +1,14 @@
 package com.example.administrator.myapplication.main;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +30,12 @@ import com.example.administrator.myapplication.recycleview.Category;
 import com.example.administrator.myapplication.recycleview.News;
 import com.example.administrator.myapplication.recycleview.NewsTipsAdapter;
 import com.example.administrator.myapplication.recycleview.Book;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
@@ -41,14 +47,14 @@ import cn.bmob.v3.listener.FindListener;
 
 public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
-    private View _rootView;
-    private RecyclerView _bookRecyclerView;
-    private RecyclerView _newsRecyclerView;
+    private View mRootView;
+    private RecyclerView mBookRecyclerView;
+    private RecyclerView mNewsRecyclerView;
 
-    private List<Book> _bookList=new ArrayList<>();
-    private List<News> _newsList=new ArrayList<>();
-    private HotBook _adapter;
-    private NewsTipsAdapter _newsAdapter;
+    private List<Book> mBookList = new ArrayList<>();
+    private List<News> mNewsList = new ArrayList<>();
+    private HotBook mAdapter;
+    private NewsTipsAdapter mNewsAdapter;
 
     private View mNewbook;
     private View mCategory;
@@ -58,40 +64,86 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     private CardView mNotice;
     private CardView mHotBook;
 
+    private SharedPreferences.Editor mNewsEditor;
+    private SharedPreferences.Editor mHotEditor;
+    private SharedPreferences mNewsPreferences;
+    private SharedPreferences mHotPreferences;
+    private Set<String> mNewsSet;
+    private Set<String> mHotSet;
+    private List<String> mHotSave;
+    private List<String> mNewsSave;
+    private Gson mGson;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
         super.onCreateView(inflater,container,saveInstanceState);
-        _rootView=inflater.inflate(R.layout.fragment_home,container,false);
-        return _rootView;
+        mRootView = inflater.inflate(R.layout.fragment_home, container,false);
+        return mRootView;
     }
 
     public void onActivityCreated(Bundle saveInstanceState){
         super.onActivityCreated(saveInstanceState);
 
-        mNewbook=(View) getActivity().findViewById(R.id.first_newbook);
-        mCategory=(View) getActivity().findViewById(R.id.first_category);
-        mBuyAdvice=(View) getActivity().findViewById(R.id.first_advice);
-        mNews=(View) getActivity().findViewById(R.id.table_title);
-        mContent=(CardView) getActivity().findViewById(R.id.first_content);
+        mNewbook = (View) getActivity().findViewById(R.id.first_newbook);
+        mCategory = (View) getActivity().findViewById(R.id.first_category);
+        mBuyAdvice = (View) getActivity().findViewById(R.id.first_advice);
+        mNews = (View) getActivity().findViewById(R.id.table_title);
+        mContent = (CardView) getActivity().findViewById(R.id.first_content);
         mContent.setCardElevation(8);
         mContent.setRadius(16);
         mContent.setContentPadding(5,5,5,5);
-        mNotice=(CardView) getActivity().findViewById(R.id.first_notice);
+        mNotice = (CardView) getActivity().findViewById(R.id.first_notice);
         mNotice.setContentPadding(5,5,5,5);
         mNotice.setRadius(8);
         mNotice.setCardElevation(8);
-        mHotBook=(CardView) getActivity().findViewById(R.id.first_hotbook);
+        mHotBook = (CardView) getActivity().findViewById(R.id.first_hotbook);
         mHotBook.setContentPadding(5,5,5,5);
         mHotBook.setRadius(8);
         mHotBook.setCardElevation(8);
 
-        _bookRecyclerView=(RecyclerView) _rootView.findViewById(R.id.recycle_hotlist);
-        GridLayoutManager gridLayoutManager=new GridLayoutManager(getContext(),3);
-        _bookRecyclerView.setLayoutManager(gridLayoutManager);
+        mBookRecyclerView = (RecyclerView) mRootView.findViewById(R.id.recycle_hotlist);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),3);
+        mBookRecyclerView.setLayoutManager(gridLayoutManager);
 
-        _newsRecyclerView=(RecyclerView) _rootView.findViewById(R.id.recycle_newslist);
-        _newsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        Bquery();
+        mNewsRecyclerView = (RecyclerView) mRootView.findViewById(R.id.recycle_newslist);
+        mNewsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        mNewsEditor = getContext().getSharedPreferences("newstips", Context.MODE_PRIVATE).edit();
+        mHotEditor = getContext().getSharedPreferences("hotbooks", Context.MODE_PRIVATE).edit();
+        mNewsPreferences = getContext().getSharedPreferences("newstips", Context.MODE_PRIVATE);
+        mHotPreferences = getContext().getSharedPreferences("hotbooks", Context.MODE_PRIVATE);
+        mNewsSet = mNewsPreferences.getStringSet("newstips",null);
+        mHotSet = mHotPreferences.getStringSet("hotbooks",null);
+        mGson = new Gson();
+
+        if(mNewsSet != null){
+            mNewsSave = new ArrayList<>();
+            mNewsSave.addAll(mNewsSet);
+
+            for(int i = 0; i < mNewsSave.size(); i++){
+                mNewsList.add(i, mGson.fromJson(mNewsSave.get(i), News.class));
+            }
+
+            mNewsAdapter = new NewsTipsAdapter(mNewsList);
+            mNewsRecyclerView.setAdapter(mNewsAdapter);
+
+        }else {
+            NewsBquery();
+        }
+
+        if(mHotSet != null){
+            mHotSave = new ArrayList<>();
+            mHotSave.addAll(mHotSet);
+
+            for(int i = 0; i < mHotSave.size(); i++){
+                mBookList.add(i, mGson.fromJson(mHotSave.get(i), Book.class));
+            }
+            mAdapter = new HotBook(mBookList);
+            mBookRecyclerView.setAdapter(mAdapter);
+            Log.d("Lyy_HomeFragment","has download to local");
+        }else {
+            HotBquery();
+        }
 
         mNewbook.setOnClickListener(this);
         mCategory.setOnClickListener(this);
@@ -101,71 +153,90 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view){
-        Intent _intent= new Intent();
+        Intent _intent = new Intent();
         switch (view.getId()){
             case R.id.first_newbook:
-                _intent=new Intent(getActivity(),NewBookActivity.class);
+                _intent = new Intent(getActivity(),NewBookActivity.class);
                 break;
             case R.id.first_category:
-                _intent=new Intent(getActivity(),CategoryActivity.class);
+                _intent = new Intent(getActivity(),CategoryActivity.class);
                 break;
             case R.id.first_advice:
-                _intent=new Intent(getActivity(),BuyAdviceActivity.class);
+                _intent = new Intent(getActivity(),BuyAdviceActivity.class);
                 break;
             case R.id.table_title:
-                _intent=new Intent(getActivity(), NewsAndTipsActivity.class);
+                _intent = new Intent(getActivity(), NewsAndTipsActivity.class);
         }
         getActivity().startActivity(_intent);
     }
 
-    public void Bquery(){
-        if(_bookList.size() > 0) {
-            _bookList.clear();
+    public void NewsBquery(){
+        if(mNewsList.size() > 0) {
+            mNewsList.clear();
         }
-        if(_newsList.size() > 0) {
-            _newsList.clear();
+        BmobQuery<NewsTipsInformation> _newsQuery=new BmobQuery<>();
+        _newsQuery.order("-createAt");
+        _newsQuery.findObjects(new FindListener<NewsTipsInformation>() {
+            @Override
+            public void done(List<NewsTipsInformation> list, BmobException e) {
+                if (e == null) {
+                    mNewsSet = new HashSet<>();
+                    mNewsSave = new ArrayList<>(list.size());
+                    if (list.size() >= 2) {
+                        for (int i = 0; i < 2; i++) {
+                            News _news = new News(list.get(i).getTitle(), list.get(i).getSubTitle());
+                            mNewsSave.add(i, mGson.toJson(_news));
+                            mNewsList.add(_news);
+                        }
+                    } else {
+                        for (int i = 0; i < list.size(); i++) {
+                            News _news = new News(list.get(i).getTitle(), list.get(i).getSubTitle());
+                            mNewsList.add(_news);
+                            mNewsSave.add(i, mGson.toJson(_news));
+                        }
+                    }
+                    mNewsSet.addAll(mNewsSave);
+                    mNewsEditor.putStringSet("newstips", mNewsSet).apply();
+                    mNewsAdapter = new NewsTipsAdapter(mNewsList);
+                    mNewsRecyclerView.setAdapter(mNewsAdapter);
+                }
+            }
+        });
+    }
+
+    public void HotBquery(){
+        if(mBookList.size() > 0) {
+            mBookList.clear();
         }
         BmobQuery<BookInformation> _query=new BmobQuery<>();
         _query.order("-borrowcount");
         _query.findObjects(new FindListener<BookInformation>() {
             @Override
             public void done(List<BookInformation> list, BmobException e) {
-                if(list.size() >= 6) {
-                    for (int i = 0; i < 6; i++) {
-                        Book _book = new Book(list.get(i).getName(),list.get(i).getPhoto());
-                        _bookList.add(_book);
+                if (e == null) {
+                    mHotSave = new ArrayList<>(list.size());
+                    mHotSet = new HashSet<>();
+                    if (list.size() >= 6) {
+                        for (int i = 0; i < 6; i++) {
+                            Book _book = new Book(list.get(i).getName(), list.get(i).getPhoto());
+                            mBookList.add(_book);
+                            mHotSave.add(i, mGson.toJson(_book));
+                        }
+                    } else {
+                        for (int i = 0; i < list.size(); i++) {
+                            Book _book = new Book(list.get(i).getName(), list.get(i).getPhoto());
+                            mBookList.add(_book);
+                            mHotSave.add(i, mGson.toJson(_book));
+                        }
                     }
-                }else {
-                    for(BookInformation object : list){
-                        Book _book = new Book(object.getName(), object.getPhoto());
-                        _bookList.add(_book);
-                    }
+                    mHotSet.addAll(mHotSave);
+                    mHotEditor.putStringSet("hotbooks", mHotSet).apply();
+                    mAdapter = new HotBook(mBookList);
+                    mBookRecyclerView.setAdapter(mAdapter);
                 }
-                _adapter=new HotBook(_bookList);
-                _bookRecyclerView.setAdapter(_adapter);
             }
         });
 
-        BmobQuery<NewsTipsInformation> _newsQuery=new BmobQuery<>();
-        _newsQuery.order("-createAt");
-        _newsQuery.findObjects(new FindListener<NewsTipsInformation>() {
-            @Override
-            public void done(List<NewsTipsInformation> list, BmobException e) {
-                if(list.size() >=2){
-                    for(int i=0;i<2;i++){
-                        News _news=new News(list.get(i).getTitle(),list.get(i).getSubTitle());
-                        _newsList.add(_news);
-                    }
-                }else {
-                    for(NewsTipsInformation object : list){
-                        News _news=new News(object.getTitle(),object.getSubTitle());
-                        _newsList.add(_news);
-                    }
-                }
-                _newsAdapter=new NewsTipsAdapter(_newsList);
-                _newsRecyclerView.setAdapter(_newsAdapter);
-            }
-        });
     }
 
     class HotBook extends RecyclerView.Adapter<HotBook.ViewHolder>{
@@ -180,13 +251,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
           public ViewHolder(View view){
               super(view);
               _view = view;
-              _imageView=(ImageView) view.findViewById(R.id.hotbook_image);
-              _textView=(TextView) view.findViewById(R.id.hotbook_text);
+              _imageView = (ImageView) view.findViewById(R.id.hotbook_image);
+              _textView = (TextView) view.findViewById(R.id.hotbook_text);
            }
        }
 
        public HotBook(List<Book> mList){
-           _list=mList;
+           _list = mList;
        }
 
        @Override
@@ -197,9 +268,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                @Override
                public void onClick(View view) {
                    int position = viewHolder.getAdapterPosition();
-                   Book _hot= _list.get(position);
-                   Intent _intent=new Intent(getActivity(), BookDetailActivity.class);
-                   _intent.putExtra("bookName",_hot.getBookName());
+                   Book _hot = _list.get(position);
+                   Intent _intent = new Intent(getActivity(), BookDetailActivity.class);
+                   _intent.putExtra("bookName", _hot.getBookName());
                    startActivity(_intent);
                }
            });
@@ -208,7 +279,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
        @Override
         public void onBindViewHolder(ViewHolder viewHolder,int position){
-            Book mBook=_list.get(position);
+            Book mBook = _list.get(position);
             viewHolder._textView.setText(mBook.getBookName());
             Glide.with(getContext()).load(mBook.getBookViewId().getFileUrl()).into(viewHolder._imageView);
        }

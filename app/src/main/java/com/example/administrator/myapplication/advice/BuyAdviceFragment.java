@@ -38,7 +38,7 @@ import cn.bmob.v3.listener.SaveListener;
 
 public class BuyAdviceFragment extends BaseFragment implements View.OnClickListener {
 
-    private View _rootView;
+    private View mRootView;
     private Button mNewBuild;
     private Button mCommit;
 
@@ -53,8 +53,8 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
     private EditText mReasonEdit;
 
     private RecyclerView mRecyclerView;
-    private List<Advice> _list;
-    private AdviceAdapter _adviceAdapter;
+    private List<Advice> mList;
+    private AdviceAdapter mAdviceAdapter;
 
     private String mName;
     private String mAuthor;
@@ -64,8 +64,8 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
-        _rootView=inflater.inflate(R.layout.fragment_advice,container,false);
-        return _rootView;
+        mRootView = inflater.inflate(R.layout.fragment_advice,container,false);
+        return mRootView;
     }
 
     @Override
@@ -75,27 +75,27 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
     }
 
     public void init(){
-        mNewBuild=(Button) getActivity().findViewById(R.id.advice_newbuild);
+        mNewBuild = (Button) getActivity().findViewById(R.id.advice_newbuild);
         mNewBuild.setOnClickListener(this);
-        mCommit=(Button) getActivity().findViewById(R.id.advice_commit);
+        mCommit = (Button) getActivity().findViewById(R.id.advice_commit);
         mCommit.setOnClickListener(this);
 
-        mShowAdvice=(CardView) getActivity().findViewById(R.id.advice_card1);
+        mShowAdvice = (CardView) getActivity().findViewById(R.id.advice_card1);
         mShowAdvice.setContentPadding(5,5,5,5);
         mShowAdvice.setRadius(16);
         mShowAdvice.setCardElevation(8);
-        mCommitAdvice=(CardView) getActivity().findViewById(R.id.advice_card2);
+        mCommitAdvice = (CardView) getActivity().findViewById(R.id.advice_card2);
         mCommitAdvice.setContentPadding(5,5,5,5);
         mCommitAdvice.setRadius(16);
         mCommitAdvice.setCardElevation(8);
 
-        mNameEdit=(EditText) getActivity().findViewById(R.id.advice_name);
-        mAuthorEdit=(EditText) getActivity().findViewById(R.id.advice_author);
-        mPressEdit=(EditText) getActivity().findViewById(R.id.advice_press);
-        mPriceEdit=(EditText) getActivity().findViewById(R.id.advice_price);
-        mReasonEdit=(EditText) getActivity().findViewById(R.id.advice_reason);
+        mNameEdit = (EditText) getActivity().findViewById(R.id.advice_name);
+        mAuthorEdit = (EditText) getActivity().findViewById(R.id.advice_author);
+        mPressEdit = (EditText) getActivity().findViewById(R.id.advice_press);
+        mPriceEdit = (EditText) getActivity().findViewById(R.id.advice_price);
+        mReasonEdit = (EditText) getActivity().findViewById(R.id.advice_reason);
 
-        mSwipeRefresh=(SwipeRefreshLayout) getActivity().findViewById(R.id.advice_swipe);
+        mSwipeRefresh = (SwipeRefreshLayout) getActivity().findViewById(R.id.advice_swipe);
         mSwipeRefresh.setColorSchemeResources(R.color.smssdk_gray);
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -112,7 +112,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
                             @Override
                             public void run() {
                                 Bquery();
-                                _adviceAdapter.notifyDataSetChanged();
+                                mAdviceAdapter.notifyDataSetChanged();
                                 mSwipeRefresh.setRefreshing(false);
                             }
                         });
@@ -121,9 +121,9 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
             }
         });
 
-        mRecyclerView=(RecyclerView) getActivity().findViewById(R.id.advice_recyclerview);
+        mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.advice_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        _list=new ArrayList<>();
+        mList = new ArrayList<>();
         Bquery();
     }
 
@@ -139,8 +139,8 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
                     mNewBuild.setText("收起");
                 }break;
             case R.id.advice_commit:
-                BmobUser _user=BmobUser.getCurrentUser();
-                if(_user!=null) {
+                BmobUser _user = BmobUser.getCurrentUser();
+                if(_user != null) {
                     mName = mNameEdit.getText().toString();
                     mAuthor = mAuthorEdit.getText().toString();
                     mPrice = mPriceEdit.getText().toString();
@@ -184,20 +184,20 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
     }
 
     public void Bquery(){
-        if(_list!=null) {
-            _list.clear();
+        if(mList != null) {
+            mList.clear();
         }
-        BmobQuery<AdviceInformation> _query=new BmobQuery<>();
+        BmobQuery<AdviceInformation> _query = new BmobQuery<>();
         _query.findObjects(new FindListener<AdviceInformation>() {
             @Override
             public void done(List<AdviceInformation> list, BmobException e) {
                 if(e==null){
                     for(AdviceInformation advice : list){
-                        Advice _advice=new Advice(advice.getBookName(),advice.getAuthor(),advice.getPress(),advice.getPrice(),advice.getAdvicer());
-                        _list.add(_advice);
+                        Advice _advice = new Advice(advice.getBookName(),advice.getAuthor(),advice.getPress(),advice.getPrice(),advice.getAdvicer());
+                        mList.add(_advice);
                     }
-                    _adviceAdapter=new AdviceAdapter(_list);
-                    mRecyclerView.setAdapter(_adviceAdapter);
+                    mAdviceAdapter = new AdviceAdapter(mList);
+                    mRecyclerView.setAdapter(mAdviceAdapter);
                 }
             }
         });
@@ -217,11 +217,11 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
 
             public ViewHolder(View view){
                 super(view);
-                mName=(TextView) view.findViewById(R.id.adviceRe_name);
-                mAuthor=(TextView) view.findViewById(R.id.adviceRe_author);
-                mPress=(TextView) view.findViewById(R.id.adviceRe_press);
-                mAdvicer=(TextView) view.findViewById(R.id.adviceRe_advicer);
-                mPrice=(TextView) view.findViewById(R.id.adviceRe_price);
+                mName = (TextView) view.findViewById(R.id.adviceRe_name);
+                mAuthor = (TextView) view.findViewById(R.id.adviceRe_author);
+                mPress = (TextView) view.findViewById(R.id.adviceRe_press);
+                mAdvicer = (TextView) view.findViewById(R.id.adviceRe_advicer);
+                mPrice = (TextView) view.findViewById(R.id.adviceRe_price);
                 mImage = (ImageView) view.findViewById(R.id.adviceRe_image);
             }
         }
@@ -232,14 +232,14 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup,int type){
-            View _view=LayoutInflater.from(getContext()).inflate(R.layout.recylcer_advice,viewGroup,false);
-            ViewHolder _viewHolder=new ViewHolder(_view);
+            View _view = LayoutInflater.from(getContext()).inflate(R.layout.recylcer_advice,viewGroup,false);
+            ViewHolder _viewHolder = new ViewHolder(_view);
             return _viewHolder;
         }
 
         @Override
         public void onBindViewHolder(final ViewHolder viewHolder,int position){
-            Advice _advice=_list.get(position);
+            Advice _advice = _list.get(position);
             viewHolder.mName.setText(_advice.getName());
             viewHolder.mAuthor.setText(_advice.getAuthor());
             viewHolder.mPress.setText(_advice.getAuthor());

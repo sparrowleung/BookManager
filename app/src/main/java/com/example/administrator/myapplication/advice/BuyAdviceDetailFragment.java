@@ -14,11 +14,11 @@ import com.example.administrator.myapplication.base.BaseFragment;
 
 public class BuyAdviceDetailFragment extends BaseFragment {
 
-    private View _rootView;
+    private View mRootView;
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container , Bundle saveInstanceState){
-        _rootView = layoutInflater.inflate(R.layout.fragment_advicedetail,container,false);
-        return _rootView;
+        mRootView = layoutInflater.inflate(R.layout.fragment_advicedetail,container,false);
+        return mRootView;
     }
 }

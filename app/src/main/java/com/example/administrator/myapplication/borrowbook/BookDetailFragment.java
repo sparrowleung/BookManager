@@ -25,7 +25,7 @@ import cn.bmob.v3.listener.FindListener;
 
 public class BookDetailFragment extends BaseFragment {
 
-    private View _rootView;
+    private View mRootView;
     private CardView mCardView;
     private String mBookName;
     private String mBookPress;
@@ -41,8 +41,8 @@ public class BookDetailFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
-        _rootView = layoutInflater.inflate(R.layout.fragment_bookdetail,container,false);
-        return _rootView;
+        mRootView = layoutInflater.inflate(R.layout.fragment_bookdetail,container,false);
+        return mRootView;
     }
 
     @Override
@@ -61,6 +61,9 @@ public class BookDetailFragment extends BaseFragment {
         mBorrowper = (TextView) getActivity().findViewById(R.id.detail_borrowper);
         mImageView = (ImageView) getActivity().findViewById(R.id.detail_image);
 
+    }
+
+    public void Bquery(){
         BmobQuery<BookInformation> _query = new BmobQuery<>();
         if(!mBookName.equals(null)) {
             _query.addWhereEqualTo("name", mBookName);

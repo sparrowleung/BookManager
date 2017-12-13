@@ -50,7 +50,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class AccountFragment extends BaseFragment {
 
-    private View _rootView;
+    private View mRootView;
     private View mCommit;
     private View mExchange;
 
@@ -64,14 +64,14 @@ public class AccountFragment extends BaseFragment {
     private EditText mEditPassword;
     private EditText mEditNickName;
     private EditText mEditPart;
-    private EditText mEditTg;
-    private TextView mNickName;
+    private EditText mEditTeam;
+    private TextView mTextNickName;
     private TextView mNumbers;
 
-    private String _nickName;
-    private String _password;
-    private String _part;
-    private String _teamGroup;
+    private String mNickName;
+    private String mPassword;
+    private String mPart;
+    private String mTeamGroup;
     private String mImagePath;
 
     private BmobUser mUser;
@@ -79,8 +79,8 @@ public class AccountFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
-        _rootView=inflater.inflate(R.layout.fragment_account,container,false);
-        return _rootView;
+        mRootView = inflater.inflate(R.layout.fragment_account,container,false);
+        return mRootView;
     }
 
     @Override
@@ -90,24 +90,24 @@ public class AccountFragment extends BaseFragment {
     }
 
     public void init(){
-        mCardView1=(CardView) getActivity().findViewById(R.id.account_card1);
-        mCardView2=(CardView) getActivity().findViewById(R.id.account_card2);
-        mCardView3=(CardView) getActivity().findViewById(R.id.account_card3);
-        mCardView4=(CardView) getActivity().findViewById(R.id.account_card4);
-        mCommit=(View) getActivity().findViewById(R.id.account_commit);
-        mExchange=(View) getActivity().findViewById(R.id.account_changeIamge);
+        mCardView1 = (CardView) getActivity().findViewById(R.id.account_card1);
+        mCardView2 = (CardView) getActivity().findViewById(R.id.account_card2);
+        mCardView3 = (CardView) getActivity().findViewById(R.id.account_card3);
+        mCardView4 = (CardView) getActivity().findViewById(R.id.account_card4);
+        mCommit = (View) getActivity().findViewById(R.id.account_commit);
+        mExchange = (View) getActivity().findViewById(R.id.account_changeIamge);
 
         mImageView=(ImageView) getActivity().findViewById(R.id.account_image);
 
-        mEditPassword=(EditText) getActivity().findViewById(R.id.account_passwrod);
-        mEditNickName=(EditText) getActivity().findViewById(R.id.account_nickname);
-        mEditPart=(EditText) getActivity().findViewById(R.id.account_part);
-        mEditTg=(EditText) getActivity().findViewById(R.id.account_tg);
-        mNickName=(TextView) getActivity().findViewById(R.id.account_account);
-        mNumbers=(TextView) getActivity().findViewById(R.id.account_number);
+        mEditPassword = (EditText) getActivity().findViewById(R.id.account_passwrod);
+        mEditNickName = (EditText) getActivity().findViewById(R.id.account_nickname);
+        mEditPart = (EditText) getActivity().findViewById(R.id.account_part);
+        mEditTeam = (EditText) getActivity().findViewById(R.id.account_tg);
+        mTextNickName = (TextView) getActivity().findViewById(R.id.account_account);
+        mNumbers = (TextView) getActivity().findViewById(R.id.account_number);
 
-        mUser=BmobUser.getCurrentUser();
-        mNickName.setText(mUser.getUsername());
+        mUser = BmobUser.getCurrentUser();
+        mTextNickName.setText(mUser.getUsername());
         mNumbers.setText(mUser.getMobilePhoneNumber());
         BmobQuery<UserInformation> _query = new BmobQuery<>();
         _query.addWhereEqualTo("username",mUser.getUsername());
@@ -117,7 +117,7 @@ public class AccountFragment extends BaseFragment {
                 if (e == null) {
                     mEditNickName.setHint(list.get(0).getUsername());
                     mEditPart.setHint(list.get(0).getPart());
-                    mEditTg.setHint(list.get(0).getTeamgroup());
+                    mEditTeam.setHint(list.get(0).getTeamgroup());
                     Glide.with(getContext()).load(list.get(0).getImage().getFileUrl()).into(mImageView);
                 }
             }
@@ -141,19 +141,19 @@ public class AccountFragment extends BaseFragment {
         mCommit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _nickName=mEditNickName.getText().toString();
-                _password=mEditPassword.getText().toString();
-                _part=mEditPart.getText().toString();
-                _teamGroup=mEditTg.getText().toString();
-                UserInformation _user=new UserInformation();
-                _user.setUsername(_nickName);
-                _user.setPassword(_password);
-                _user.setPart(_part);
-                _user.setTeamgroup(_teamGroup);
+                mNickName = mEditNickName.getText().toString();
+                mPassword = mEditPassword.getText().toString();
+                mPart = mEditPart.getText().toString();
+                mTeamGroup = mEditTeam.getText().toString();
+                UserInformation _user = new UserInformation();
+                _user.setUsername(mNickName);
+                _user.setPassword(mPassword);
+                _user.setPart(mPart);
+                _user.setTeamgroup(mTeamGroup);
                 _user.update(_user.getObjectId(),new UpdateListener() {
                     @Override
                     public void done(BmobException e) {
-                        if(e==null){
+                        if(e == null){
                             Toast.makeText(getContext(),"更新信息成功",Toast.LENGTH_SHORT).show();
                         }else {
                             Toast.makeText(getContext(),"更新信息失败",Toast.LENGTH_SHORT).show();
@@ -166,7 +166,7 @@ public class AccountFragment extends BaseFragment {
         mCardView4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder _builder=new AlertDialog.Builder(getContext());
+                AlertDialog.Builder _builder = new AlertDialog.Builder(getContext());
                 _builder.setTitle("提示");
                 _builder.setMessage("是否确定退出当前账号");
                 _builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
