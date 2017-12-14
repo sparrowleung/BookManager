@@ -19,7 +19,6 @@ import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
 import com.example.administrator.myapplication.bmob.UserInformation;
-import com.example.administrator.myapplication.recycleview.Book;
 import com.example.administrator.myapplication.recycleview.Category;
 
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
@@ -115,7 +113,8 @@ public class BorrowBookFragment extends BaseFragment {
                 if(e==null){
 
                     for(BookInformation bookInformation : object){
-                        Category a1 = new Category(bookInformation.getPhoto(),bookInformation.getName(),bookInformation.getAuthor(),bookInformation.getPress(),bookInformation.getState());
+                        Category a1 = new Category(bookInformation.getPhoto(),bookInformation.getName(),bookInformation.getAuthor(),
+                                bookInformation.getPress(),bookInformation.getState(),bookInformation.getBorrowper(),bookInformation.getCategory());
                         mList.add(a1);
                     }
                     mBookCount.setText(Integer.toString(object.size()));

@@ -3,8 +3,12 @@ package com.example.administrator.myapplication.base;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.CallSuper;
 import android.support.v4.app.Fragment;
 
+import com.example.administrator.myapplication.category.TechnologyFragment;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -18,23 +22,29 @@ import java.util.Set;
 
 public abstract class BaseFragment extends Fragment {
 
+
+    protected Handler mHandler = new Handler(Looper.getMainLooper());
+    protected String TAG ;
+
+    @CallSuper
     @Override
     public void onCreate(Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
+        TAG = this.getClass().getSimpleName();
     }
 
-    public SharedPreferences.Editor mEditor;
-    public SharedPreferences mPreferences;
-    public List<String> mSave;
-    public Set<String> mSet;
-    public Gson mGson;
+    public SharedPreferences.Editor _editor;
+    public SharedPreferences _preferences;
+    public List<String> _save;
+    public Set<String> _set;
+    public Gson _gson;
 
     public void InitSharePreferences(String FileName){
-        mSave = new ArrayList<>();
-        mSet = new HashSet<>();
-        mEditor = getContext().getSharedPreferences(FileName, Context.MODE_PRIVATE).edit();
-        mPreferences = getContext().getSharedPreferences(FileName, Context.MODE_PRIVATE);
-        mSet = mPreferences.getStringSet(FileName, null);
-        mGson = new Gson();
+        _save = new ArrayList<>();
+        _editor = getContext().getSharedPreferences(FileName, Context.MODE_PRIVATE).edit();
+        _preferences = getContext().getSharedPreferences(FileName, Context.MODE_PRIVATE);
+        _set = _preferences.getStringSet(FileName, null);
+        _gson = new Gson();
     }
+
 }

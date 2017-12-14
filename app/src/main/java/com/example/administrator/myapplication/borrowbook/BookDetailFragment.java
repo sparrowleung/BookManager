@@ -2,6 +2,7 @@ package com.example.administrator.myapplication.borrowbook;
 
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,9 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
+import com.example.administrator.myapplication.recycleview.Category;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -30,6 +33,8 @@ public class BookDetailFragment extends BaseFragment {
     private String mBookName;
     private String mBookPress;
     private String mBookAuthor;
+    private String mBookCategory;
+    private Integer mPosition;
 
     private TextView mName;
     private TextView mAuthor;
@@ -48,9 +53,11 @@ public class BookDetailFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle saveInstanceState){
         super.onActivityCreated(saveInstanceState);
-        mBookName=getActivity().getIntent().getStringExtra("bookName");
-        mBookAuthor=getActivity().getIntent().getStringExtra("bookAuthor");
-        mBookPress=getActivity().getIntent().getStringExtra("bookPress");
+        mBookName = getActivity().getIntent().getStringExtra("bookName");
+        mBookAuthor = getActivity().getIntent().getStringExtra("bookAuthor");
+        mBookPress = getActivity().getIntent().getStringExtra("bookPress");
+        mBookCategory = getActivity().getIntent().getStringExtra("bookCategory");
+        mPosition = getActivity().getIntent().getIntExtra("bookPosition",0);
 
         mCardView = (CardView) getActivity().findViewById(R.id.detail_cardview);
         mName = (TextView) getActivity().findViewById(R.id.detail_name);
@@ -61,6 +68,33 @@ public class BookDetailFragment extends BaseFragment {
         mBorrowper = (TextView) getActivity().findViewById(R.id.detail_borrowper);
         mImageView = (ImageView) getActivity().findViewById(R.id.detail_image);
 
+        InitSharePreferences(mBookCategory);
+
+        if(_set != null){
+            _save.addAll(_set);
+            Category _category = _gson.fromJson(_save.get(mPosition), Category.class);
+            Log.d(TAG, "has download "+ _category.getName());
+            mName.setText(_category.getName());
+            mAuthor.setText(_category.getAuthor());
+            mPress.setText(_category.getPress());
+
+            if(_category.getCategory().equals("literature")){
+                mCategory.setText("文学");
+            }else {
+                mCategory.setText("技术");
+            }
+
+            mBorrowper.setText(_category.getBorrowper());
+
+            if(_category.getStatus()) {
+                mState.setText("可借阅");
+            }else {
+                mState.setText("已外借");
+            }
+            Glide.with(getContext()).load(_category.getImageId().getFileUrl()).into(mImageView);
+        }else {
+            Bquery();
+        }
     }
 
     public void Bquery(){
@@ -77,24 +111,32 @@ public class BookDetailFragment extends BaseFragment {
         _query.findObjects(new FindListener<BookInformation>() {
             @Override
             public void done(List<BookInformation> list, BmobException e) {
+                Log.d(TAG, "hasn't download ");
                 if(e == null){
                     BookInformation object = list.get(0);
                     mName.setText(object.getName());
+
                     mAuthor.setText(object.getAuthor());
+
                     mPress.setText(object.getPress());
+
                     if(object.getCategory().equals("literature")){
                         mCategory.setText("文学");
                     }else {
                         mCategory.setText("技术");
                     }
+
                     mBorrowper.setText(object.getBorrowper());
+
                     if(object.getState()) {
                         mState.setText("可借阅");
                     }else {
                         mState.setText("已外借");
                     }
+
                     Glide.with(getContext()).load(object.getPhoto().getFileUrl()).into(mImageView);
                 }
+
             }
         });
     }

@@ -37,7 +37,7 @@
                         android:layout_height="56dp"
                         android:layout_centerVertical="true"
                         android:layout_centerHorizontal="true"
-                        android:src="@drawable/account" />
+                        android:src="@drawable/author" />
 
                     <TextView
                         android:text="更换头像"

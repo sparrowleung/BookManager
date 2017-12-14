@@ -1,5 +1,6 @@
 package com.example.administrator.myapplication.category;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,10 +19,12 @@ import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
 import com.example.administrator.myapplication.borrowbook.BookDetailActivity;
 import com.example.administrator.myapplication.recycleview.Category;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
@@ -36,11 +39,18 @@ import static android.app.Activity.RESULT_OK;
 public class TechnologyFragment extends BaseFragment {
 
     private View mRootView;
-
+    private String _TAG = TechnologyFragment.class.getSimpleName();
     private RecyclerView mRecyclerView;
     private List<Category> mList;
     private CategoryAdapter mCategoryAdapter;
-    private String _TAG = TechnologyFragment.class.getSimpleName();
+
+    private SharedPreferences.Editor mEditor;
+    private SharedPreferences mPreferences;
+    private List<String> mSave;
+    private Set<String> mSet;
+    private Gson mGson;
+
+
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
         mRootView = layoutInflater.inflate(R.layout.fragment_technology,container,false);
@@ -55,7 +65,12 @@ public class TechnologyFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mList = new ArrayList<>();
 
-        InitSharePreferences(_TAG);
+        mSave = new ArrayList<>();
+        mEditor = getContext().getSharedPreferences(_TAG, Context.MODE_PRIVATE).edit();
+        mPreferences = getContext().getSharedPreferences(_TAG, Context.MODE_PRIVATE);
+        mSet = mPreferences.getStringSet(_TAG, null);
+        mGson = new Gson();
+
         if (mSet != null) {
             mSave.addAll(mSet);
             for (int i = 0; i < mSave.size(); i++) {
@@ -63,7 +78,6 @@ public class TechnologyFragment extends BaseFragment {
             }
             mCategoryAdapter = new CategoryAdapter(mList);
             mRecyclerView.setAdapter(mCategoryAdapter);
-            Log.d(_TAG,"has download to local");
         } else {
             Bquery();
         }
@@ -74,18 +88,12 @@ public class TechnologyFragment extends BaseFragment {
         switch (requestCode){
             case 1:
                 if(resultCode == RESULT_OK){
-                    new Thread(new Runnable() {
+                    mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            try {
-                                Thread.sleep(200);
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
+                            Bquery();
                         }
-                    }).start();
-                    Bquery();
-                    mCategoryAdapter.notifyDataSetChanged();
+                    }, 200);
                 }
                 break;
         }
@@ -95,8 +103,12 @@ public class TechnologyFragment extends BaseFragment {
         if(mList.size() > 0){
             mList.clear();
         }
+        if (mSet == null) {
+            mSet = new HashSet<>();
+        }
         BmobQuery<BookInformation> bmobQuery = new BmobQuery<>();
         bmobQuery.addWhereEqualTo("category","technology");
+        bmobQuery.order("-createdAt");
         bmobQuery.setLimit(50);
         bmobQuery.findObjects(new FindListener<BookInformation>() {
             @Override
@@ -105,15 +117,21 @@ public class TechnologyFragment extends BaseFragment {
                     mSave = new ArrayList<>(object.size());
                     for(int i = 0; i < object.size(); i++){
                         Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor(),
-                                object.get(i).getPress(),object.get(i).getState());
+                                object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory());
                         mList.add(a1);
                         mSave.add(i, mGson.toJson(a1));
                     }
                     mSet.addAll(mSave);
                     mEditor.putStringSet(_TAG, mSet).apply();
-                    mCategoryAdapter = new CategoryAdapter(mList);
-                    mRecyclerView.setAdapter(mCategoryAdapter);
                 }
+                mCategoryAdapter = new CategoryAdapter(mList);
+                mRecyclerView.setAdapter(mCategoryAdapter);
+                mRecyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCategoryAdapter.notifyDataSetChanged();
+                    }
+                });
             }
         });
     }
@@ -155,9 +173,11 @@ public class TechnologyFragment extends BaseFragment {
                     int position = viewHolder.getAdapterPosition();
                     Category _category=_list.get(position);
                     Intent _intent=new Intent(getActivity(), BookDetailActivity.class);
-                    _intent.putExtra("bookName",_category.getName());
-                    _intent.putExtra("bookAuthor",_category.getAuthor());
-                    _intent.putExtra("bookPress",_category.getPress());
+                    _intent.putExtra("bookName", _category.getName());
+                    _intent.putExtra("bookAuthor", _category.getAuthor());
+                    _intent.putExtra("bookPress", _category.getPress());
+                    _intent.putExtra("bookCategory", _TAG);
+                    _intent.putExtra("bookPosition", position);
                     startActivityForResult(_intent,1);
                 }
             });

@@ -1,6 +1,8 @@
 package com.example.administrator.myapplication.newbook;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -17,10 +19,13 @@ import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
 import com.example.administrator.myapplication.borrowbook.BookDetailActivity;
-import com.example.administrator.myapplication.recycleview.Book;
+import com.example.administrator.myapplication.recycleview.Category;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
@@ -34,9 +39,16 @@ public class NewBookFragment extends BaseFragment{
 
     private View mRootView;
     private RecyclerView mRecyclerView;
-    private List<Book> mList;
+    private List<Category> mList;
     private NewBookAdapter mNewBookAdapter;
     private String _TAG = NewBookFragment.class.getSimpleName();
+
+    private SharedPreferences.Editor mEditor;
+    private SharedPreferences mPreferences;
+    private List<String> mSave;
+    private Set<String> mSet;
+    private Gson mGson;
+    private int q = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
@@ -52,36 +64,48 @@ public class NewBookFragment extends BaseFragment{
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         mList=new ArrayList<>();
 
-        InitSharePreferences(_TAG);
+        mSave = new ArrayList<>();
+        mEditor = getContext().getSharedPreferences(_TAG, Context.MODE_PRIVATE).edit();
+        mPreferences = getContext().getSharedPreferences(_TAG, Context.MODE_PRIVATE);
+        mSet = mPreferences.getStringSet(_TAG, null);
+        mGson = new Gson();
+
         if(mSet != null){
             mSave.addAll(mSet);
             for(int i = 0; i < mSave.size(); i++){
-                mList.add(i, mGson.fromJson(mSave.get(i), Book.class));
+                mList.add(i, mGson.fromJson(mSave.get(i), Category.class));
             }
             mNewBookAdapter=new NewBookAdapter(mList);
             mRecyclerView.setAdapter(mNewBookAdapter);
-            Log.d(_TAG,"has download to local");
         }else {
             Bquery();
         }
     }
 
     public void Bquery(){
+        if(mList.size() > 0){
+            mList.clear();
+        }
+        if (mSet == null) {
+            mSet = new HashSet<>();
+        }
         BmobQuery<BookInformation> _query = new BmobQuery<>();
         _query.order("-createdAt");
+        _query.setLimit(12);
         _query.findObjects(new FindListener<BookInformation>() {
             @Override
-            public void done(List<BookInformation> list, BmobException e) {
+            public void done(List<BookInformation> object, BmobException e) {
+                mSave = new ArrayList<>(object.size());
                 if(e == null){
-                    mSave = new ArrayList<>(15);
-                    for(int i = 0; i < 15; i++) {
-                        Book _book = new Book(list.get(i).getName(), list.get(i).getPhoto());
-                        mList.add(_book);
-                        mSave.add(i, mGson.toJson(_book));
+                    for(int i = 0; i < 10; i++) {
+                        Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor(),
+                                object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory());
+                        mList.add(a1);
+                        mSave.add(i, mGson.toJson(a1));
                     }
-                    mSet.addAll(mSave);
-                    mEditor.putStringSet(_TAG, mSet).apply();
                 }
+                mSet.addAll(mSave);
+                mEditor.putStringSet(_TAG, mSet).apply();
                 mNewBookAdapter=new NewBookAdapter(mList);
                 mRecyclerView.setAdapter(mNewBookAdapter);
             }
@@ -90,7 +114,7 @@ public class NewBookFragment extends BaseFragment{
 
     class NewBookAdapter extends RecyclerView.Adapter<NewBookAdapter.ViewHolder>{
 
-        private List<Book> mList;
+        private List<Category> mList;
 
         class ViewHolder extends RecyclerView.ViewHolder{
             View _view;
@@ -107,7 +131,7 @@ public class NewBookFragment extends BaseFragment{
             }
         }
 
-        public NewBookAdapter(List<Book> _list){
+        public NewBookAdapter(List<Category> _list){
             this.mList=_list;
         }
 
@@ -119,9 +143,13 @@ public class NewBookFragment extends BaseFragment{
                 @Override
                 public void onClick(View v) {
                     int _position = _viewHolder.getAdapterPosition();
-                    Book _books = mList.get(_position);
+                    Category _category = mList.get(_position);
                     Intent _intent = new Intent(getActivity(), BookDetailActivity.class);
-                    _intent.putExtra("bookName",_books.getBookName());
+                    _intent.putExtra("bookName", _category.getName());
+                    _intent.putExtra("bookAuthor", _category.getAuthor());
+                    _intent.putExtra("bookPress", _category.getPress());
+                    _intent.putExtra("bookCategory", _TAG);
+                    _intent.putExtra("bookPosition", _position);
                     startActivity(_intent);
                 }
             });
@@ -131,9 +159,9 @@ public class NewBookFragment extends BaseFragment{
         @Override
         public void onBindViewHolder(ViewHolder viewHolder,int position){
             int heights = (int) (300 + Math.random() * 300);
-            Book _book = mList.get(position);
-            viewHolder._textView.setText(_book.getBookName());
-            Glide.with(getContext()).load(_book.getBookViewId().getFileUrl()).into(viewHolder._imageView);
+            Category _book = mList.get(position);
+            viewHolder._textView.setText(_book.getName());
+            Glide.with(getContext()).load(_book.getImageId().getFileUrl()).into(viewHolder._imageView);
             ViewGroup.LayoutParams _layoutParams=viewHolder._imageView.getLayoutParams();
             _layoutParams.height = heights;
             viewHolder._imageView.setLayoutParams(_layoutParams);

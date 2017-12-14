@@ -24,6 +24,7 @@ import com.example.administrator.myapplication.bmob.UserInformation;
 import com.example.administrator.myapplication.recycleview.Advice;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -71,21 +72,23 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onActivityCreated(Bundle saveInstanceState){
         super.onActivityCreated(saveInstanceState);
+
+        InitSharePreferences(TAG);
         init();
     }
 
-    public void init(){
+    public void init() {
         mNewBuild = (Button) getActivity().findViewById(R.id.advice_newbuild);
         mNewBuild.setOnClickListener(this);
         mCommit = (Button) getActivity().findViewById(R.id.advice_commit);
         mCommit.setOnClickListener(this);
 
         mShowAdvice = (CardView) getActivity().findViewById(R.id.advice_card1);
-        mShowAdvice.setContentPadding(5,5,5,5);
+        mShowAdvice.setContentPadding(5, 5, 5, 5);
         mShowAdvice.setRadius(16);
         mShowAdvice.setCardElevation(8);
         mCommitAdvice = (CardView) getActivity().findViewById(R.id.advice_card2);
-        mCommitAdvice.setContentPadding(5,5,5,5);
+        mCommitAdvice.setContentPadding(5, 5, 5, 5);
         mCommitAdvice.setRadius(16);
         mCommitAdvice.setCardElevation(8);
 
@@ -103,9 +106,9 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        try{
+                        try {
                             Thread.sleep(2000);
-                        }catch (InterruptedException e){
+                        } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                         getActivity().runOnUiThread(new Runnable() {
@@ -124,7 +127,17 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
         mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.advice_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mList = new ArrayList<>();
-        Bquery();
+
+        if (_set != null) {
+            _save.addAll(_set);
+            for (int i = 0; i < _save.size(); i++) {
+                mList.add(i, _gson.fromJson(_save.get(i), Advice.class));
+            }
+            mAdviceAdapter = new AdviceAdapter(mList);
+            mRecyclerView.setAdapter(mAdviceAdapter);
+        } else {
+            Bquery();
+        }
     }
 
     @Override
@@ -187,18 +200,26 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
         if(mList != null) {
             mList.clear();
         }
+        if(_set == null){
+            _set = new HashSet<>();
+        }
         BmobQuery<AdviceInformation> _query = new BmobQuery<>();
         _query.findObjects(new FindListener<AdviceInformation>() {
             @Override
             public void done(List<AdviceInformation> list, BmobException e) {
+                _save = new ArrayList<>(list.size());
                 if(e==null){
-                    for(AdviceInformation advice : list){
-                        Advice _advice = new Advice(advice.getBookName(),advice.getAuthor(),advice.getPress(),advice.getPrice(),advice.getAdvicer());
+                    for(int i = 0; i < list.size(); i++){
+                        Advice _advice = new Advice(list.get(i).getBookName(),list.get(i).getAuthor(),list.get(i).getPress(),list.get(i).getPrice()
+                                ,list.get(i).getAdvicer());
                         mList.add(_advice);
+                        _save.add(i, _gson.toJson(_advice));
                     }
-                    mAdviceAdapter = new AdviceAdapter(mList);
-                    mRecyclerView.setAdapter(mAdviceAdapter);
                 }
+                _set.addAll(_save);
+                _editor.putStringSet(TAG, _set).apply();
+                mAdviceAdapter = new AdviceAdapter(mList);
+                mRecyclerView.setAdapter(mAdviceAdapter);
             }
         });
     }

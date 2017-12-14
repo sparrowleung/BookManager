@@ -47,6 +47,12 @@ public class LiteratureFragment extends BaseFragment {
     private List<Category> mList;
     private CategoryRecyclerView mCategoryRecyclerView;
 
+    private SharedPreferences.Editor mEditor;
+    private SharedPreferences mPreferences;
+    private List<String> mSave;
+    private Set<String> mSet;
+    private Gson mGson;
+
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
         mRootView = layoutInflater.inflate(R.layout.fragment_literature,container,false);
@@ -60,7 +66,12 @@ public class LiteratureFragment extends BaseFragment {
         mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.litera_recylcerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mList = new ArrayList<>();
-        InitSharePreferences(_TAG);
+
+        mSave = new ArrayList<>();
+        mEditor = getContext().getSharedPreferences(_TAG, Context.MODE_PRIVATE).edit();
+        mPreferences = getContext().getSharedPreferences(_TAG, Context.MODE_PRIVATE);
+        mSet = mPreferences.getStringSet(_TAG, null);
+        mGson = new Gson();
 
         if (mSet != null) {
             mSave.addAll(mSet);
@@ -69,33 +80,44 @@ public class LiteratureFragment extends BaseFragment {
             }
             mCategoryRecyclerView = new CategoryRecyclerView(mList);
             mRecyclerView.setAdapter(mCategoryRecyclerView);
-            Log.d(_TAG,"has download to local");
         } else {
             Bquery();
         }
     }
 
     public void Bquery(){
+        if(mList.size() > 0){
+            mList.clear();
+        }
+        if (mSet == null) {
+            mSet = new HashSet<>();
+        }
         BmobQuery<BookInformation> bmobQuery = new BmobQuery<>();
         bmobQuery.addWhereEqualTo("category","literature");
+        bmobQuery.order("-createdAt");
         bmobQuery.setLimit(50);
         bmobQuery.findObjects(new FindListener<BookInformation>() {
             @Override
             public void done(List<BookInformation> object, BmobException e) {
                 if(e == null){
                     mSave = new ArrayList<>(object.size());
-                    Log.d(_TAG,"hasn't download to local");
                     for(int i = 0; i < object.size(); i++){
                         Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor()
-                                ,object.get(i).getPress(),object.get(i).getState());
+                                ,object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory());
                         mList.add(a1);
                         mSave.add(i, mGson.toJson(a1));
                     }
                     mSet.addAll(mSave);
                     mEditor.putStringSet(_TAG, mSet).apply();
-                    mCategoryRecyclerView = new CategoryRecyclerView(mList);
-                    mRecyclerView.setAdapter(mCategoryRecyclerView);
                 }
+                mCategoryRecyclerView = new CategoryRecyclerView(mList);
+                mRecyclerView.setAdapter(mCategoryRecyclerView);
+                mRecyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCategoryRecyclerView.notifyDataSetChanged();
+                    }
+                });
             }
         });
     }
@@ -159,9 +181,11 @@ public class LiteratureFragment extends BaseFragment {
                     int position = viewHolder.getAdapterPosition();
                     Category _category=_list.get(position);
                     Intent _intent=new Intent(getActivity(), BookDetailActivity.class);
-                    _intent.putExtra("bookName",_category.getName());
-                    _intent.putExtra("bookAuthor",_category.getAuthor());
-                    _intent.putExtra("bookPress",_category.getPress());
+                    _intent.putExtra("bookName", _category.getName());
+                    _intent.putExtra("bookAuthor", _category.getAuthor());
+                    _intent.putExtra("bookPress", _category.getPress());
+                    _intent.putExtra("bookCategory", _TAG);
+                    _intent.putExtra("bookPosition", position);
                     startActivityForResult(_intent,1);
                 }
             });

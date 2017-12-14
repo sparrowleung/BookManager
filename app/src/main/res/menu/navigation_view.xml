@@ -4,7 +4,7 @@
 
     <item
     android:id="@+id/nav_Account"
-    android:icon="@drawable/account"
+    android:icon="@drawable/author"
     android:title="账号管理"/>
 
     <!--<item-->

@@ -22,14 +22,12 @@ import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
 import com.example.administrator.myapplication.borrowbook.BookDetailActivity;
 import com.example.administrator.myapplication.category.CategoryActivity;
-import com.example.administrator.myapplication.category.TechnologyFragment;
 import com.example.administrator.myapplication.newbook.NewBookActivity;
 import com.example.administrator.myapplication.newsandtips.NewsAndTipsActivity;
 import com.example.administrator.myapplication.bmob.NewsTipsInformation;
 import com.example.administrator.myapplication.recycleview.Category;
 import com.example.administrator.myapplication.recycleview.News;
 import com.example.administrator.myapplication.recycleview.NewsTipsAdapter;
-import com.example.administrator.myapplication.recycleview.Book;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -51,7 +49,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     private RecyclerView mBookRecyclerView;
     private RecyclerView mNewsRecyclerView;
 
-    private List<Book> mBookList = new ArrayList<>();
+    private List<Category> mBookList = new ArrayList<>();
     private List<News> mNewsList = new ArrayList<>();
     private HotBook mAdapter;
     private NewsTipsAdapter mNewsAdapter;
@@ -136,11 +134,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             mHotSave.addAll(mHotSet);
 
             for(int i = 0; i < mHotSave.size(); i++){
-                mBookList.add(i, mGson.fromJson(mHotSave.get(i), Book.class));
+                mBookList.add(i, mGson.fromJson(mHotSave.get(i), Category.class));
             }
             mAdapter = new HotBook(mBookList);
             mBookRecyclerView.setAdapter(mAdapter);
-            Log.d("Lyy_HomeFragment","has download to local");
         }else {
             HotBquery();
         }
@@ -212,21 +209,23 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         _query.order("-borrowcount");
         _query.findObjects(new FindListener<BookInformation>() {
             @Override
-            public void done(List<BookInformation> list, BmobException e) {
+            public void done(List<BookInformation> object, BmobException e) {
                 if (e == null) {
-                    mHotSave = new ArrayList<>(list.size());
+                    mHotSave = new ArrayList<>(object.size());
                     mHotSet = new HashSet<>();
-                    if (list.size() >= 6) {
+                    if (object.size() >= 6) {
                         for (int i = 0; i < 6; i++) {
-                            Book _book = new Book(list.get(i).getName(), list.get(i).getPhoto());
-                            mBookList.add(_book);
-                            mHotSave.add(i, mGson.toJson(_book));
+                            Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor()
+                                    ,object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory());
+                            mBookList.add(a1);
+                            mHotSave.add(i, mGson.toJson(a1));
                         }
                     } else {
-                        for (int i = 0; i < list.size(); i++) {
-                            Book _book = new Book(list.get(i).getName(), list.get(i).getPhoto());
-                            mBookList.add(_book);
-                            mHotSave.add(i, mGson.toJson(_book));
+                        for (int i = 0; i < object.size(); i++) {
+                            Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor()
+                                    ,object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory());
+                            mBookList.add(a1);
+                            mHotSave.add(i, mGson.toJson(a1));
                         }
                     }
                     mHotSet.addAll(mHotSave);
@@ -241,7 +240,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
     class HotBook extends RecyclerView.Adapter<HotBook.ViewHolder>{
 
-        private List<Book> _list;
+        private List<Category> _list;
 
        class ViewHolder extends RecyclerView.ViewHolder{
            private ImageView _imageView;
@@ -256,7 +255,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
            }
        }
 
-       public HotBook(List<Book> mList){
+       public HotBook(List<Category> mList){
            _list = mList;
        }
 
@@ -268,9 +267,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                @Override
                public void onClick(View view) {
                    int position = viewHolder.getAdapterPosition();
-                   Book _hot = _list.get(position);
+                   Category _category = _list.get(position);
                    Intent _intent = new Intent(getActivity(), BookDetailActivity.class);
-                   _intent.putExtra("bookName", _hot.getBookName());
+                   _intent.putExtra("bookName", _category.getName());
+                   _intent.putExtra("bookAuthor", _category.getAuthor());
+                   _intent.putExtra("bookPress", _category.getPress());
+                   _intent.putExtra("bookCategory", "hotbooks");
+                   _intent.putExtra("bookPosition", position);
                    startActivity(_intent);
                }
            });
@@ -279,9 +282,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
        @Override
         public void onBindViewHolder(ViewHolder viewHolder,int position){
-            Book mBook = _list.get(position);
-            viewHolder._textView.setText(mBook.getBookName());
-            Glide.with(getContext()).load(mBook.getBookViewId().getFileUrl()).into(viewHolder._imageView);
+            Category mBook = _list.get(position);
+            viewHolder._textView.setText(mBook.getName());
+            Glide.with(getContext()).load(mBook.getImageId().getFileUrl()).into(viewHolder._imageView);
        }
 
        @Override
