@@ -48,7 +48,6 @@ public class NewBookFragment extends BaseFragment{
     private List<String> mSave;
     private Set<String> mSet;
     private Gson mGson;
-    private int q = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
@@ -100,7 +99,7 @@ public class NewBookFragment extends BaseFragment{
                     for(int i = 0; i < 10; i++) {
                         Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor(),
                                 object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory());
-                        mList.add(a1);
+                        mList.add(i, a1);
                         mSave.add(i, mGson.toJson(a1));
                     }
                 }

@@ -118,7 +118,7 @@ public class TechnologyFragment extends BaseFragment {
                     for(int i = 0; i < object.size(); i++){
                         Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor(),
                                 object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory());
-                        mList.add(a1);
+                        mList.add(i, a1);
                         mSave.add(i, mGson.toJson(a1));
                     }
                     mSet.addAll(mSave);

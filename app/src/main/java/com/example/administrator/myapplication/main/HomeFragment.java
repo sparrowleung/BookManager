@@ -188,7 +188,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                     } else {
                         for (int i = 0; i < list.size(); i++) {
                             News _news = new News(list.get(i).getTitle(), list.get(i).getSubTitle());
-                            mNewsList.add(_news);
+                            mNewsList.add(i, _news);
                             mNewsSave.add(i, mGson.toJson(_news));
                         }
                     }
@@ -217,14 +217,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                         for (int i = 0; i < 6; i++) {
                             Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor()
                                     ,object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory());
-                            mBookList.add(a1);
+                            mBookList.add(i, a1);
                             mHotSave.add(i, mGson.toJson(a1));
                         }
                     } else {
                         for (int i = 0; i < object.size(); i++) {
                             Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor()
                                     ,object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory());
-                            mBookList.add(a1);
+                            mBookList.add(i, a1);
                             mHotSave.add(i, mGson.toJson(a1));
                         }
                     }

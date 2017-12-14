@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
@@ -75,6 +76,7 @@ public class LiteratureFragment extends BaseFragment {
 
         if (mSet != null) {
             mSave.addAll(mSet);
+            Log.d(_TAG,"the first data is : "+ mSave.get(0));
             for(int i = 0; i < mSave.size(); i++){
                 mList.add(i, mGson.fromJson(mSave.get(i), Category.class));
             }
@@ -90,7 +92,7 @@ public class LiteratureFragment extends BaseFragment {
             mList.clear();
         }
         if (mSet == null) {
-            mSet = new HashSet<>();
+            mSet = new TreeSet<>(new ComparatorImpl());
         }
         BmobQuery<BookInformation> bmobQuery = new BmobQuery<>();
         bmobQuery.addWhereEqualTo("category","literature");
@@ -104,10 +106,12 @@ public class LiteratureFragment extends BaseFragment {
                     for(int i = 0; i < object.size(); i++){
                         Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor()
                                 ,object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory());
-                        mList.add(a1);
+                        mList.add(i, a1);
                         mSave.add(i, mGson.toJson(a1));
                     }
+
                     mSet.addAll(mSave);
+                    Log.d(_TAG,"the first data isss : "+ mSet.toString());
                     mEditor.putStringSet(_TAG, mSet).apply();
                 }
                 mCategoryRecyclerView = new CategoryRecyclerView(mList);

@@ -12,6 +12,7 @@ import com.example.administrator.myapplication.category.TechnologyFragment;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,6 +46,13 @@ public abstract class BaseFragment extends Fragment {
         _preferences = getContext().getSharedPreferences(FileName, Context.MODE_PRIVATE);
         _set = _preferences.getStringSet(FileName, null);
         _gson = new Gson();
+    }
+
+    public static class ComparatorImpl implements Comparator<String> {
+        @Override
+        public int compare(String lhs, String rhs) {
+            return lhs.compareTo(rhs);
+        }
     }
 
 }
