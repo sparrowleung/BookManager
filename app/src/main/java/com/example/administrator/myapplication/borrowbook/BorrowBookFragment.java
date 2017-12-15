@@ -109,15 +109,15 @@ public class BorrowBookFragment extends BaseFragment {
         bmobQuery.setLimit(50);
         bmobQuery.findObjects(new FindListener<BookInformation>() {
             @Override
-            public void done(List<BookInformation> object, BmobException e) {
+            public void done(List<BookInformation> list, BmobException e) {
                 if(e==null){
 
-                    for(BookInformation bookInformation : object){
-                        Category a1 = new Category(bookInformation.getPhoto(),bookInformation.getName(),bookInformation.getAuthor(),
-                                bookInformation.getPress(),bookInformation.getState(),bookInformation.getBorrowper(),bookInformation.getCategory());
+                    for(BookInformation object : list){
+                        Category a1 = new Category(object.getPhoto(),object.getName(),object.getAuthor(),
+                                object.getPress(),object.getState(),object.getBorrowper(),object.getCategory(), object.getCreatedAt());
                         mList.add(a1);
                     }
-                    mBookCount.setText(Integer.toString(object.size()));
+                    mBookCount.setText(Integer.toString(list.size()));
                     mBookAdapter = new BookAdapter(mList);
                     mRecyclerView.setAdapter(mBookAdapter);
                 }

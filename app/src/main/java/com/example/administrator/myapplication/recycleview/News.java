@@ -8,10 +8,12 @@ public class News {
 
     String mTitle;
     String mSubTitle;
+    String mCreatedAt;
 
-    public News(String title,String subTitle){
-        this.mSubTitle=subTitle;
-        this.mTitle=title;
+    public News(String title,String subTitle, String createdAt){
+        this.mSubTitle = subTitle;
+        this.mTitle = title;
+        this.mCreatedAt = createdAt;
     }
 
     public String getTitle(){
@@ -20,6 +22,10 @@ public class News {
 
     public String getSubTitle(){
         return mSubTitle;
+    }
+
+    public String getCreatedAt(){
+        return mCreatedAt;
     }
 
     @Override

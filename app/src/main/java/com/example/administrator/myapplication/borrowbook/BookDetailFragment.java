@@ -34,7 +34,6 @@ public class BookDetailFragment extends BaseFragment {
     private String mBookPress;
     private String mBookAuthor;
     private String mBookCategory;
-    private Integer mPosition;
 
     private TextView mName;
     private TextView mAuthor;
@@ -43,6 +42,7 @@ public class BookDetailFragment extends BaseFragment {
     private TextView mState;
     private TextView mBorrowper;
     private ImageView mImageView;
+    private Category _category;
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
@@ -57,7 +57,6 @@ public class BookDetailFragment extends BaseFragment {
         mBookAuthor = getActivity().getIntent().getStringExtra("bookAuthor");
         mBookPress = getActivity().getIntent().getStringExtra("bookPress");
         mBookCategory = getActivity().getIntent().getStringExtra("bookCategory");
-        mPosition = getActivity().getIntent().getIntExtra("bookPosition",0);
 
         mCardView = (CardView) getActivity().findViewById(R.id.detail_cardview);
         mName = (TextView) getActivity().findViewById(R.id.detail_name);
@@ -72,8 +71,13 @@ public class BookDetailFragment extends BaseFragment {
 
         if(_set != null){
             _save.addAll(_set);
-            Category _category = _gson.fromJson(_save.get(mPosition), Category.class);
-            Log.d(TAG, "has download "+ _category.getName());
+            for(int i = 0; i < _save.size(); i++) {
+                _category = _gson.fromJson(_save.get(i), Category.class);
+                if(_category.getName().equals(mBookName) && _category.getAuthor().equals(mBookAuthor)
+                        && _category.getPress().equals(mBookPress)){
+                    break;
+                }
+            }
             mName.setText(_category.getName());
             mAuthor.setText(_category.getAuthor());
             mPress.setText(_category.getPress());

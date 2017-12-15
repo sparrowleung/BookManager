@@ -24,6 +24,7 @@ import com.example.administrator.myapplication.bmob.UserInformation;
 import com.example.administrator.myapplication.recycleview.Advice;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -62,6 +63,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
     private String mPress;
     private String mPrice;
     private String mReason;
+    private ComparatorImpl mComparator = new ComparatorImpl();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
@@ -130,6 +132,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
 
         if (_set != null) {
             _save.addAll(_set);
+            Collections.sort(_save,mComparator);
             for (int i = 0; i < _save.size(); i++) {
                 mList.add(i, _gson.fromJson(_save.get(i), Advice.class));
             }
@@ -204,6 +207,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
             _set = new HashSet<>();
         }
         BmobQuery<AdviceInformation> _query = new BmobQuery<>();
+
         _query.findObjects(new FindListener<AdviceInformation>() {
             @Override
             public void done(List<AdviceInformation> list, BmobException e) {
@@ -211,7 +215,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
                 if(e==null){
                     for(int i = 0; i < list.size(); i++){
                         Advice _advice = new Advice(list.get(i).getBookName(),list.get(i).getAuthor(),list.get(i).getPress(),list.get(i).getPrice()
-                                ,list.get(i).getAdvicer());
+                                ,list.get(i).getAdvicer(), list.get(i).getCreatedAt());
                         mList.add(_advice);
                         _save.add(i, _gson.toJson(_advice));
                     }

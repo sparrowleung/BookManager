@@ -31,9 +31,11 @@ import com.example.administrator.myapplication.recycleview.NewsTipsAdapter;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
@@ -71,6 +73,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     private List<String> mHotSave;
     private List<String> mNewsSave;
     private Gson mGson;
+    private ComparatorImpl mComparator = new ComparatorImpl();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
@@ -117,7 +120,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         if(mNewsSet != null){
             mNewsSave = new ArrayList<>();
             mNewsSave.addAll(mNewsSet);
-
+            Collections.sort(mNewsSave,mComparator);
+            Collections.reverse(mNewsSave);
             for(int i = 0; i < mNewsSave.size(); i++){
                 mNewsList.add(i, mGson.fromJson(mNewsSave.get(i), News.class));
             }
@@ -132,7 +136,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         if(mHotSet != null){
             mHotSave = new ArrayList<>();
             mHotSave.addAll(mHotSet);
-
             for(int i = 0; i < mHotSave.size(); i++){
                 mBookList.add(i, mGson.fromJson(mHotSave.get(i), Category.class));
             }
@@ -172,22 +175,22 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             mNewsList.clear();
         }
         BmobQuery<NewsTipsInformation> _newsQuery=new BmobQuery<>();
-        _newsQuery.order("-createAt");
+        _newsQuery.order("-createdAt");
         _newsQuery.findObjects(new FindListener<NewsTipsInformation>() {
             @Override
             public void done(List<NewsTipsInformation> list, BmobException e) {
                 if (e == null) {
-                    mNewsSet = new HashSet<>();
+                    mNewsSet = new TreeSet<>(mComparator);
                     mNewsSave = new ArrayList<>(list.size());
                     if (list.size() >= 2) {
                         for (int i = 0; i < 2; i++) {
-                            News _news = new News(list.get(i).getTitle(), list.get(i).getSubTitle());
+                            News _news = new News(list.get(i).getTitle(), list.get(i).getSubTitle(), list.get(i).getCreatedAt());
                             mNewsSave.add(i, mGson.toJson(_news));
                             mNewsList.add(_news);
                         }
                     } else {
                         for (int i = 0; i < list.size(); i++) {
-                            News _news = new News(list.get(i).getTitle(), list.get(i).getSubTitle());
+                            News _news = new News(list.get(i).getTitle(), list.get(i).getSubTitle(), list.get(i).getCreatedAt());
                             mNewsList.add(i, _news);
                             mNewsSave.add(i, mGson.toJson(_news));
                         }
@@ -212,18 +215,18 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             public void done(List<BookInformation> object, BmobException e) {
                 if (e == null) {
                     mHotSave = new ArrayList<>(object.size());
-                    mHotSet = new HashSet<>();
+                    mHotSet = new TreeSet<>(mComparator);
                     if (object.size() >= 6) {
                         for (int i = 0; i < 6; i++) {
                             Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor()
-                                    ,object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory());
+                                    ,object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory(), object.get(i).getCreatedAt());
                             mBookList.add(i, a1);
                             mHotSave.add(i, mGson.toJson(a1));
                         }
                     } else {
                         for (int i = 0; i < object.size(); i++) {
                             Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor()
-                                    ,object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory());
+                                    ,object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory(), object.get(i).getCreatedAt());
                             mBookList.add(i, a1);
                             mHotSave.add(i, mGson.toJson(a1));
                         }
@@ -273,7 +276,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                    _intent.putExtra("bookAuthor", _category.getAuthor());
                    _intent.putExtra("bookPress", _category.getPress());
                    _intent.putExtra("bookCategory", "hotbooks");
-                   _intent.putExtra("bookPosition", position);
                    startActivity(_intent);
                }
            });

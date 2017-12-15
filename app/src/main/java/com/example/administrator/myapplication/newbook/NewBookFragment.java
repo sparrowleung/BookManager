@@ -23,6 +23,7 @@ import com.example.administrator.myapplication.recycleview.Category;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,6 +49,7 @@ public class NewBookFragment extends BaseFragment{
     private List<String> mSave;
     private Set<String> mSet;
     private Gson mGson;
+    private ComparatorImpl mComparator = new ComparatorImpl();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
@@ -71,6 +73,7 @@ public class NewBookFragment extends BaseFragment{
 
         if(mSet != null){
             mSave.addAll(mSet);
+            Collections.sort(mSave,mComparator);
             for(int i = 0; i < mSave.size(); i++){
                 mList.add(i, mGson.fromJson(mSave.get(i), Category.class));
             }
@@ -98,7 +101,7 @@ public class NewBookFragment extends BaseFragment{
                 if(e == null){
                     for(int i = 0; i < 10; i++) {
                         Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor(),
-                                object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory());
+                                object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory(), object.get(i).getCreatedAt());
                         mList.add(i, a1);
                         mSave.add(i, mGson.toJson(a1));
                     }
@@ -148,7 +151,6 @@ public class NewBookFragment extends BaseFragment{
                     _intent.putExtra("bookAuthor", _category.getAuthor());
                     _intent.putExtra("bookPress", _category.getPress());
                     _intent.putExtra("bookCategory", _TAG);
-                    _intent.putExtra("bookPosition", _position);
                     startActivity(_intent);
                 }
             });

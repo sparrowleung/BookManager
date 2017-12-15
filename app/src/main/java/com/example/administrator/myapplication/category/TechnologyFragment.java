@@ -22,9 +22,12 @@ import com.example.administrator.myapplication.recycleview.Category;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
@@ -49,7 +52,7 @@ public class TechnologyFragment extends BaseFragment {
     private List<String> mSave;
     private Set<String> mSet;
     private Gson mGson;
-
+    private ComparatorImpl mComparator = new ComparatorImpl();
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
@@ -73,6 +76,7 @@ public class TechnologyFragment extends BaseFragment {
 
         if (mSet != null) {
             mSave.addAll(mSet);
+            Collections.sort(mSave,mComparator);
             for (int i = 0; i < mSave.size(); i++) {
                 mList.add(i, mGson.fromJson(mSave.get(i), Category.class));
             }
@@ -104,7 +108,7 @@ public class TechnologyFragment extends BaseFragment {
             mList.clear();
         }
         if (mSet == null) {
-            mSet = new HashSet<>();
+            mSet = new TreeSet<>(mComparator);
         }
         BmobQuery<BookInformation> bmobQuery = new BmobQuery<>();
         bmobQuery.addWhereEqualTo("category","technology");
@@ -117,7 +121,7 @@ public class TechnologyFragment extends BaseFragment {
                     mSave = new ArrayList<>(object.size());
                     for(int i = 0; i < object.size(); i++){
                         Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor(),
-                                object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory());
+                                object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory(), object.get(i).getCreatedAt());
                         mList.add(i, a1);
                         mSave.add(i, mGson.toJson(a1));
                     }
@@ -177,7 +181,6 @@ public class TechnologyFragment extends BaseFragment {
                     _intent.putExtra("bookAuthor", _category.getAuthor());
                     _intent.putExtra("bookPress", _category.getPress());
                     _intent.putExtra("bookCategory", _TAG);
-                    _intent.putExtra("bookPosition", position);
                     startActivityForResult(_intent,1);
                 }
             });

@@ -11,13 +11,15 @@ public class Advice {
     String _press;
     String _advicer;
     String _price;
+    String _acreatedAt;
 
-    public Advice(String name,String author,String press,String price,String advicer){
-        this._name=name;
-        this._author=author;
-        this._press=press;
-        this._advicer=advicer;
-        this._price=price;
+    public Advice(String name,String author,String press,String price,String advicer, String createdAt){
+        this._name = name;
+        this._author = author;
+        this._press = press;
+        this._advicer = advicer;
+        this._price = price;
+        this._acreatedAt = createdAt;
     }
 
     public String getName(){
@@ -37,4 +39,6 @@ public class Advice {
     }
 
     public String getPrice(){return _price;}
+
+    public String getCreated(){return _acreatedAt;}
 }

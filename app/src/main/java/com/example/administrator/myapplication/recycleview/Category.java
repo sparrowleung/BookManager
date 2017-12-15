@@ -3,6 +3,8 @@ package com.example.administrator.myapplication.recycleview;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Date;
+
 import cn.bmob.v3.datatype.BmobFile;
 
 /**
@@ -18,8 +20,9 @@ public class Category {
     String _borrowper;
     String _category;
     Boolean _status;
+    String _acreateAt;
 
-    public Category(BmobFile image,String name,String author,String press,Boolean status,String borrowper,String category){
+    public Category(BmobFile image,String name,String author,String press,Boolean status,String borrowper,String category, String createAt){
         this._image = image;
         this._name = name;
         this._author = author;
@@ -27,6 +30,7 @@ public class Category {
         this._status = status;
         this._borrowper = borrowper;
         this._category = category;
+        this._acreateAt = createAt;
     }
 
     public BmobFile getImageId(){
@@ -55,6 +59,10 @@ public class Category {
 
     public String getCategory(){
         return _category;
+    }
+
+    public String getCreateAt(){
+        return _acreateAt;
     }
 
 }

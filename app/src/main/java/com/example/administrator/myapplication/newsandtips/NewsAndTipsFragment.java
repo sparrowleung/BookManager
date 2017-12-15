@@ -22,6 +22,7 @@ import com.example.administrator.myapplication.recycleview.NewsTipsAdapter;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -50,6 +51,7 @@ public class NewsAndTipsFragment extends BaseFragment {
     private List<String> _save;
     private Set<String> _set;
     private Gson mGson;
+    private ComparatorImpl mComparator = new ComparatorImpl();
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
@@ -73,10 +75,9 @@ public class NewsAndTipsFragment extends BaseFragment {
 
         if(_set != null){
             _save = new ArrayList<>();
-
-            if(_set != null) {
-                _save.addAll(_set);
-            }
+            _save.addAll(_set);
+            Collections.sort(_save,mComparator);
+            Collections.reverse(_save);
             for(int i = 0; i < _save.size(); i++){
                 mList.add(i, mGson.fromJson(_save.get(i), News.class));
             }
