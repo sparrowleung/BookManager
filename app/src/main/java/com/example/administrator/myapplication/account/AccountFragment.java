@@ -2,8 +2,10 @@ package com.example.administrator.myapplication.account;
 
 import android.Manifest;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -76,6 +78,8 @@ public class AccountFragment extends BaseFragment {
 
     private BmobUser mUser;
     private Uri mUri;
+    private SharedPreferences mPreferences;
+    private SharedPreferences.Editor mEditor;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
@@ -109,21 +113,18 @@ public class AccountFragment extends BaseFragment {
         mUser = BmobUser.getCurrentUser();
         mTextNickName.setText(mUser.getUsername());
         mNumbers.setText(mUser.getMobilePhoneNumber());
-        BmobQuery<UserInformation> _query = new BmobQuery<>();
-        _query.addWhereEqualTo("username",mUser.getUsername());
-        _query.findObjects(new FindListener<UserInformation>() {
-            @Override
-            public void done(List<UserInformation> list, BmobException e) {
-                if (e == null) {
-                    mEditNickName.setHint(list.get(0).getUsername());
-                    mEditPart.setHint(list.get(0).getPart());
-                    mEditTeam.setHint(list.get(0).getTeamgroup());
-                    Glide.with(getContext()).load(list.get(0).getImage().getFileUrl()).into(mImageView);
-                }
-            }
-        });
 
-
+        mPreferences = getContext().getSharedPreferences("userFile", Context.MODE_PRIVATE);
+        mEditor = getContext().getSharedPreferences("userFile", Context.MODE_PRIVATE).edit();
+        if(mPreferences.getString("userName", null) != null){
+            mEditNickName.setHint(mPreferences.getString("userName", null));
+            mEditPart.setHint(mPreferences.getString("part", null));
+            mEditTeam.setHint(mPreferences.getString("teamGroup", null));
+            Glide.with(getContext()).load(mPreferences.getString("imageUrl", null)).into(mImageView);
+        }
+        else {
+            Bquery();
+        }
 
         mCardView2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,21 +146,7 @@ public class AccountFragment extends BaseFragment {
                 mPassword = mEditPassword.getText().toString();
                 mPart = mEditPart.getText().toString();
                 mTeamGroup = mEditTeam.getText().toString();
-                UserInformation _user = new UserInformation();
-                _user.setUsername(mNickName);
-                _user.setPassword(mPassword);
-                _user.setPart(mPart);
-                _user.setTeamgroup(mTeamGroup);
-                _user.update(_user.getObjectId(),new UpdateListener() {
-                    @Override
-                    public void done(BmobException e) {
-                        if(e == null){
-                            Toast.makeText(getContext(),"更新信息成功",Toast.LENGTH_SHORT).show();
-                        }else {
-                            Toast.makeText(getContext(),"更新信息失败",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                Bupdate();
             }
         });
 
@@ -173,6 +160,8 @@ public class AccountFragment extends BaseFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         BmobUser.logOut();
+                        mEditor.clear();
+                        mEditor.commit();
                         Intent intent = getContext().getPackageManager()
                                 .getLaunchIntentForPackage(getContext().getPackageName());
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -274,6 +263,40 @@ public class AccountFragment extends BaseFragment {
             _cursor.close();
         }
         return _path;
+    }
+
+    public void Bquery(){
+        BmobQuery<UserInformation> _query = new BmobQuery<>();
+        _query.addWhereEqualTo("username",mUser.getUsername());
+        _query.findObjects(new FindListener<UserInformation>() {
+            @Override
+            public void done(List<UserInformation> list, BmobException e) {
+                if (e == null) {
+                    mEditNickName.setHint(list.get(0).getUsername());
+                    mEditPart.setHint(list.get(0).getPart());
+                    mEditTeam.setHint(list.get(0).getTeamgroup());
+                    Glide.with(getContext()).load(list.get(0).getImage().getFileUrl()).into(mImageView);
+                }
+            }
+        });
+    }
+
+    public void Bupdate(){
+        UserInformation _user = new UserInformation();
+        _user.setUsername(mNickName);
+        _user.setPassword(mPassword);
+        _user.setPart(mPart);
+        _user.setTeamgroup(mTeamGroup);
+        _user.update(_user.getObjectId(),new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+                if(e == null){
+                    Toast.makeText(getContext(),"更新信息成功",Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getContext(),"更新信息失败",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 }

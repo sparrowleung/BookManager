@@ -45,10 +45,13 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.DownloadFileListener;
 import cn.bmob.v3.listener.FindListener;
 
+import static com.mob.MobSDK.getContext;
+
 
 public class MainActivity extends BaseActivity {
 
     private DrawerLayout _drawerLayout;
+    private String _TAG = MainActivity.class.getSimpleName();
     private long mFirstTime;
     private NavigationView _navigationView;
     private Toolbar _toolBar;
@@ -133,7 +136,7 @@ public class MainActivity extends BaseActivity {
             _unLogin.setVisibility(View.GONE);
             _heartName.setVisibility(View.VISIBLE);
             _heaterName.setText(_user.getUsername());
-            if(mPreferences != null){
+            if(mPreferences.getString("userName", null) != null){
                 Glide.with(getApplicationContext()).load(mPreferences.getString("imageUrl", null)).into(_hearterImage);
             }else {
                 DownloadPicture();
@@ -198,24 +201,22 @@ public class MainActivity extends BaseActivity {
 
     public void DownloadPicture(){
         BmobQuery<UserInformation> _query = new BmobQuery<>();
-        _query.addWhereEqualTo("MobilePhoneNumber",_user.getMobilePhoneNumber());
+        _query.addWhereEqualTo("mobilePhoneNumber",_user.getMobilePhoneNumber());
         _query.findObjects(new FindListener<UserInformation>() {
             @Override
-            public void done(List<UserInformation> list, BmobException e) {
+            public void done(List<UserInformation> object, BmobException e) {
                 if(e == null) {
-                    for (UserInformation object : list) {
-                       mEditor.putString("userName", object.getUsername());
-                       mEditor.putString("mobileNum", object.getMobilePhoneNumber());
-                       mEditor.putString("teamGroup", object.getTeamgroup());
-                       mEditor.putString("part", object.getPart());
-                       mEditor.putString("imageUrl", object.getImage().getFileUrl());
-                       Glide.with(getApplicationContext()).load(object.getImage().getFileUrl()).into(_hearterImage);
-                    }
-                    mEditor.apply();
+                    mEditor.putString("userName", object.get(0).getUsername());
+                    mEditor.putString("mobileNum", object.get(0).getMobilePhoneNumber());
+                    mEditor.putString("teamGroup", object.get(0).getTeamgroup());
+                    mEditor.putString("part", object.get(0).getPart());
+                    mEditor.putString("imageUrl", object.get(0).getImage().getFileUrl());
+                    Glide.with(getApplicationContext()).load(object.get(0).getImage().getFileUrl()).into(_hearterImage);
                 }
                 else{
-                    Log.d("MainActivity_lyy", "error message " + e.getMessage() + " errorCode = " + e.getErrorCode());
+                    Log.d(_TAG, "error message " + e.getMessage() + " errorCode = " + e.getErrorCode());
                 }
+                mEditor.apply();
             }
         });
     }

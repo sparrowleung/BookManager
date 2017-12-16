@@ -57,6 +57,7 @@ public class CategoryActivity extends BaseActivity {
         CategoryViewpager _categoryViewpager=new CategoryViewpager(getSupportFragmentManager(),FragmentList);
         mViewPager.setAdapter(_categoryViewpager);
         mTabLayout.setupWithViewPager(mViewPager);
+        mTabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.tby));
         mTabLayout.getTabAt(0).setText("技术类");
         mTabLayout.getTabAt(1).setText("文学类");
     }

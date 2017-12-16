@@ -2,6 +2,7 @@ package com.example.administrator.myapplication.borrowbook;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -51,6 +52,7 @@ public class BorrowBookFragment extends BaseFragment {
     private ImageView mAccountImage;
     private BmobUser _user;
     private ComparatorImpl mComparator;
+    private SharedPreferences mPreferences;
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
@@ -91,16 +93,22 @@ public class BorrowBookFragment extends BaseFragment {
         mList=new ArrayList<>();
 
         mAccountName = (TextView) getActivity().findViewById(R.id.borrow_account);
-
+        mPreferences = getContext().getSharedPreferences("userFile",Context.MODE_PRIVATE);
         if(_user != null) {
             mAccountName.setText(_user.getUsername());
-            DownloadImage();
+
+            if(mPreferences.getString("imageUrl", null) != null){
+                Glide.with(getContext()).load(mPreferences.getString("imageUrl", null)).into(mAccountImage);
+            }else {
+                DownloadImage();
+            }
             if (_set != null) {
                 _save.addAll(_set);
                 Collections.sort(_save, mComparator);
                 for (int i = 0; i < _save.size(); i++) {
                     mList.add(i, _gson.fromJson(_save.get(i), BookInformation.class));
                 }
+                mBookCount.setText(Integer.toString(_save.size()));
                 mBookAdapter = new BookAdapter(mList);
                 mRecyclerView.setAdapter(mBookAdapter);
             }
@@ -152,7 +160,7 @@ public class BorrowBookFragment extends BaseFragment {
 
     public void DownloadImage(){
         BmobQuery<UserInformation> _query = new BmobQuery<>();
-        _query.addWhereEqualTo("MobilePhoneNumber",_user.getMobilePhoneNumber());
+        _query.addWhereEqualTo("mobilePhoneNumber",_user.getMobilePhoneNumber());
         _query.findObjects(new FindListener<UserInformation>() {
             @Override
             public void done(List<UserInformation> list, BmobException e) {

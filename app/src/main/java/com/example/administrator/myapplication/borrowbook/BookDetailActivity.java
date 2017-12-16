@@ -54,7 +54,7 @@ public class BookDetailActivity extends BaseActivity{
         upDateActionBar();
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar_detail);
-
+        mToolbar.setTitle("图书借阅");
         setSupportActionBar(mToolbar);
         ActionBar mActionBar = getSupportActionBar();
         if(mActionBar != null){
