@@ -55,7 +55,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
     private EditText mReasonEdit;
 
     private RecyclerView mRecyclerView;
-    private List<Advice> mList;
+    private List<AdviceInformation> mList;
     private AdviceAdapter mAdviceAdapter;
 
     private String mName;
@@ -134,7 +134,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
             _save.addAll(_set);
             Collections.sort(_save,mComparator);
             for (int i = 0; i < _save.size(); i++) {
-                mList.add(i, _gson.fromJson(_save.get(i), Advice.class));
+                mList.add(i, _gson.fromJson(_save.get(i), AdviceInformation.class));
             }
             mAdviceAdapter = new AdviceAdapter(mList);
             mRecyclerView.setAdapter(mAdviceAdapter);
@@ -167,7 +167,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
                         AdviceInformation _advice = new AdviceInformation();
                         _advice.setBookName(mName);
                         _advice.setAuthor(mAuthor);
-                        _advice.setPrice(mPrice);
+                        _advice.setPrice(Double.valueOf(mPrice));
                         _advice.setPress(mPress);
                         _advice.setReason(mReason);
                         _advice.setAdvicer(_user.getUsername());
@@ -214,8 +214,8 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
                 _save = new ArrayList<>(list.size());
                 if(e==null){
                     for(int i = 0; i < list.size(); i++){
-                        Advice _advice = new Advice(list.get(i).getBookName(),list.get(i).getAuthor(),list.get(i).getPress(),list.get(i).getPrice()
-                                ,list.get(i).getAdvicer(), list.get(i).getCreatedAt());
+                        AdviceInformation _advice = new AdviceInformation(list.get(i).getCreatedAt(),list.get(i).getBookName(),list.get(i).getAuthor(),list.get(i).getPress()
+                                ,list.get(i).getPrice(), list.get(i).getReason(), list.get(i).getAdvicer());
                         mList.add(_advice);
                         _save.add(i, _gson.toJson(_advice));
                     }
@@ -230,7 +230,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
 
     class AdviceAdapter extends RecyclerView.Adapter<AdviceAdapter.ViewHolder>{
 
-        private List<Advice> _list;
+        private List<AdviceInformation> _list;
 
         class ViewHolder extends RecyclerView.ViewHolder{
             private TextView mName;
@@ -251,7 +251,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
             }
         }
 
-        public AdviceAdapter(List<Advice> mList){
+        public AdviceAdapter(List<AdviceInformation> mList){
             this._list=mList;
         }
 
@@ -264,12 +264,12 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
 
         @Override
         public void onBindViewHolder(final ViewHolder viewHolder,int position){
-            Advice _advice = _list.get(position);
-            viewHolder.mName.setText(_advice.getName());
+            AdviceInformation _advice = _list.get(position);
+            viewHolder.mName.setText(_advice.getBookName());
             viewHolder.mAuthor.setText(_advice.getAuthor());
             viewHolder.mPress.setText(_advice.getAuthor());
             viewHolder.mAdvicer.setText(_advice.getAdvicer());
-            viewHolder.mPrice.setText(_advice.getPrice());
+            viewHolder.mPrice.setText(Double.toString(_advice.getPrice()));
             BmobQuery<UserInformation> _user = new BmobQuery<>();
             _user.addWhereEqualTo("username",_advice.getAdvicer());
             _user.findObjects(new FindListener<UserInformation>() {

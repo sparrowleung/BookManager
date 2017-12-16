@@ -1,6 +1,7 @@
 package com.example.administrator.myapplication.main;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -34,6 +35,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
@@ -63,6 +65,10 @@ public class MainActivity extends BaseActivity {
     private HomeFragment mFirstPageFragment;
     private BorrowBookFragment mBorrowBookFragment;
 
+    private SharedPreferences.Editor mEditor;
+    private SharedPreferences mPreferences;
+    private BmobUser _user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,30 +77,27 @@ public class MainActivity extends BaseActivity {
 
         upDateActionBar();
 
-        _toolBar=(Toolbar) findViewById(R.id.toolbar);
+        _toolBar = (Toolbar) findViewById(R.id.toolbar);
         _toolBar.setTitle("图书管理系统");
         setSupportActionBar(_toolBar);
-        android.support.v7.app.ActionBar mActionBar=getSupportActionBar();
+        android.support.v7.app.ActionBar mActionBar = getSupportActionBar();
         if(mActionBar!=null){
             mActionBar.setDisplayHomeAsUpEnabled(true);
             mActionBar.setHomeAsUpIndicator(R.drawable.navicon);
         }
 
-        _drawerLayout=(DrawerLayout) findViewById(R.id.drawer);
-        _navigationView=(NavigationView) findViewById(R.id.nav_view);
+        _drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        _navigationView = (NavigationView) findViewById(R.id.nav_view);
         _navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Intent _intent=new Intent();
+                Intent _intent = new Intent();
                 switch (item.getItemId()) {
                     case R.id.nav_Account:
-                        _intent=new Intent(MainActivity.this,AccountActivity.class);
+                        _intent = new Intent(MainActivity.this,AccountActivity.class);
                         break;
-//                    case R.id.nav_History:
-//                        _intent=new Intent(MainActivity.this,HistoryActivity.class);
-//                        break;
                     case R.id.nav_Notice:
-                        _intent=new Intent(MainActivity.this,NewsAndTipsActivity.class);
+                        _intent = new Intent(MainActivity.this,NewsAndTipsActivity.class);
                         break;
                 }
                 startActivity(_intent);
@@ -102,34 +105,39 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        mTabLayout=(TabLayout) findViewById(R.id.Tab_TabLayout);
-        mViewPager=(ViewPager) findViewById(R.id.Tab_ViewPager);
-        mFragmentList=new ArrayList<>();
-        mFirstPageFragment=new HomeFragment();
-        mBorrowBookFragment=new BorrowBookFragment();
+        mTabLayout = (TabLayout) findViewById(R.id.Tab_TabLayout);
+        mViewPager = (ViewPager) findViewById(R.id.Tab_ViewPager);
+        mFragmentList = new ArrayList<>();
+        mFirstPageFragment = new HomeFragment();
+        mBorrowBookFragment = new BorrowBookFragment();
         mFragmentList.add(mFirstPageFragment);
         mFragmentList.add(mBorrowBookFragment);
-        TabMainViewPager tabMainViewPager=new TabMainViewPager(getSupportFragmentManager(),mFragmentList);
+        TabMainViewPager tabMainViewPager = new TabMainViewPager(getSupportFragmentManager(),mFragmentList);
         mViewPager.setAdapter(tabMainViewPager);
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.tby));
         mTabLayout.getTabAt(0).setText("主        页");
         mTabLayout.getTabAt(1).setText("已借书籍");
 
-        _heartLayout=_navigationView.inflateHeaderView(R.layout.navigation_heater);
-        _heartName=(View) _heartLayout.findViewById(R.id.nav_heart);
-        _heaterName=(TextView) _heartLayout.findViewById(R.id.username);
-        _unLogin=(View) _heartLayout.findViewById(R.id.nav_unlogin);
-        _hearterImage=(ImageView) _heartLayout.findViewById(R.id.account_image);
+        _heartLayout = _navigationView.inflateHeaderView(R.layout.navigation_heater);
+        _heartName = (View) _heartLayout.findViewById(R.id.nav_heart);
+        _heaterName = (TextView) _heartLayout.findViewById(R.id.username);
+        _unLogin = (View) _heartLayout.findViewById(R.id.nav_unlogin);
+        _hearterImage = (ImageView) _heartLayout.findViewById(R.id.account_image);
 
-        BmobUser _user = BmobUser.getCurrentUser();
-        if(_user!=null) {
-            if (_user.getUsername() != null) {
-                _unLogin.setVisibility(View.GONE);
-                _heartName.setVisibility(View.VISIBLE);
-                _heaterName.setText(_user.getUsername());
+        mEditor = getSharedPreferences("userFile", MODE_PRIVATE).edit();
+        mPreferences = getSharedPreferences("userFile", MODE_PRIVATE);
+
+        _user = BmobUser.getCurrentUser();
+        if(_user != null) {
+            _unLogin.setVisibility(View.GONE);
+            _heartName.setVisibility(View.VISIBLE);
+            _heaterName.setText(_user.getUsername());
+            if(mPreferences != null){
+                Glide.with(getApplicationContext()).load(mPreferences.getString("imageUrl", null)).into(_hearterImage);
+            }else {
+                DownloadPicture();
             }
-            DownloadPicture();
         }else {
             _heartName.setVisibility(View.GONE);
            _unLogin.setVisibility(View.VISIBLE);
@@ -146,8 +154,6 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem){
         switch (menuItem.getItemId()){
-//            case R.id.settings:
-//                break;
             case android.R.id.home:
                 _drawerLayout.openDrawer(GravityCompat.START);
                 break;
@@ -157,7 +163,7 @@ public class MainActivity extends BaseActivity {
 
     public boolean onKeyDown(int keycode, KeyEvent event){
         long SecondTime=System.currentTimeMillis();
-        if(keycode==event.KEYCODE_BACK){
+        if(keycode == event.KEYCODE_BACK){
             if(SecondTime-mFirstTime<2000){
                 finish();
             }else {
@@ -192,20 +198,20 @@ public class MainActivity extends BaseActivity {
 
     public void DownloadPicture(){
         BmobQuery<UserInformation> _query = new BmobQuery<>();
-        BmobUser _user = BmobUser.getCurrentUser();
-        _query.addWhereEqualTo("username",_user.getUsername());
+        _query.addWhereEqualTo("MobilePhoneNumber",_user.getMobilePhoneNumber());
         _query.findObjects(new FindListener<UserInformation>() {
             @Override
             public void done(List<UserInformation> list, BmobException e) {
                 if(e == null) {
                     for (UserInformation object : list) {
-                        BmobFile _file = object.getImage();
-
-                        if (_file != null) {
-                            String _url = _file.getFileUrl();
-                            Glide.with(getApplicationContext()).load(_url).into(_hearterImage);
-                        }
+                       mEditor.putString("userName", object.getUsername());
+                       mEditor.putString("mobileNum", object.getMobilePhoneNumber());
+                       mEditor.putString("teamGroup", object.getTeamgroup());
+                       mEditor.putString("part", object.getPart());
+                       mEditor.putString("imageUrl", object.getImage().getFileUrl());
+                       Glide.with(getApplicationContext()).load(object.getImage().getFileUrl()).into(_hearterImage);
                     }
+                    mEditor.apply();
                 }
                 else{
                     Log.d("MainActivity_lyy", "error message " + e.getMessage() + " errorCode = " + e.getErrorCode());

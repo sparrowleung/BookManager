@@ -51,7 +51,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     private RecyclerView mBookRecyclerView;
     private RecyclerView mNewsRecyclerView;
 
-    private List<Category> mBookList = new ArrayList<>();
+    private List<BookInformation> mBookList = new ArrayList<>();
     private List<News> mNewsList = new ArrayList<>();
     private HotBook mAdapter;
     private NewsTipsAdapter mNewsAdapter;
@@ -137,7 +137,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             mHotSave = new ArrayList<>();
             mHotSave.addAll(mHotSet);
             for(int i = 0; i < mHotSave.size(); i++){
-                mBookList.add(i, mGson.fromJson(mHotSave.get(i), Category.class));
+                mBookList.add(i, mGson.fromJson(mHotSave.get(i), BookInformation.class));
             }
             mAdapter = new HotBook(mBookList);
             mBookRecyclerView.setAdapter(mAdapter);
@@ -218,15 +218,17 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                     mHotSet = new TreeSet<>(mComparator);
                     if (object.size() >= 6) {
                         for (int i = 0; i < 6; i++) {
-                            Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor()
-                                    ,object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory(), object.get(i).getCreatedAt());
+                            BookInformation a1 = new BookInformation(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
+                                    , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
+                                    object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
                             mBookList.add(i, a1);
                             mHotSave.add(i, mGson.toJson(a1));
                         }
                     } else {
                         for (int i = 0; i < object.size(); i++) {
-                            Category a1 = new Category(object.get(i).getPhoto(),object.get(i).getName(),object.get(i).getAuthor()
-                                    ,object.get(i).getPress(),object.get(i).getState(),object.get(i).getBorrowper(),object.get(i).getCategory(), object.get(i).getCreatedAt());
+                            BookInformation a1 = new BookInformation(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
+                                    , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
+                                    object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
                             mBookList.add(i, a1);
                             mHotSave.add(i, mGson.toJson(a1));
                         }
@@ -243,7 +245,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
     class HotBook extends RecyclerView.Adapter<HotBook.ViewHolder>{
 
-        private List<Category> _list;
+        private List<BookInformation> _list;
 
        class ViewHolder extends RecyclerView.ViewHolder{
            private ImageView _imageView;
@@ -258,7 +260,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
            }
        }
 
-       public HotBook(List<Category> mList){
+       public HotBook(List<BookInformation> mList){
            _list = mList;
        }
 
@@ -270,12 +272,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                @Override
                public void onClick(View view) {
                    int position = viewHolder.getAdapterPosition();
-                   Category _category = _list.get(position);
+                   BookInformation _category = _list.get(position);
                    Intent _intent = new Intent(getActivity(), BookDetailActivity.class);
                    _intent.putExtra("bookName", _category.getName());
                    _intent.putExtra("bookAuthor", _category.getAuthor());
                    _intent.putExtra("bookPress", _category.getPress());
                    _intent.putExtra("bookCategory", "hotbooks");
+                   _intent.putExtra("objectId", _category.getObjectId());
+                   _intent.putExtra("borrowper", _category.getBorrowper());
                    startActivity(_intent);
                }
            });
@@ -284,9 +288,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
        @Override
         public void onBindViewHolder(ViewHolder viewHolder,int position){
-            Category mBook = _list.get(position);
+            BookInformation mBook = _list.get(position);
             viewHolder._textView.setText(mBook.getName());
-            Glide.with(getContext()).load(mBook.getImageId().getFileUrl()).into(viewHolder._imageView);
+            Glide.with(getContext()).load(mBook.getPhoto().getFileUrl()).into(viewHolder._imageView);
        }
 
        @Override

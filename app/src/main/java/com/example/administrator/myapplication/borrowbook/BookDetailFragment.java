@@ -42,7 +42,7 @@ public class BookDetailFragment extends BaseFragment {
     private TextView mState;
     private TextView mBorrowper;
     private ImageView mImageView;
-    private Category _category;
+    private BookInformation _category;
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
@@ -72,7 +72,7 @@ public class BookDetailFragment extends BaseFragment {
         if(_set != null){
             _save.addAll(_set);
             for(int i = 0; i < _save.size(); i++) {
-                _category = _gson.fromJson(_save.get(i), Category.class);
+                _category = _gson.fromJson(_save.get(i), BookInformation.class);
                 if(_category.getName().equals(mBookName) && _category.getAuthor().equals(mBookAuthor)
                         && _category.getPress().equals(mBookPress)){
                     break;
@@ -90,12 +90,12 @@ public class BookDetailFragment extends BaseFragment {
 
             mBorrowper.setText(_category.getBorrowper());
 
-            if(_category.getStatus()) {
+            if(_category.getState()) {
                 mState.setText("可借阅");
             }else {
                 mState.setText("已外借");
             }
-            Glide.with(getContext()).load(_category.getImageId().getFileUrl()).into(mImageView);
+            Glide.with(getContext()).load(_category.getPhoto().getFileUrl()).into(mImageView);
         }else {
             Bquery();
         }

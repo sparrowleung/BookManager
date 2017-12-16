@@ -47,7 +47,7 @@ public class LiteratureFragment extends BaseFragment {
     private String _TAG = LiteratureFragment.class.getSimpleName();
 
     private RecyclerView mRecyclerView;
-    private List<Category> mList;
+    private List<BookInformation> mList;
     private CategoryRecyclerView mCategoryRecyclerView;
 
     private SharedPreferences.Editor mEditor;
@@ -80,8 +80,9 @@ public class LiteratureFragment extends BaseFragment {
         if (mSet != null) {
             mSave.addAll(mSet);
             Collections.sort(mSave,mComparator);
+            Collections.reverse(mSave);
             for(int i = 0; i < mSave.size(); i++){
-                mList.add(i, mGson.fromJson(mSave.get(i), Category.class));
+                mList.add(i, mGson.fromJson(mSave.get(i), BookInformation.class));
             }
             mCategoryRecyclerView = new CategoryRecyclerView(mList);
             mRecyclerView.setAdapter(mCategoryRecyclerView);
@@ -107,8 +108,9 @@ public class LiteratureFragment extends BaseFragment {
                 if (e == null) {
                     mSave = new ArrayList<>(object.size());
                     for (int i = 0; i < object.size(); i++) {
-                        Category a1 = new Category(object.get(i).getPhoto(), object.get(i).getName(), object.get(i).getAuthor()
-                                , object.get(i).getPress(), object.get(i).getState(), object.get(i).getBorrowper(), object.get(i).getCategory(), object.get(i).getCreatedAt());
+                        BookInformation a1 = new BookInformation(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
+                                , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
+                                object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
                         mList.add(i, a1);
                         mSave.add(i, mGson.toJson(a1));
                     }
@@ -151,7 +153,7 @@ public class LiteratureFragment extends BaseFragment {
 
     class CategoryRecyclerView extends RecyclerView.Adapter<CategoryRecyclerView.ViewHolder>{
 
-        private List<Category> _list;
+        private List<BookInformation> _list;
 
         class ViewHolder extends RecyclerView.ViewHolder{
             View _view;
@@ -172,7 +174,7 @@ public class LiteratureFragment extends BaseFragment {
             }
         }
 
-        public CategoryRecyclerView(List<Category> Categorylist){
+        public CategoryRecyclerView(List<BookInformation> Categorylist){
             _list = Categorylist;
         }
 
@@ -184,12 +186,14 @@ public class LiteratureFragment extends BaseFragment {
                 @Override
                 public void onClick(View view) {
                     int position = viewHolder.getAdapterPosition();
-                    Category _category=_list.get(position);
+                    BookInformation _category=_list.get(position);
                     Intent _intent=new Intent(getActivity(), BookDetailActivity.class);
                     _intent.putExtra("bookName", _category.getName());
                     _intent.putExtra("bookAuthor", _category.getAuthor());
                     _intent.putExtra("bookPress", _category.getPress());
                     _intent.putExtra("bookCategory", _TAG);
+                    _intent.putExtra("objectId", _category.getObjectId());
+                    _intent.putExtra("borrowper", _category.getBorrowper());
                     startActivityForResult(_intent,1);
                 }
             });
@@ -198,16 +202,16 @@ public class LiteratureFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(ViewHolder viewHolder, int position){
-            Category _category = _list.get(position);
+            BookInformation _category = _list.get(position);
             viewHolder._name.setText(_category.getName());
             viewHolder._author.setText(_category.getAuthor());
             viewHolder._press.setText(_category.getPress());
-            if(_category.getStatus()) {
+            if(_category.getState()) {
                 viewHolder._status.setText("可    借");
             }else {
                 viewHolder._status.setText("已借出");
             }
-            Glide.with(getContext()).load(_category.getImageId().getFileUrl()).into(viewHolder._image);
+            Glide.with(getContext()).load(_category.getPhoto().getFileUrl()).into(viewHolder._image);
         }
 
         @Override

@@ -41,6 +41,9 @@ public class BookDetailActivity extends BaseActivity{
     private BmobUser mUser;
     private Date mDate;
     private String mBookObjectId;
+    private BookInformation mBookInf;
+
+    private String mObjectId;
     private String mBorrowper;
 
     @Override
@@ -50,11 +53,11 @@ public class BookDetailActivity extends BaseActivity{
 
         upDateActionBar();
 
-        mToolbar=(Toolbar) findViewById(R.id.toolbar_detail);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar_detail);
 
         setSupportActionBar(mToolbar);
-        ActionBar mActionBar=getSupportActionBar();
-        if(mActionBar!=null){
+        ActionBar mActionBar = getSupportActionBar();
+        if(mActionBar != null){
             mActionBar.setDisplayHomeAsUpEnabled(true);
             mActionBar.setHomeAsUpIndicator(R.drawable.back);
         }
@@ -64,19 +67,21 @@ public class BookDetailActivity extends BaseActivity{
 
         mUser = BmobUser.getCurrentUser();
         mDate = new Date(System.currentTimeMillis());
+        mObjectId = getIntent().getStringExtra("objectId");
+        mBorrowper = getIntent().getStringExtra("borrowper");
 
-        final BookInformation _book = new BookInformation();
-        BmobQuery<BookInformation> _query = new BmobQuery<>();
-        _query.addWhereEqualTo("name",getIntent().getStringExtra("bookName"));
-        _query.addWhereEqualTo("author",getIntent().getStringExtra("bookAuthor"));
-        _query.findObjects(new FindListener<BookInformation>() {
-            @Override
-            public void done(List<BookInformation> list, BmobException e) {
-                mBookObjectId = list.get(0).getObjectId();
-                mBorrowper = list.get(0).getBorrowper();
-                Log.d("BookDetailActivity_lyy","borrowper = "+mBorrowper+" borrowId = "+mBookObjectId);
-            }
-        });
+        mBookInf = new BookInformation();
+
+//        BmobQuery<BookInformation> _query = new BmobQuery<>();
+//        _query.addWhereEqualTo("name",getIntent().getStringExtra("bookName"));
+//        _query.addWhereEqualTo("author",getIntent().getStringExtra("bookAuthor"));
+//        _query.findObjects(new FindListener<BookInformation>() {
+//            @Override
+//            public void done(List<BookInformation> list, BmobException e) {
+//                mBookObjectId = list.get(0).getObjectId();
+//                mBorrowper = list.get(0).getBorrowper();
+//            }
+//        });
         mBorrow = (Button) findViewById(R.id.detail_borrow);
         mBorrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,11 +90,11 @@ public class BookDetailActivity extends BaseActivity{
                     AccountLogin();
                 }else {
                     if (mBorrowper.equals("")) {
-                        _book.setBorrowcount(_book.getBorrowcount() + 1);
-                        _book.setBorrowper(mUser.getUsername());
-                        _book.setState(false);
-                        _book.setBorrowtime(mDate);
-                        _book.update(mBookObjectId, new UpdateListener() {
+                        mBookInf.setBorrowcount(mBookInf.getBorrowcount() + 1);
+                        mBookInf.setBorrowper(mUser.getUsername());
+                        mBookInf.setState(false);
+                        mBookInf.setBorrowtime(mDate);
+                        mBookInf.update(mBookObjectId, new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
                                 if (e == null) {
@@ -112,11 +117,11 @@ public class BookDetailActivity extends BaseActivity{
                 if(mUser == null){
                     AccountLogin();
                 }else {
-                    _book.setBorrowper("");
-                    _book.setState(true);
-                    _book.setBorrowtime(new Date(System.currentTimeMillis()));
-                    _book.setBacktime(mDate);
-                    _book.update(mBookObjectId, new UpdateListener() {
+                    mBookInf.setBorrowper("");
+                    mBookInf.setState(true);
+                    mBookInf.setBorrowtime(new Date(System.currentTimeMillis()));
+                    mBookInf.setBacktime(mDate);
+                    mBookInf.update(mBookObjectId, new UpdateListener() {
                         @Override
                         public void done(BmobException e) {
                             if (e == null) {

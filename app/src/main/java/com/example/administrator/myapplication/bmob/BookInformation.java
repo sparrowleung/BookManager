@@ -24,12 +24,31 @@ public class BookInformation extends BmobObject {
     private String borrowper;
     private BmobFile photo;
 
+
+    public BookInformation(String objectId, String createdAt, String name, String author, int borrowcount,
+                           String press, double price, Boolean state, String category, String borrowper, BmobFile photo,
+                           Date borrowtime, Date backtime){
+        this.name = name;
+        this.author = author;
+        this.borrowcount = borrowcount;
+        this.press = press;
+        this.price = price;
+        this.state = state;
+        this.category = category;
+        this.borrowper = borrowper;
+        this.photo = photo;
+        this.borrowtime = borrowtime;
+        this.backtime = backtime;
+    }
+
+    public BookInformation(){}
+
     public String getName(){
         return name;
     }
 
     public void setName(String name){
-        this.name=name;
+        this.name = name;
     }
 
     public String getAuthor(){
@@ -37,7 +56,7 @@ public class BookInformation extends BmobObject {
     }
 
     public void setAuthor(String author){
-        this.author=author;
+        this.author = author;
     }
 
     public String getPress(){
@@ -45,7 +64,7 @@ public class BookInformation extends BmobObject {
     }
 
     public void setPress(String press){
-        this.press=press;
+        this.press = press;
     }
 
     public Double getPrice(){
@@ -53,7 +72,7 @@ public class BookInformation extends BmobObject {
     }
 
     public void setPrice(Double price){
-        this.price=price;
+        this.price = price;
     }
 
     public Boolean  getState(){
@@ -61,7 +80,7 @@ public class BookInformation extends BmobObject {
     }
 
     public void setState(Boolean  state){
-        this.state=state;
+        this.state = state;
     }
 
     public Date getBorrowtime(){
@@ -69,7 +88,7 @@ public class BookInformation extends BmobObject {
     }
 
     public void setBorrowtime(Date borrowtime){
-        this.borrowtime=borrowtime;
+        this.borrowtime = borrowtime;
     }
 
     public Date getBacktime(){
@@ -77,7 +96,7 @@ public class BookInformation extends BmobObject {
     }
 
     public void setBacktime(Date backtime){
-        this.backtime=backtime;
+        this.backtime = backtime;
     }
 
     public String getCategory(){
@@ -85,7 +104,7 @@ public class BookInformation extends BmobObject {
     }
 
     public void setCategory(String category){
-        this.category=category;
+        this.category = category;
     }
 
     public String getBorrowper(){
@@ -93,7 +112,7 @@ public class BookInformation extends BmobObject {
     }
 
     public void setBorrowper(String borrowper){
-        this.borrowper=borrowper;
+        this.borrowper = borrowper;
     }
 
     public int getBorrowcount(){
@@ -101,7 +120,7 @@ public class BookInformation extends BmobObject {
     }
 
     public void setBorrowcount(int borrowcount){
-        this.borrowcount=borrowcount;
+        this.borrowcount = borrowcount;
     }
 
     public BmobFile getPhoto(){
@@ -109,6 +128,6 @@ public class BookInformation extends BmobObject {
     }
 
     public void setPhoto(BmobFile photo){
-        this.photo=photo;
+        this.photo = photo;
     }
 }

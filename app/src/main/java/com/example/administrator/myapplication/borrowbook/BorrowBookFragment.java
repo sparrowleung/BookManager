@@ -22,7 +22,9 @@ import com.example.administrator.myapplication.bmob.UserInformation;
 import com.example.administrator.myapplication.recycleview.Category;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.TreeSet;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
@@ -42,12 +44,13 @@ public class BorrowBookFragment extends BaseFragment {
     private RecyclerView mRecyclerView;
 
     private BookAdapter mBookAdapter;
-    private List<Category> mList;
+    private List<BookInformation> mList;
 
     private TextView mBookCount;
     private TextView mAccountName;
     private ImageView mAccountImage;
     private BmobUser _user;
+    private ComparatorImpl mComparator;
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
@@ -80,22 +83,37 @@ public class BorrowBookFragment extends BaseFragment {
             }
         });
 
+        InitSharePreferences(TAG);
+        mComparator = new ComparatorImpl();
+
         mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.recyclerview_detail);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mList=new ArrayList<>();
 
         mAccountName = (TextView) getActivity().findViewById(R.id.borrow_account);
 
-        if(_user != null){
-            if(_user.getUsername() != null){
-                mAccountName.setText(_user.getUsername());
-                Bquery();
-                DownloadImage();
+        if(_user != null) {
+            mAccountName.setText(_user.getUsername());
+            DownloadImage();
+            if (_set != null) {
+                _save.addAll(_set);
+                Collections.sort(_save, mComparator);
+                for (int i = 0; i < _save.size(); i++) {
+                    mList.add(i, _gson.fromJson(_save.get(i), BookInformation.class));
+                }
+                mBookAdapter = new BookAdapter(mList);
+                mRecyclerView.setAdapter(mBookAdapter);
             }
-        }else {
+            else {
+                Bquery();
+            }
+
+        }
+        else {
             mAccountName.setText("未登录");
             mBookCount.setText(" ");
         }
+
 
 
     }
@@ -104,30 +122,37 @@ public class BorrowBookFragment extends BaseFragment {
         if(mList != null) {
             mList.clear();
         }
+
         BmobQuery<BookInformation> bmobQuery = new BmobQuery<>();
         bmobQuery.addWhereEqualTo("borrowper",_user.getUsername());
+        bmobQuery.order("-updatedAt");
         bmobQuery.setLimit(50);
         bmobQuery.findObjects(new FindListener<BookInformation>() {
             @Override
-            public void done(List<BookInformation> list, BmobException e) {
+            public void done(List<BookInformation> object, BmobException e) {
+                _set = new TreeSet<>(mComparator);
+                _save = new ArrayList<>(object.size());
                 if(e==null){
-
-                    for(BookInformation object : list){
-                        Category a1 = new Category(object.getPhoto(),object.getName(),object.getAuthor(),
-                                object.getPress(),object.getState(),object.getBorrowper(),object.getCategory(), object.getCreatedAt());
+                    for (int i = 0; i < object.size(); i++) {
+                        BookInformation a1 = new BookInformation(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
+                                , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
+                                object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
                         mList.add(a1);
+                        _save.add(i, _gson.toJson(a1));
                     }
-                    mBookCount.setText(Integer.toString(list.size()));
-                    mBookAdapter = new BookAdapter(mList);
-                    mRecyclerView.setAdapter(mBookAdapter);
                 }
+                _set.addAll(_save);
+                _editor.putStringSet(TAG, _set).apply();
+                mBookCount.setText(Integer.toString(object.size()));
+                mBookAdapter = new BookAdapter(mList);
+                mRecyclerView.setAdapter(mBookAdapter);
             }
         });
     }
 
     public void DownloadImage(){
         BmobQuery<UserInformation> _query = new BmobQuery<>();
-        _query.addWhereEqualTo("username",_user.getUsername());
+        _query.addWhereEqualTo("MobilePhoneNumber",_user.getMobilePhoneNumber());
         _query.findObjects(new FindListener<UserInformation>() {
             @Override
             public void done(List<UserInformation> list, BmobException e) {
@@ -144,7 +169,7 @@ public class BorrowBookFragment extends BaseFragment {
     class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
         private Context context;
-        private List<Category> mbook;
+        private List<BookInformation> mbook;
 
          class ViewHolder extends RecyclerView.ViewHolder{
             View _view;
@@ -163,7 +188,7 @@ public class BorrowBookFragment extends BaseFragment {
             }
         }
 
-        public BookAdapter(List<Category> bookList){
+        public BookAdapter(List<BookInformation> bookList){
             mbook = bookList;
         }
 
@@ -178,9 +203,14 @@ public class BorrowBookFragment extends BaseFragment {
                 @Override
                 public void onClick(View v) {
                     int _position = holder.getAdapterPosition();
-                    Category _category = mbook.get(_position);
+                    BookInformation _category = mbook.get(_position);
                     Intent _intent = new Intent(getActivity(), BookDetailActivity.class);
-                    _intent.putExtra("bookName",_category.getName());
+                    _intent.putExtra("bookName", _category.getName());
+                    _intent.putExtra("bookAuthor", _category.getAuthor());
+                    _intent.putExtra("bookPress", _category.getPress());
+                    _intent.putExtra("bookCategory", TAG);
+                    _intent.putExtra("objectId", _category.getObjectId());
+                    _intent.putExtra("borrowper", _category.getBorrowper());
                     startActivity(_intent);
                 }
             });
@@ -189,10 +219,10 @@ public class BorrowBookFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position){
-            Category _category = mbook.get(position);
+            BookInformation _category = mbook.get(position);
             holder.bookname.setText(_category.getName());
             holder.bookauthor.setText(_category.getAuthor());
-            Glide.with(context).load(_category.getImageId().getFileUrl()).into(holder.bookView);
+            Glide.with(context).load(_category.getPhoto().getFileUrl()).into(holder.bookView);
         }
 
         @Override

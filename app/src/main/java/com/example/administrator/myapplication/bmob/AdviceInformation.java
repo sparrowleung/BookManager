@@ -11,9 +11,20 @@ public class AdviceInformation extends BmobObject {
     private String bookName;
     private String author;
     private String press;
-    private String price;
+    private double price;
     private String reason;
     private String advicer;
+
+    public AdviceInformation(String _createdAt, String bookName, String author, String press, double price, String reason, String advicer){
+        this.bookName = bookName;
+        this.author = author;
+        this.press = press;
+        this.price = price;
+        this.reason = reason;
+        this.advicer = advicer;
+    }
+
+    public AdviceInformation(){}
 
     public String getBookName(){
         return bookName;
@@ -39,11 +50,11 @@ public class AdviceInformation extends BmobObject {
         this.press=press;
     }
 
-    public String getPrice(){
+    public Double getPrice(){
         return  price;
     }
 
-    public void setPrice(String price){
+    public void setPrice(double price){
         this.price=price;
     }
 
