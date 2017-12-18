@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
@@ -63,6 +64,7 @@ public class BorrowBookFragment extends BaseFragment {
     public void onActivityCreated(Bundle saveInstanceState){
         super.onActivityCreated(saveInstanceState);
 
+        InitSharePreferences(TAG);
         mContent = (CardView) getActivity().findViewById(R.id.borrow_card1);
         mBookDetail = (CardView) getActivity().findViewById(R.id.borrow_card2);
         mBookCount = (TextView) getActivity().findViewById(R.id.borrow_lendcount);
@@ -76,16 +78,33 @@ public class BorrowBookFragment extends BaseFragment {
                     mBookDetail.setVisibility(View.GONE);
                 }else {
                     if (_user != null) {
-                        Bquery();
-                        mBookAdapter.notifyDataSetChanged();
-                        mBookDetail.setVisibility(View.VISIBLE);
+                        if (NetworkAvailale()) {
+                            Bquery();
+                            mBookAdapter.notifyDataSetChanged();
+                            mBookDetail.setVisibility(View.VISIBLE);
+                        }else {
+                            _save.clear();
+                            mList.clear();
+                            if (_set != null) {
+                                _save.addAll(_set);
+                                Collections.sort(_save, mComparator);
+                                for (int i = 0; i < _save.size(); i++) {
+                                    mList.add(i, _gson.fromJson(_save.get(i), BookInformation.class));
+                                }
+                                mBookCount.setText(Integer.toString(_save.size()));
+                                mBookAdapter = new BookAdapter(mList);
+                                mRecyclerView.setAdapter(mBookAdapter);
+                            }else {
+                                Toast.makeText(getContext(), "暂无网络，请检查网络", Toast.LENGTH_SHORT).show();
+                            }
+                            mBookDetail.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
 
             }
         });
 
-        InitSharePreferences(TAG);
         mComparator = new ComparatorImpl();
 
         mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.recyclerview_detail);
