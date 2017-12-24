@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -56,6 +57,7 @@ public class LiteratureFragment extends BaseFragment {
     private Set<String> mSet;
     private Gson mGson;
     private ComparatorImpl mComparator = new ComparatorImpl();
+    private ProgressBar mProgressBar;
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
@@ -76,6 +78,7 @@ public class LiteratureFragment extends BaseFragment {
         mPreferences = getContext().getSharedPreferences(_TAG, Context.MODE_PRIVATE);
         mSet = mPreferences.getStringSet(_TAG, null);
         mGson = new Gson();
+        mProgressBar = (ProgressBar) getActivity().findViewById(R.id.litera_progressbar);
 
         if (mSet != null) {
             mSave.addAll(mSet);
@@ -88,6 +91,7 @@ public class LiteratureFragment extends BaseFragment {
             mRecyclerView.setAdapter(mCategoryRecyclerView);
         } else {
             Bquery();
+            mProgressBar.setVisibility(View.VISIBLE);
         }
     }
 
@@ -116,7 +120,9 @@ public class LiteratureFragment extends BaseFragment {
                     }
                     mSet.addAll(mSave);
                     mEditor.putStringSet(_TAG, mSet).apply();
+
                 }
+                mProgressBar.setVisibility(View.GONE);
                 mCategoryRecyclerView = new CategoryRecyclerView(mList);
                 mRecyclerView.setAdapter(mCategoryRecyclerView);
                 mRecyclerView.post(new Runnable() {

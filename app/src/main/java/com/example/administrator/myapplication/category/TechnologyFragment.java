@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -52,6 +53,7 @@ public class TechnologyFragment extends BaseFragment {
     private List<String> mSave;
     private Set<String> mSet;
     private Gson mGson;
+    private ProgressBar mProgressBar;
     private ComparatorImpl mComparator = new ComparatorImpl();
 
     @Override
@@ -73,6 +75,7 @@ public class TechnologyFragment extends BaseFragment {
         mPreferences = getContext().getSharedPreferences(_TAG, Context.MODE_PRIVATE);
         mSet = mPreferences.getStringSet(_TAG, null);
         mGson = new Gson();
+        mProgressBar = (ProgressBar) getActivity().findViewById(R.id.techno_progressbar);
 
         if (mSet != null) {
             mSave.addAll(mSet);
@@ -85,6 +88,7 @@ public class TechnologyFragment extends BaseFragment {
             mRecyclerView.setAdapter(mCategoryAdapter);
         } else {
             Bquery();
+            mProgressBar.setVisibility(View.VISIBLE);
         }
     }
 
@@ -129,7 +133,9 @@ public class TechnologyFragment extends BaseFragment {
                     }
                     mSet.addAll(mSave);
                     mEditor.putStringSet(_TAG, mSet).apply();
+
                 }
+                mProgressBar.setVisibility(View.GONE);
                 mCategoryAdapter = new CategoryAdapter(mList);
                 mRecyclerView.setAdapter(mCategoryAdapter);
                 mRecyclerView.post(new Runnable() {

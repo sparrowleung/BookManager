@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -55,6 +56,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     private List<News> mNewsList = new ArrayList<>();
     private HotBook mAdapter;
     private NewsTipsAdapter mNewsAdapter;
+    private ProgressBar mProgressBar1;
+    private ProgressBar mProgressBar2;
 
     private View mNewbook;
     private View mCategory;
@@ -101,6 +104,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         mHotBook.setContentPadding(5,5,5,5);
         mHotBook.setRadius(8);
         mHotBook.setCardElevation(8);
+        mProgressBar1 = (ProgressBar) getActivity().findViewById(R.id.recycle_progressbar1);
+        mProgressBar2 = (ProgressBar) getActivity().findViewById(R.id.recycle_progressbar2);
+
 
         mBookRecyclerView = (RecyclerView) mRootView.findViewById(R.id.recycle_hotlist);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),3);
@@ -131,6 +137,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
         }else {
             NewsBquery();
+            mProgressBar1.setVisibility(View.VISIBLE);
         }
 
         if(mHotSet != null){
@@ -143,6 +150,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             mBookRecyclerView.setAdapter(mAdapter);
         }else {
             HotBquery();
+            mProgressBar2.setVisibility(View.VISIBLE);
         }
 
         mNewbook.setOnClickListener(this);
@@ -195,6 +203,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                             mNewsSave.add(i, mGson.toJson(_news));
                         }
                     }
+                    mProgressBar1.setVisibility(View.GONE);
                     mNewsSet.addAll(mNewsSave);
                     mNewsEditor.putStringSet("newstips", mNewsSet).apply();
                     mNewsAdapter = new NewsTipsAdapter(mNewsList);
@@ -233,6 +242,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                             mHotSave.add(i, mGson.toJson(a1));
                         }
                     }
+                    mProgressBar2.setVisibility(View.GONE);
                     mHotSet.addAll(mHotSave);
                     mHotEditor.putStringSet("hotbooks", mHotSet).apply();
                     mAdapter = new HotBook(mBookList);

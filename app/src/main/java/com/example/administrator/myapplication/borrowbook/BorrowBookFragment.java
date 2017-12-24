@@ -101,7 +101,6 @@ public class BorrowBookFragment extends BaseFragment {
                         }
                     }
                 }
-
             }
         });
 

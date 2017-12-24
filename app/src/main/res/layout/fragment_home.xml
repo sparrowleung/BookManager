@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -117,6 +118,7 @@
                     android:layout_height="match_parent">
 
 
+
                     <RelativeLayout
                         android:id="@+id/table_title"
                         android:layout_width="match_parent"
@@ -144,12 +146,24 @@
                             />
                     </RelativeLayout>
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recycle_newslist"
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                    </android.support.v7.widget.RecyclerView>
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recycle_newslist"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                        </android.support.v7.widget.RecyclerView>
+
+                        <ProgressBar
+                            android:visibility="gone"
+                            android:id="@+id/recycle_progressbar1"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp" />
+
+                    </RelativeLayout>
 
 
                 </LinearLayout>
@@ -183,13 +197,24 @@
                     </RelativeLayout>
 
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recycle_hotlist"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        >
-                    </android.support.v7.widget.RecyclerView>
+                        android:layout_height="wrap_content">
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recycle_hotlist"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            >
+                        </android.support.v7.widget.RecyclerView>
+
+                        <ProgressBar
+                            android:visibility="gone"
+                            android:id="@+id/recycle_progressbar2"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp" />
+                    </RelativeLayout>
+
                 </LinearLayout>
 
 
