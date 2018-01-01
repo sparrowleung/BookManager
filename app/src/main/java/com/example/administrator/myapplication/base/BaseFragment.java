@@ -64,8 +64,7 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
-    public static boolean NetworkAvailale(){
-        Context _context = BookManageApplication.getManageApplication();
+    public static boolean NetworkAvailale(Context _context){
         try{
             ConnectivityManager _manager = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 

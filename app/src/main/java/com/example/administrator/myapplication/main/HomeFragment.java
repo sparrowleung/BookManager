@@ -21,6 +21,7 @@ import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.advice.BuyAdviceActivity;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
+import com.example.administrator.myapplication.bmob.Sammary;
 import com.example.administrator.myapplication.borrowbook.BookDetailActivity;
 import com.example.administrator.myapplication.category.CategoryActivity;
 import com.example.administrator.myapplication.newbook.NewBookActivity;
@@ -123,6 +124,40 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         mHotSet = mHotPreferences.getStringSet("hotbooks",null);
         mGson = new Gson();
 
+        InitSharePreferences("Sammary");
+        if(_set != null){
+            _save.addAll(_set);
+            final List<Sammary> _list = new ArrayList<>();
+            for(int i = 0; i < _save.size(); i++){
+                _list.add(i, _gson.fromJson(_save.get(i), Sammary.class));
+            }
+            if (NetworkAvailale(getContext())) {
+                BmobQuery<Sammary> _query = new BmobQuery<>();
+                _query.findObjects(new FindListener<Sammary>() {
+                    @Override
+                    public void done(List<Sammary> list, BmobException e) {
+                        List<String> _sav = new ArrayList<>(list.size());
+                        if(e == null){
+                            for(int i = 0; i < list.size(); i++){
+                                Sammary _sammary = new Sammary(list.get(i).getObjectId(), list.get(i).getUpdatedAt(), list.get(i).getTable());
+                                for(int j = 0; j < _list.size(); j++){
+                                    if(_sammary.getObjectId().equals(_list.get(j).getObjectId())){
+                                        if(!_sammary.getUpdatedAt().equals(_list.get(j).getUpdatedAt())){
+                                            SharedPreferences.Editor _editor = getContext().getSharedPreferences(_sammary.getTable(), Context.MODE_PRIVATE).edit();
+                                            _editor.clear();
+                                            _editor.commit();
+                                        }
+                                    }
+                                }
+
+                                _sav.add(i, _gson.toJson(_sammary));
+                            }
+                            _set.addAll(_sav);
+                        }
+                    }
+                });
+            }
+        }
         if(mNewsSet != null){
             mNewsSave = new ArrayList<>();
             mNewsSave.addAll(mNewsSet);

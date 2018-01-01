@@ -12,7 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
@@ -43,6 +45,7 @@ public class NewBookFragment extends BaseFragment{
     private List<BookInformation> mList;
     private NewBookAdapter mNewBookAdapter;
     private String _TAG = NewBookFragment.class.getSimpleName();
+    private ProgressBar mProgressBar;
 
     private SharedPreferences.Editor mEditor;
     private SharedPreferences mPreferences;
@@ -70,6 +73,7 @@ public class NewBookFragment extends BaseFragment{
         mPreferences = getContext().getSharedPreferences(_TAG, Context.MODE_PRIVATE);
         mSet = mPreferences.getStringSet(_TAG, null);
         mGson = new Gson();
+        mProgressBar = (ProgressBar) getActivity().findViewById(R.id.newbook_progressbar);
 
         if(mSet != null){
             mSave.addAll(mSet);
@@ -80,7 +84,12 @@ public class NewBookFragment extends BaseFragment{
             mNewBookAdapter=new NewBookAdapter(mList);
             mRecyclerView.setAdapter(mNewBookAdapter);
         }else {
-            Bquery();
+            if (NetworkAvailale(getContext())) {
+                Bquery();
+                mProgressBar.setVisibility(View.VISIBLE);
+            }else {
+                Toast.makeText(getContext(), "暂无网络，请检查网络", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -107,6 +116,7 @@ public class NewBookFragment extends BaseFragment{
                         mSave.add(i, mGson.toJson(a1));
                     }
                 }
+                mProgressBar.setVisibility(View.GONE);
                 mSet.addAll(mSave);
                 mEditor.putStringSet(_TAG, mSet).apply();
                 mNewBookAdapter=new NewBookAdapter(mList);

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
@@ -90,8 +91,12 @@ public class LiteratureFragment extends BaseFragment {
             mCategoryRecyclerView = new CategoryRecyclerView(mList);
             mRecyclerView.setAdapter(mCategoryRecyclerView);
         } else {
-            Bquery();
-            mProgressBar.setVisibility(View.VISIBLE);
+            if (NetworkAvailale(getContext())) {
+                Bquery();
+                mProgressBar.setVisibility(View.VISIBLE);
+            }else {
+                Toast.makeText(getContext(), "暂无网络，请检查网络", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

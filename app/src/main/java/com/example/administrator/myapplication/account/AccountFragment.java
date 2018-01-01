@@ -227,7 +227,6 @@ public class AccountFragment extends BaseFragment {
                         @Override
                         public void done(BmobException e) {
                             if(e == null){
-                                Toast.makeText(getContext(),"更换头像成功",Toast.LENGTH_SHORT).show();
                                  UserInformation _user = new UserInformation();
                                 _user.setImage(_file);
                                 _user.update(mUser.getObjectId(),new UpdateListener() {
@@ -240,12 +239,12 @@ public class AccountFragment extends BaseFragment {
                                             _intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                             startActivity(_intent);
                                         }else {
-                                            Log.d("AccountFragment+","errorMessage = "+e.getMessage()+" errorCode = "+e.getErrorCode());
+                                            Log.d(TAG,"errorMessage = "+e.getMessage()+" errorCode = "+e.getErrorCode());
                                         }
                                     }
                                 });
                             }else {
-                                Log.d("AccountFragment+","errorMessage = "+e.getMessage()+" errorCode = "+e.getErrorCode());
+                                Log.d(TAG,"errorMessage = "+e.getMessage()+" errorCode = "+e.getErrorCode());
                             }
                         }
                     });

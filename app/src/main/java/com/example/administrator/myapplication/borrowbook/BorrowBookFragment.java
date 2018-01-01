@@ -78,7 +78,7 @@ public class BorrowBookFragment extends BaseFragment {
                     mBookDetail.setVisibility(View.GONE);
                 }else {
                     if (_user != null) {
-                        if (NetworkAvailale()) {
+                        if (NetworkAvailale(getContext())) {
                             Bquery();
                             mBookAdapter.notifyDataSetChanged();
                             mBookDetail.setVisibility(View.VISIBLE);
