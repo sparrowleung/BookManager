@@ -141,16 +141,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                             for(int i = 0; i < list.size(); i++){
                                 Summary _summary = new Summary(list.get(i).getObjectId(), list.get(i).getUpdatedAt(), list.get(i).getTable());
                                 for(int j = 0; j < _list.size(); j++){
-                                    if(_summary.getObjectId().equals(_list.get(j).getObjectId())){
-                                        if(!_summary.getUpdatedAt().equals(_list.get(j).getUpdatedAt())){
+                                    if(_summary.getObjectId() == _list.get(j).getObjectId()){
+                                        if(_summary.getUpdatedAt() != _list.get(j).getUpdatedAt()){
                                             SharedPreferences.Editor _editor = getContext().getSharedPreferences(_summary.getTable(), Context.MODE_PRIVATE).edit();
                                             _editor.clear();
-                                            Log.d(TAG, "sum is ok??");
                                             _editor.commit();
                                         }
                                     }
                                 }
-
                                 _save.add(i, _gson.toJson(_summary));
                             }
                             _set.addAll(_save);
