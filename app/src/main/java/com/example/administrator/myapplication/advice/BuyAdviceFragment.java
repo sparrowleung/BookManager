@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.TreeSet;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
@@ -204,7 +205,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
             mList.clear();
         }
         if(_set == null){
-            _set = new HashSet<>();
+            _set = new TreeSet<>(new ComparatorImpl());
         }
         BmobQuery<AdviceInformation> _query = new BmobQuery<>();
         _query.findObjects(new FindListener<AdviceInformation>() {

@@ -136,6 +136,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                     @Override
                     public void done(List<Summary> list, BmobException e) {
                         _save = new ArrayList<>();
+                        _set = new TreeSet<>(new ComparatorImpl());
                         if(e == null){
                             for(int i = 0; i < list.size(); i++){
                                 Summary _summary = new Summary(list.get(i).getObjectId(), list.get(i).getUpdatedAt(), list.get(i).getTable());
