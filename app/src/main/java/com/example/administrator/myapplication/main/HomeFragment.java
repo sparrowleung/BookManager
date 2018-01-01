@@ -145,6 +145,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                                         if(!_sammary.getUpdatedAt().equals(_list.get(j).getUpdatedAt())){
                                             SharedPreferences.Editor _editor = getContext().getSharedPreferences(_sammary.getTable(), Context.MODE_PRIVATE).edit();
                                             _editor.clear();
+                                            Log.d(TAG, "Sammay is ok?");
                                             _editor.commit();
                                         }
                                     }
@@ -153,6 +154,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                                 _sav.add(i, _gson.toJson(_sammary));
                             }
                             _set.addAll(_sav);
+                            _editor.putStringSet("Sammary", _set).apply();
                         }
                     }
                 });
