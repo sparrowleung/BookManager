@@ -207,7 +207,6 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
             _set = new HashSet<>();
         }
         BmobQuery<AdviceInformation> _query = new BmobQuery<>();
-
         _query.findObjects(new FindListener<AdviceInformation>() {
             @Override
             public void done(List<AdviceInformation> list, BmobException e) {

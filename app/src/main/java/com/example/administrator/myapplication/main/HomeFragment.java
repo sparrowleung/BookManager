@@ -40,6 +40,7 @@ import java.util.TreeSet;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.SaveListener;
 
 /**
  * Created by Administrator on 2017/10/30.
@@ -124,7 +125,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
         InitSharePreferences("sum");
         if(_set != null){
-            Log.d(TAG, "sum is ok?");
             _save.addAll(_set);
             final List<Summary> _list = new ArrayList<>();
             for(int i = 0; i < _save.size(); i++){
@@ -135,7 +135,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                 _query.findObjects(new FindListener<Summary>() {
                     @Override
                     public void done(List<Summary> list, BmobException e) {
-                        List<String> _sav = new ArrayList<>(list.size());
+                        _save = new ArrayList<>();
                         if(e == null){
                             for(int i = 0; i < list.size(); i++){
                                 Summary _summary = new Summary(list.get(i).getObjectId(), list.get(i).getUpdatedAt(), list.get(i).getTable());
@@ -150,31 +150,36 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                                     }
                                 }
 
-                                _sav.add(i, _gson.toJson(_sum));
+                                _save.add(i, _gson.toJson(_summary));
                             }
-                            _set.addAll(_sav);
+                            _set.addAll(_save);
                             _editor.putStringSet("sum", _set).apply();
+                        }else {
+                            Log.d(TAG, "error Message1: " + e.getMessage() + " , error Code1: " + e.getErrorCode());
                         }
                     }
                 });
             }
         }else {
             if (NetworkAvailale(getContext())) {
+
                 BmobQuery<Summary> _query = new BmobQuery<>();
                 _query.findObjects(new FindListener<Summary>() {
                     @Override
                     public void done(List<Summary> list, BmobException e) {
                         _save = new ArrayList<>();
+                        _set = new TreeSet<>(new ComparatorImpl());
                         if(e == null){
                             for(int i = 0; i < list.size(); i++){
                                 Summary _summary = new Summary(list.get(i).getObjectId(), list.get(i).getUpdatedAt(), list.get(i).getTable());
                                 _save.add(i, _gson.toJson(_summary));
                             }
+
                             _set.addAll(_save);
                             _editor.putStringSet("sum", _set).apply();
                             Log.d(TAG, "Sum is ok???");
                         }else {
-                            Log.d(TAG, "error Message " + e.getMessage() + "error Code " + e.getErrorCode());
+                            Log.d(TAG, "error Message: " + e.getMessage() + " , error Code: " + e.getErrorCode());
                         }
                     }
                 });
