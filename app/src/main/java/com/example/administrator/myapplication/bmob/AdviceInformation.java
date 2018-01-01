@@ -31,7 +31,7 @@ public class AdviceInformation extends BmobObject {
     }
 
     public void setBookName(String bookName){
-        this.bookName=bookName;
+        this.bookName = bookName;
     }
 
     public String getAuthor(){
@@ -39,7 +39,7 @@ public class AdviceInformation extends BmobObject {
     }
 
     public void setAuthor(String author){
-        this.author=author;
+        this.author = author;
     }
 
     public String getPress(){
@@ -47,7 +47,7 @@ public class AdviceInformation extends BmobObject {
     }
 
     public void setPress(String press){
-        this.press=press;
+        this.press = press;
     }
 
     public Double getPrice(){
@@ -55,7 +55,7 @@ public class AdviceInformation extends BmobObject {
     }
 
     public void setPrice(double price){
-        this.price=price;
+        this.price = price;
     }
 
     public String getReason(){
@@ -63,7 +63,7 @@ public class AdviceInformation extends BmobObject {
     }
 
     public void setReason(String reason){
-        this.reason=reason;
+        this.reason = reason;
     }
 
     public String getAdvicer(){
@@ -71,7 +71,7 @@ public class AdviceInformation extends BmobObject {
     }
 
     public void setAdvicer(String advicer){
-        this.advicer=advicer;
+        this.advicer = advicer;
     }
 
 

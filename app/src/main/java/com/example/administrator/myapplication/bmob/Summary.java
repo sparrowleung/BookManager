@@ -6,16 +6,16 @@ import cn.bmob.v3.BmobObject;
  * Created by 37289 on 2017/12/25.
  */
 
-public class Sammary extends BmobObject {
+public class Summary extends BmobObject {
 
     private String table;
     private String change;
 
-    public Sammary(String objectId, String updatedAt,String table){
+    public Summary(String objectId, String updatedAt,String table){
         this.table = table;
     }
 
-    public Sammary(){}
+    public Summary(){}
 
     public String getTable(){
         return table;

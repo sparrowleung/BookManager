@@ -21,20 +21,18 @@ import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.advice.BuyAdviceActivity;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
-import com.example.administrator.myapplication.bmob.Sammary;
+import com.example.administrator.myapplication.bmob.Summary;
 import com.example.administrator.myapplication.borrowbook.BookDetailActivity;
 import com.example.administrator.myapplication.category.CategoryActivity;
 import com.example.administrator.myapplication.newbook.NewBookActivity;
 import com.example.administrator.myapplication.newsandtips.NewsAndTipsActivity;
 import com.example.administrator.myapplication.bmob.NewsTipsInformation;
-import com.example.administrator.myapplication.recycleview.Category;
 import com.example.administrator.myapplication.recycleview.News;
 import com.example.administrator.myapplication.recycleview.NewsTipsAdapter;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -124,42 +122,66 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         mHotSet = mHotPreferences.getStringSet("hotbooks",null);
         mGson = new Gson();
 
-        InitSharePreferences("Sammary");
+        InitSharePreferences("sum");
         if(_set != null){
+            Log.d(TAG, "sum is ok?");
             _save.addAll(_set);
-            final List<Sammary> _list = new ArrayList<>();
+            final List<Summary> _list = new ArrayList<>();
             for(int i = 0; i < _save.size(); i++){
-                _list.add(i, _gson.fromJson(_save.get(i), Sammary.class));
+                _list.add(i, _gson.fromJson(_save.get(i), Summary.class));
             }
             if (NetworkAvailale(getContext())) {
-                BmobQuery<Sammary> _query = new BmobQuery<>();
-                _query.findObjects(new FindListener<Sammary>() {
+                BmobQuery<Summary> _query = new BmobQuery<>();
+                _query.findObjects(new FindListener<Summary>() {
                     @Override
-                    public void done(List<Sammary> list, BmobException e) {
+                    public void done(List<Summary> list, BmobException e) {
                         List<String> _sav = new ArrayList<>(list.size());
                         if(e == null){
                             for(int i = 0; i < list.size(); i++){
-                                Sammary _sammary = new Sammary(list.get(i).getObjectId(), list.get(i).getUpdatedAt(), list.get(i).getTable());
+                                Summary _summary = new Summary(list.get(i).getObjectId(), list.get(i).getUpdatedAt(), list.get(i).getTable());
                                 for(int j = 0; j < _list.size(); j++){
-                                    if(_sammary.getObjectId().equals(_list.get(j).getObjectId())){
-                                        if(!_sammary.getUpdatedAt().equals(_list.get(j).getUpdatedAt())){
-                                            SharedPreferences.Editor _editor = getContext().getSharedPreferences(_sammary.getTable(), Context.MODE_PRIVATE).edit();
+                                    if(_summary.getObjectId().equals(_list.get(j).getObjectId())){
+                                        if(!_summary.getUpdatedAt().equals(_list.get(j).getUpdatedAt())){
+                                            SharedPreferences.Editor _editor = getContext().getSharedPreferences(_summary.getTable(), Context.MODE_PRIVATE).edit();
                                             _editor.clear();
-                                            Log.d(TAG, "Sammay is ok?");
+                                            Log.d(TAG, "sum is ok??");
                                             _editor.commit();
                                         }
                                     }
                                 }
 
-                                _sav.add(i, _gson.toJson(_sammary));
+                                _sav.add(i, _gson.toJson(_sum));
                             }
                             _set.addAll(_sav);
-                            _editor.putStringSet("Sammary", _set).apply();
+                            _editor.putStringSet("sum", _set).apply();
+                        }
+                    }
+                });
+            }
+        }else {
+            if (NetworkAvailale(getContext())) {
+                BmobQuery<Summary> _query = new BmobQuery<>();
+                _query.findObjects(new FindListener<Summary>() {
+                    @Override
+                    public void done(List<Summary> list, BmobException e) {
+                        _save = new ArrayList<>();
+                        if(e == null){
+                            for(int i = 0; i < list.size(); i++){
+                                Summary _summary = new Summary(list.get(i).getObjectId(), list.get(i).getUpdatedAt(), list.get(i).getTable());
+                                _save.add(i, _gson.toJson(_summary));
+                            }
+                            _set.addAll(_save);
+                            _editor.putStringSet("sum", _set).apply();
+                            Log.d(TAG, "Sum is ok???");
+                        }else {
+                            Log.d(TAG, "error Message " + e.getMessage() + "error Code " + e.getErrorCode());
                         }
                     }
                 });
             }
         }
+
+
         if(mNewsSet != null){
             mNewsSave = new ArrayList<>();
             mNewsSave.addAll(mNewsSet);
