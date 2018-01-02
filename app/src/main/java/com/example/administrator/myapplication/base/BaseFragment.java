@@ -9,21 +9,11 @@ import android.os.Looper;
 import android.support.annotation.CallSuper;
 import android.support.v4.app.Fragment;
 
-import com.example.administrator.myapplication.bmob.AdviceInformation;
-import com.example.administrator.myapplication.bmob.BookInformation;
-import com.example.administrator.myapplication.bmob.NewsTipsInformation;
-import com.example.administrator.myapplication.category.TechnologyFragment;
-import com.example.administrator.myapplication.main.BookManageApplication;
-import com.example.administrator.myapplication.main.MainActivity;
-import com.example.administrator.myapplication.recycleview.Category;
 import com.google.gson.Gson;
 
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 /**

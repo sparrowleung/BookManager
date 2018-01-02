@@ -20,7 +20,7 @@ public class NewsTipsInformation extends BmobObject {
     }
 
     public void setSubTitle(String subTitle){
-        this.subTitle=subTitle;
+        this.subTitle= subTitle;
     }
 
     public String getSubTitle(){

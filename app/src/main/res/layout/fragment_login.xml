@@ -32,6 +32,7 @@
                 <EditText
                     android:id="@+id/login_phoneNum"
                     android:layout_width="0dp"
+                    android:inputType="number"
                     android:layout_weight="5"
                     android:hint="Mobile/手机号码"
                     android:textSize="15sp"

@@ -15,17 +15,6 @@ public class AdviceInformation extends BmobObject {
     private String reason;
     private String advicer;
 
-    public AdviceInformation(String _createdAt, String bookName, String author, String press, double price, String reason, String advicer){
-        this.bookName = bookName;
-        this.author = author;
-        this.press = press;
-        this.price = price;
-        this.reason = reason;
-        this.advicer = advicer;
-    }
-
-    public AdviceInformation(){}
-
     public String getBookName(){
         return bookName;
     }

@@ -25,7 +25,6 @@ import com.example.administrator.myapplication.recycleview.Advice;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -56,7 +55,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
     private EditText mReasonEdit;
 
     private RecyclerView mRecyclerView;
-    private List<AdviceInformation> mList;
+    private List<Advice> mList;
     private AdviceAdapter mAdviceAdapter;
 
     private String mName;
@@ -135,7 +134,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
             _save.addAll(_set);
             Collections.sort(_save,mComparator);
             for (int i = 0; i < _save.size(); i++) {
-                mList.add(i, _gson.fromJson(_save.get(i), AdviceInformation.class));
+                mList.add(i, _gson.fromJson(_save.get(i), Advice.class));
             }
             mAdviceAdapter = new AdviceAdapter(mList);
             mRecyclerView.setAdapter(mAdviceAdapter);
@@ -214,7 +213,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
                 _save = new ArrayList<>(list.size());
                 if(e==null){
                     for(int i = 0; i < list.size(); i++){
-                        AdviceInformation _advice = new AdviceInformation(list.get(i).getCreatedAt(),list.get(i).getBookName(),list.get(i).getAuthor(),list.get(i).getPress()
+                        Advice _advice = new Advice(list.get(i).getCreatedAt(),list.get(i).getBookName(),list.get(i).getAuthor(),list.get(i).getPress()
                                 ,list.get(i).getPrice(), list.get(i).getReason(), list.get(i).getAdvicer());
                         mList.add(_advice);
                         _save.add(i, _gson.toJson(_advice));
@@ -230,7 +229,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
 
     class AdviceAdapter extends RecyclerView.Adapter<AdviceAdapter.ViewHolder>{
 
-        private List<AdviceInformation> _list;
+        private List<Advice> _list;
 
         class ViewHolder extends RecyclerView.ViewHolder{
             private TextView mName;
@@ -251,7 +250,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
             }
         }
 
-        public AdviceAdapter(List<AdviceInformation> mList){
+        public AdviceAdapter(List<Advice> mList){
             this._list=mList;
         }
 
@@ -264,7 +263,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
 
         @Override
         public void onBindViewHolder(final ViewHolder viewHolder,int position){
-            AdviceInformation _advice = _list.get(position);
+            Advice _advice = _list.get(position);
             viewHolder.mName.setText(_advice.getBookName());
             viewHolder.mAuthor.setText(_advice.getAuthor());
             viewHolder.mPress.setText(_advice.getAuthor());

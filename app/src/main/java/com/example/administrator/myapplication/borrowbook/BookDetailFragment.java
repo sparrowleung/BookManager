@@ -15,7 +15,6 @@ import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
 import com.example.administrator.myapplication.recycleview.Category;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -42,7 +41,7 @@ public class BookDetailFragment extends BaseFragment {
     private TextView mState;
     private TextView mBorrowper;
     private ImageView mImageView;
-    private BookInformation _category;
+    private Category _category;
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
@@ -72,7 +71,7 @@ public class BookDetailFragment extends BaseFragment {
         if(_set != null){
             _save.addAll(_set);
             for(int i = 0; i < _save.size(); i++) {
-                _category = _gson.fromJson(_save.get(i), BookInformation.class);
+                _category = _gson.fromJson(_save.get(i), Category.class);
                 if(_category.getName().equals(mBookName) && _category.getAuthor().equals(mBookAuthor)
                         && _category.getPress().equals(mBookPress)){
                     break;

@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
+import com.example.administrator.myapplication.bmob.Summary;
 import com.example.administrator.myapplication.bmob.UserInformation;
 import com.example.administrator.myapplication.base.BaseFragment;
 
@@ -45,6 +46,7 @@ import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by samsung on 2017/11/16.
@@ -114,8 +116,9 @@ public class AccountFragment extends BaseFragment {
         mTextNickName.setText(mUser.getUsername());
         mNumbers.setText(mUser.getMobilePhoneNumber());
 
-        mPreferences = getContext().getSharedPreferences("userFile", Context.MODE_PRIVATE);
-        mEditor = getContext().getSharedPreferences("userFile", Context.MODE_PRIVATE).edit();
+        mPreferences = getContext().getSharedPreferences("userFile", MODE_PRIVATE);
+        mEditor = getContext().getSharedPreferences("userFile", MODE_PRIVATE).edit();
+
         if(mPreferences.getString("userName", null) != null){
             mEditNickName.setHint(mPreferences.getString("userName", null));
             mEditPart.setHint(mPreferences.getString("part", null));
@@ -234,6 +237,20 @@ public class AccountFragment extends BaseFragment {
                                     public void done(BmobException e) {
                                         if(e == null){
                                             Toast.makeText(getContext(),"更换头像成功",Toast.LENGTH_SHORT).show();
+                                            Summary _summary = new Summary();
+                                            _summary.setChange(Double.toString(Math.random()));
+                                            _summary.update("flOv444A", new UpdateListener() {
+                                                @Override
+                                                public void done(BmobException e) {
+                                                    if(e == null){
+                                                      SharedPreferences.Editor _editor = getContext().getSharedPreferences("userFile", Context.MODE_PRIVATE).edit();
+                                                      _editor.clear();
+                                                      _editor.apply();
+                                                    }else {
+                                                        Log.d(TAG,"errorMessage = "+e.getMessage()+" errorCode = "+e.getErrorCode());
+                                                    }
+                                                }
+                                            });
                                             Intent _intent = getContext().getPackageManager()
                                                     .getLaunchIntentForPackage(getContext().getPackageName());
                                             _intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

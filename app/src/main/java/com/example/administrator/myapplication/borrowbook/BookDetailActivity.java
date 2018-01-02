@@ -40,7 +40,6 @@ public class BookDetailActivity extends BaseActivity{
     private Button mBack;
     private BmobUser mUser;
     private Date mDate;
-    private String mBookObjectId;
     private BookInformation mBookInf;
 
     private String mObjectId;
@@ -72,16 +71,6 @@ public class BookDetailActivity extends BaseActivity{
 
         mBookInf = new BookInformation();
 
-//        BmobQuery<BookInformation> _query = new BmobQuery<>();
-//        _query.addWhereEqualTo("name",getIntent().getStringExtra("bookName"));
-//        _query.addWhereEqualTo("author",getIntent().getStringExtra("bookAuthor"));
-//        _query.findObjects(new FindListener<BookInformation>() {
-//            @Override
-//            public void done(List<BookInformation> list, BmobException e) {
-//                mBookObjectId = list.get(0).getObjectId();
-//                mBorrowper = list.get(0).getBorrowper();
-//            }
-//        });
         mBorrow = (Button) findViewById(R.id.detail_borrow);
         mBorrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +83,7 @@ public class BookDetailActivity extends BaseActivity{
                         mBookInf.setBorrowper(mUser.getUsername());
                         mBookInf.setState(false);
                         mBookInf.setBorrowtime(mDate);
-                        mBookInf.update(mBookObjectId, new UpdateListener() {
+                        mBookInf.update(mObjectId, new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
                                 if (e == null) {
@@ -121,11 +110,13 @@ public class BookDetailActivity extends BaseActivity{
                     mBookInf.setState(true);
                     mBookInf.setBorrowtime(new Date(System.currentTimeMillis()));
                     mBookInf.setBacktime(mDate);
-                    mBookInf.update(mBookObjectId, new UpdateListener() {
+                    mBookInf.update(mObjectId, new UpdateListener() {
                         @Override
                         public void done(BmobException e) {
                             if (e == null) {
                                 Toast.makeText(BookDetailActivity.this, "归还成功", Toast.LENGTH_SHORT).show();
+                            }else {
+                                Log.d("BookDetailActivity", "error Message : " + e.getMessage() + ", error Code = " + e.getErrorCode());
                             }
                         }
                     });

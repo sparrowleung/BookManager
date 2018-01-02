@@ -19,21 +19,17 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
-import com.example.administrator.myapplication.bmob.UserInformation;
 import com.example.administrator.myapplication.borrowbook.BookDetailActivity;
 import com.example.administrator.myapplication.recycleview.Category;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
@@ -49,8 +45,8 @@ public class LiteratureFragment extends BaseFragment {
     private String _TAG = LiteratureFragment.class.getSimpleName();
 
     private RecyclerView mRecyclerView;
-    private List<BookInformation> mList;
-    private CategoryRecyclerView mCategoryRecyclerView;
+    private List<Category> mList;
+    private CategoryAdapter mCategoryAdapter;
 
     private SharedPreferences.Editor mEditor;
     private SharedPreferences mPreferences;
@@ -86,10 +82,10 @@ public class LiteratureFragment extends BaseFragment {
             Collections.sort(mSave,mComparator);
             Collections.reverse(mSave);
             for(int i = 0; i < mSave.size(); i++){
-                mList.add(i, mGson.fromJson(mSave.get(i), BookInformation.class));
+                mList.add(i, mGson.fromJson(mSave.get(i), Category.class));
             }
-            mCategoryRecyclerView = new CategoryRecyclerView(mList);
-            mRecyclerView.setAdapter(mCategoryRecyclerView);
+            mCategoryAdapter = new CategoryAdapter(mList);
+            mRecyclerView.setAdapter(mCategoryAdapter);
         } else {
             if (NetworkAvailale(getContext())) {
                 Bquery();
@@ -115,9 +111,10 @@ public class LiteratureFragment extends BaseFragment {
             @Override
             public void done(List<BookInformation> object, BmobException e) {
                 if (e == null) {
+
                     mSave = new ArrayList<>(object.size());
                     for (int i = 0; i < object.size(); i++) {
-                        BookInformation a1 = new BookInformation(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
+                        Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
                                 , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
                                 object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
                         mList.add(i, a1);
@@ -125,17 +122,10 @@ public class LiteratureFragment extends BaseFragment {
                     }
                     mSet.addAll(mSave);
                     mEditor.putStringSet(_TAG, mSet).apply();
-
                 }
                 mProgressBar.setVisibility(View.GONE);
-                mCategoryRecyclerView = new CategoryRecyclerView(mList);
-                mRecyclerView.setAdapter(mCategoryRecyclerView);
-                mRecyclerView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mCategoryRecyclerView.notifyDataSetChanged();
-                    }
-                });
+                mCategoryAdapter = new CategoryAdapter(mList);
+                mRecyclerView.setAdapter(mCategoryAdapter);
             }
         });
     }
@@ -145,26 +135,23 @@ public class LiteratureFragment extends BaseFragment {
         switch (requestCode){
             case 1:
                 if(resultCode == RESULT_OK){
-                    new Thread(new Runnable() {
+                    mEditor.clear();
+                    mEditor.apply();
+                    mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            try {
-                                Thread.sleep(200);
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
+
                             Bquery();
-                            mCategoryRecyclerView.notifyDataSetChanged();
                         }
-                    }).start();
+                    }, 200);
                 }
                 break;
         }
     }
 
-    class CategoryRecyclerView extends RecyclerView.Adapter<CategoryRecyclerView.ViewHolder>{
+    class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder>{
 
-        private List<BookInformation> _list;
+        private List<Category> _list;
 
         class ViewHolder extends RecyclerView.ViewHolder{
             View _view;
@@ -185,7 +172,7 @@ public class LiteratureFragment extends BaseFragment {
             }
         }
 
-        public CategoryRecyclerView(List<BookInformation> Categorylist){
+        public CategoryAdapter(List<Category> Categorylist){
             _list = Categorylist;
         }
 
@@ -197,13 +184,13 @@ public class LiteratureFragment extends BaseFragment {
                 @Override
                 public void onClick(View view) {
                     int position = viewHolder.getAdapterPosition();
-                    BookInformation _category=_list.get(position);
+                    Category _category = _list.get(position);
                     Intent _intent=new Intent(getActivity(), BookDetailActivity.class);
                     _intent.putExtra("bookName", _category.getName());
                     _intent.putExtra("bookAuthor", _category.getAuthor());
                     _intent.putExtra("bookPress", _category.getPress());
                     _intent.putExtra("bookCategory", _TAG);
-                    _intent.putExtra("objectId", _category.getObjectId());
+                    _intent.putExtra("objectId", _category.get_objectId());
                     _intent.putExtra("borrowper", _category.getBorrowper());
                     startActivityForResult(_intent,1);
                 }
@@ -213,7 +200,7 @@ public class LiteratureFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(ViewHolder viewHolder, int position){
-            BookInformation _category = _list.get(position);
+            Category _category = _list.get(position);
             viewHolder._name.setText(_category.getName());
             viewHolder._author.setText(_category.getAuthor());
             viewHolder._press.setText(_category.getPress());

@@ -27,8 +27,10 @@ import com.example.administrator.myapplication.category.CategoryActivity;
 import com.example.administrator.myapplication.newbook.NewBookActivity;
 import com.example.administrator.myapplication.newsandtips.NewsAndTipsActivity;
 import com.example.administrator.myapplication.bmob.NewsTipsInformation;
+import com.example.administrator.myapplication.recycleview.Category;
 import com.example.administrator.myapplication.recycleview.News;
 import com.example.administrator.myapplication.recycleview.NewsTipsAdapter;
+import com.example.administrator.myapplication.recycleview.Sum;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -52,7 +54,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     private RecyclerView mBookRecyclerView;
     private RecyclerView mNewsRecyclerView;
 
-    private List<BookInformation> mBookList = new ArrayList<>();
+    private List<Category> mBookList = new ArrayList<>();
     private List<News> mNewsList = new ArrayList<>();
     private HotBook mAdapter;
     private NewsTipsAdapter mNewsAdapter;
@@ -92,18 +94,22 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         mCategory = (View) getActivity().findViewById(R.id.first_category);
         mBuyAdvice = (View) getActivity().findViewById(R.id.first_advice);
         mNews = (View) getActivity().findViewById(R.id.table_title);
+
         mContent = (CardView) getActivity().findViewById(R.id.first_content);
         mContent.setCardElevation(8);
         mContent.setRadius(16);
         mContent.setContentPadding(5,5,5,5);
+
         mNotice = (CardView) getActivity().findViewById(R.id.first_notice);
         mNotice.setContentPadding(5,5,5,5);
         mNotice.setRadius(8);
         mNotice.setCardElevation(8);
+
         mHotBook = (CardView) getActivity().findViewById(R.id.first_hotbook);
         mHotBook.setContentPadding(5,5,5,5);
         mHotBook.setRadius(8);
         mHotBook.setCardElevation(8);
+
         mProgressBar1 = (ProgressBar) getActivity().findViewById(R.id.recycle_progressbar1);
         mProgressBar2 = (ProgressBar) getActivity().findViewById(R.id.recycle_progressbar2);
 
@@ -123,68 +129,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         mHotSet = mHotPreferences.getStringSet("hotbooks",null);
         mGson = new Gson();
 
-        InitSharePreferences("sum");
-        if(_set != null){
-            _save.addAll(_set);
-            final List<Summary> _list = new ArrayList<>();
-            for(int i = 0; i < _save.size(); i++){
-                _list.add(i, _gson.fromJson(_save.get(i), Summary.class));
-            }
-            if (NetworkAvailale(getContext())) {
-                BmobQuery<Summary> _query = new BmobQuery<>();
-                _query.findObjects(new FindListener<Summary>() {
-                    @Override
-                    public void done(List<Summary> list, BmobException e) {
-                        _save = new ArrayList<>();
-                        _set = new TreeSet<>(new ComparatorImpl());
-                        if(e == null){
-                            for(int i = 0; i < list.size(); i++){
-                                Summary _summary = new Summary(list.get(i).getObjectId(), list.get(i).getUpdatedAt(), list.get(i).getTable());
-                                for(int j = 0; j < _list.size(); j++){
-                                    if(_summary.getObjectId() == _list.get(j).getObjectId()){
-                                        if(_summary.getUpdatedAt() != _list.get(j).getUpdatedAt()){
-                                            SharedPreferences.Editor _editor = getContext().getSharedPreferences(_summary.getTable(), Context.MODE_PRIVATE).edit();
-                                            _editor.clear();
-                                            _editor.commit();
-                                        }
-                                    }
-                                }
-                                _save.add(i, _gson.toJson(_summary));
-                            }
-                            _set.addAll(_save);
-                            _editor.putStringSet("sum", _set).apply();
-                        }else {
-                            Log.d(TAG, "error Message1: " + e.getMessage() + " , error Code1: " + e.getErrorCode());
-                        }
-                    }
-                });
-            }
-        }else {
-            if (NetworkAvailale(getContext())) {
-
-                BmobQuery<Summary> _query = new BmobQuery<>();
-                _query.findObjects(new FindListener<Summary>() {
-                    @Override
-                    public void done(List<Summary> list, BmobException e) {
-                        _save = new ArrayList<>();
-                        _set = new TreeSet<>(new ComparatorImpl());
-                        if(e == null){
-                            for(int i = 0; i < list.size(); i++){
-                                Summary _summary = new Summary(list.get(i).getObjectId(), list.get(i).getUpdatedAt(), list.get(i).getTable());
-                                _save.add(i, _gson.toJson(_summary));
-                            }
-
-                            _set.addAll(_save);
-                            _editor.putStringSet("sum", _set).apply();
-                            Log.d(TAG, "Sum is ok???");
-                        }else {
-                            Log.d(TAG, "error Message: " + e.getMessage() + " , error Code: " + e.getErrorCode());
-                        }
-                    }
-                });
-            }
-        }
-
+        CheckChangeTable();
 
         if(mNewsSet != null){
             mNewsSave = new ArrayList<>();
@@ -207,7 +152,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             mHotSave = new ArrayList<>();
             mHotSave.addAll(mHotSet);
             for(int i = 0; i < mHotSave.size(); i++){
-                mBookList.add(i, mGson.fromJson(mHotSave.get(i), BookInformation.class));
+                mBookList.add(i, mGson.fromJson(mHotSave.get(i), Category.class));
             }
             mAdapter = new HotBook(mBookList);
             mBookRecyclerView.setAdapter(mAdapter);
@@ -290,7 +235,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                     mHotSet = new TreeSet<>(mComparator);
                     if (object.size() >= 6) {
                         for (int i = 0; i < 6; i++) {
-                            BookInformation a1 = new BookInformation(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
+                            Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
                                     , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
                                     object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
                             mBookList.add(i, a1);
@@ -298,7 +243,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                         }
                     } else {
                         for (int i = 0; i < object.size(); i++) {
-                            BookInformation a1 = new BookInformation(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
+                            Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
                                     , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
                                     object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
                             mBookList.add(i, a1);
@@ -316,9 +261,74 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
     }
 
+    public void SumBquery(){
+        BmobQuery<Summary> _query = new BmobQuery<>();
+        _query.findObjects(new FindListener<Summary>() {
+            @Override
+            public void done(List<Summary> list, BmobException e) {
+                _save = new ArrayList<>();
+                _set = new TreeSet<>(new ComparatorImpl());
+                if(e == null){
+                    for(int i = 0; i < list.size(); i++){
+                        Sum _sum = new Sum(list.get(i).getObjectId(), list.get(i).getUpdatedAt(), list.get(i).getTable());
+                        _save.add(i, _gson.toJson(_sum));
+                    }
+                    _set.addAll(_save);
+                    _editor.putStringSet("sum", _set).apply();
+                }else {
+                    Log.d(TAG, "error Message: " + e.getMessage() + " , error Code: " + e.getErrorCode());
+                }
+            }
+        });
+    }
+
+    public void CheckChangeTable(){
+        InitSharePreferences("sum");
+        if (NetworkAvailale(getContext())) {
+            if (_set != null) {
+                _save.addAll(_set);
+                final List<Sum> _list = new ArrayList<>();
+                for (int i = 0; i < _save.size(); i++) {
+                    _list.add(i, _gson.fromJson(_save.get(i), Sum.class));
+                }
+
+                BmobQuery<Summary> _query = new BmobQuery<>();
+                _query.findObjects(new FindListener<Summary>() {
+                    @Override
+                    public void done(List<Summary> list, BmobException e) {
+                        _save = new ArrayList<>();
+                        _set = new TreeSet<>(new ComparatorImpl());
+                        if (e == null) {
+                            for (int i = 0; i < list.size(); i++) {
+                                Sum _sum = new Sum(list.get(i).getObjectId(), list.get(i).getUpdatedAt(), list.get(i).getTable());
+
+                                for (int j = 0; j < _list.size(); j++) {
+                                    if (_sum.getmObjectId().equals(_list.get(j).getmObjectId())) {
+                                        if (!_sum.getmUpdatedAt().equals(_list.get(j).getmUpdatedAt())) {
+                                            SharedPreferences.Editor _editor = getContext().getSharedPreferences(_sum.getTable(), Context.MODE_PRIVATE).edit();
+                                            _editor.clear();
+                                            _editor.apply();
+                                        }
+                                    }
+                                }
+                                _save.add(i, _gson.toJson(_sum));
+                            }
+                            _set.addAll(_save);
+                            _editor.putStringSet("sum", _set).apply();
+                        } else {
+                            Log.d(TAG, "error Message: " + e.getMessage() + " , error Code: " + e.getErrorCode());
+                        }
+                    }
+                });
+            }else {
+                SumBquery();
+            }
+        }
+    }
+
     class HotBook extends RecyclerView.Adapter<HotBook.ViewHolder>{
 
-        private List<BookInformation> _list;
+        private List<Category> _list;
 
        class ViewHolder extends RecyclerView.ViewHolder{
            private ImageView _imageView;
@@ -333,7 +343,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
            }
        }
 
-       public HotBook(List<BookInformation> mList){
+       public HotBook(List<Category> mList){
            _list = mList;
        }
 
@@ -345,13 +355,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                @Override
                public void onClick(View view) {
                    int position = viewHolder.getAdapterPosition();
-                   BookInformation _category = _list.get(position);
+                   Category _category = _list.get(position);
                    Intent _intent = new Intent(getActivity(), BookDetailActivity.class);
                    _intent.putExtra("bookName", _category.getName());
                    _intent.putExtra("bookAuthor", _category.getAuthor());
                    _intent.putExtra("bookPress", _category.getPress());
                    _intent.putExtra("bookCategory", "hotbooks");
-                   _intent.putExtra("objectId", _category.getObjectId());
+                   _intent.putExtra("objectId", _category.get_objectId());
                    _intent.putExtra("borrowper", _category.getBorrowper());
                    startActivity(_intent);
                }
@@ -361,7 +371,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
        @Override
         public void onBindViewHolder(ViewHolder viewHolder,int position){
-            BookInformation mBook = _list.get(position);
+           Category mBook = _list.get(position);
             viewHolder._textView.setText(mBook.getName());
             Glide.with(getContext()).load(mBook.getPhoto().getFileUrl()).into(viewHolder._imageView);
        }

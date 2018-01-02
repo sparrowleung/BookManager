@@ -23,25 +23,17 @@ public class BookInformation extends BmobObject {
     private String category;
     private String borrowper;
     private BmobFile photo;
+    private String _objectId;
+    private String _createdAt;
 
 
-    public BookInformation(String objectId, String createdAt, String name, String author, int borrowcount,
-                           String press, double price, Boolean state, String category, String borrowper, BmobFile photo,
-                           Date borrowtime, Date backtime){
-        this.name = name;
-        this.author = author;
-        this.borrowcount = borrowcount;
-        this.press = press;
-        this.price = price;
-        this.state = state;
-        this.category = category;
-        this.borrowper = borrowper;
-        this.photo = photo;
-        this.borrowtime = borrowtime;
-        this.backtime = backtime;
+    public String get_objectId(){
+        return _objectId;
     }
 
-    public BookInformation(){}
+    public String get_createdAt(){
+        return _createdAt;
+    }
 
     public String getName(){
         return name;

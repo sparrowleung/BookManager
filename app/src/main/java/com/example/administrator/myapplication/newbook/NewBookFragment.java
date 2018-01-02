@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +41,7 @@ public class NewBookFragment extends BaseFragment{
 
     private View mRootView;
     private RecyclerView mRecyclerView;
-    private List<BookInformation> mList;
+    private List<Category> mList;
     private NewBookAdapter mNewBookAdapter;
     private String _TAG = NewBookFragment.class.getSimpleName();
     private ProgressBar mProgressBar;
@@ -79,7 +78,7 @@ public class NewBookFragment extends BaseFragment{
             mSave.addAll(mSet);
             Collections.sort(mSave,mComparator);
             for(int i = 0; i < mSave.size(); i++){
-                mList.add(i, mGson.fromJson(mSave.get(i), BookInformation.class));
+                mList.add(i, mGson.fromJson(mSave.get(i), Category.class));
             }
             mNewBookAdapter=new NewBookAdapter(mList);
             mRecyclerView.setAdapter(mNewBookAdapter);
@@ -109,7 +108,7 @@ public class NewBookFragment extends BaseFragment{
                 mSave = new ArrayList<>(object.size());
                 if(e == null){
                     for(int i = 0; i < 10; i++) {
-                        BookInformation a1 = new BookInformation(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
+                        Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
                                 , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
                                 object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
                         mList.add(i, a1);
@@ -127,7 +126,7 @@ public class NewBookFragment extends BaseFragment{
 
     class NewBookAdapter extends RecyclerView.Adapter<NewBookAdapter.ViewHolder>{
 
-        private List<BookInformation> mList;
+        private List<Category> mList;
 
         class ViewHolder extends RecyclerView.ViewHolder{
             View _view;
@@ -144,7 +143,7 @@ public class NewBookFragment extends BaseFragment{
             }
         }
 
-        public NewBookAdapter(List<BookInformation> _list){
+        public NewBookAdapter(List<Category> _list){
             this.mList = _list;
         }
 
@@ -156,13 +155,13 @@ public class NewBookFragment extends BaseFragment{
                 @Override
                 public void onClick(View v) {
                     int _position = _viewHolder.getAdapterPosition();
-                    BookInformation _category = mList.get(_position);
+                    Category _category = mList.get(_position);
                     Intent _intent = new Intent(getActivity(), BookDetailActivity.class);
                     _intent.putExtra("bookName", _category.getName());
                     _intent.putExtra("bookAuthor", _category.getAuthor());
                     _intent.putExtra("bookPress", _category.getPress());
                     _intent.putExtra("bookCategory", _TAG);
-                    _intent.putExtra("objectId", _category.getObjectId());
+                    _intent.putExtra("objectId", _category.get_objectId());
                     _intent.putExtra("borrowper", _category.getBorrowper());
                     startActivity(_intent);
                 }
@@ -173,7 +172,7 @@ public class NewBookFragment extends BaseFragment{
         @Override
         public void onBindViewHolder(ViewHolder viewHolder,int position){
             int heights = (int) (300 + Math.random() * 300);
-            BookInformation _book = mList.get(position);
+            Category _book = mList.get(position);
             viewHolder._textView.setText(_book.getName());
             Glide.with(getContext()).load(_book.getPhoto().getFileUrl()).into(viewHolder._imageView);
             ViewGroup.LayoutParams _layoutParams=viewHolder._imageView.getLayoutParams();

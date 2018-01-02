@@ -46,7 +46,7 @@ public class BorrowBookFragment extends BaseFragment {
     private RecyclerView mRecyclerView;
 
     private BookAdapter mBookAdapter;
-    private List<BookInformation> mList;
+    private List<Category> mList;
 
     private TextView mBookCount;
     private TextView mAccountName;
@@ -89,7 +89,7 @@ public class BorrowBookFragment extends BaseFragment {
                                 _save.addAll(_set);
                                 Collections.sort(_save, mComparator);
                                 for (int i = 0; i < _save.size(); i++) {
-                                    mList.add(i, _gson.fromJson(_save.get(i), BookInformation.class));
+                                    mList.add(i, _gson.fromJson(_save.get(i), Category.class));
                                 }
                                 mBookCount.setText(Integer.toString(_save.size()));
                                 mBookAdapter = new BookAdapter(mList);
@@ -124,7 +124,7 @@ public class BorrowBookFragment extends BaseFragment {
                 _save.addAll(_set);
                 Collections.sort(_save, mComparator);
                 for (int i = 0; i < _save.size(); i++) {
-                    mList.add(i, _gson.fromJson(_save.get(i), BookInformation.class));
+                    mList.add(i, _gson.fromJson(_save.get(i), Category.class));
                 }
                 mBookCount.setText(Integer.toString(_save.size()));
                 mBookAdapter = new BookAdapter(mList);
@@ -160,9 +160,10 @@ public class BorrowBookFragment extends BaseFragment {
                 _save = new ArrayList<>(object.size());
                 if(e==null){
                     for (int i = 0; i < object.size(); i++) {
-                        BookInformation a1 = new BookInformation(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
+                        Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
                                 , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
                                 object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
+                        Log.d("HomeFragment", "Book = " + a1.toString());
                         mList.add(a1);
                         _save.add(i, _gson.toJson(a1));
                     }
@@ -186,7 +187,7 @@ public class BorrowBookFragment extends BaseFragment {
                     Glide.with(getContext()).load(list.get(0).getImage().getFileUrl()).into(mAccountImage);
                 }
                 else{
-                    Log.d("BorrowBookFragment_lyy", "error message " + e.getMessage() + " errorCode = " + e.getErrorCode());
+                    Log.d(TAG, "error message " + e.getMessage() + " errorCode = " + e.getErrorCode());
                 }
             }
         });
@@ -195,7 +196,7 @@ public class BorrowBookFragment extends BaseFragment {
     class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
         private Context context;
-        private List<BookInformation> mbook;
+        private List<Category> mbook;
 
          class ViewHolder extends RecyclerView.ViewHolder{
             View _view;
@@ -214,7 +215,7 @@ public class BorrowBookFragment extends BaseFragment {
             }
         }
 
-        public BookAdapter(List<BookInformation> bookList){
+        public BookAdapter(List<Category> bookList){
             mbook = bookList;
         }
 
@@ -229,13 +230,13 @@ public class BorrowBookFragment extends BaseFragment {
                 @Override
                 public void onClick(View v) {
                     int _position = holder.getAdapterPosition();
-                    BookInformation _category = mbook.get(_position);
+                    Category _category = mbook.get(_position);
                     Intent _intent = new Intent(getActivity(), BookDetailActivity.class);
                     _intent.putExtra("bookName", _category.getName());
                     _intent.putExtra("bookAuthor", _category.getAuthor());
                     _intent.putExtra("bookPress", _category.getPress());
                     _intent.putExtra("bookCategory", TAG);
-                    _intent.putExtra("objectId", _category.getObjectId());
+                    _intent.putExtra("objectId", _category.get_objectId());
                     _intent.putExtra("borrowper", _category.getBorrowper());
                     startActivity(_intent);
                 }
@@ -245,7 +246,7 @@ public class BorrowBookFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position){
-            BookInformation _category = mbook.get(position);
+            Category _category = mbook.get(position);
             holder.bookname.setText(_category.getName());
             holder.bookauthor.setText(_category.getAuthor());
             Glide.with(context).load(_category.getPhoto().getFileUrl()).into(holder.bookView);

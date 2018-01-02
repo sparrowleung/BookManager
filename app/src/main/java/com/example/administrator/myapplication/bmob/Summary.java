@@ -11,12 +11,6 @@ public class Summary extends BmobObject {
     private String table;
     private String change;
 
-    public Summary(String objectId, String updatedAt,String table){
-        this.table = table;
-    }
-
-    public Summary(){}
-
     public String getTable(){
         return table;
     }
