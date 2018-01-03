@@ -210,8 +210,10 @@
 
                         <ProgressBar
                             android:visibility="gone"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
                             android:id="@+id/recycle_progressbar2"
-                            android:layout_width="match_parent"
+                            android:layout_width="50dp"
                             android:layout_height="50dp" />
                     </RelativeLayout>
 

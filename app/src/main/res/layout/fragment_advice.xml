@@ -253,12 +253,25 @@
                             android:layout_height="1dp"
                             android:background="#33331111"/>
 
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/advice_recyclerview"
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
+                            <ProgressBar
+                                android:visibility="gone"
+                                android:layout_centerVertical="true"
+                                android:layout_centerHorizontal="true"
+                                android:id="@+id/advice_progressbar"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp" />
 
-                        </android.support.v7.widget.RecyclerView>
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/advice_recyclerview"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                            </android.support.v7.widget.RecyclerView>
+                        </RelativeLayout>
+
 
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
