@@ -76,20 +76,20 @@ public class TechnologyFragment extends BaseFragment {
         mGson = new Gson();
         mProgressBar = (ProgressBar) getActivity().findViewById(R.id.techno_progressbar);
 
-        if (mSet != null) {
-            mSave.addAll(mSet);
-            Collections.sort(mSave,mComparator);
-            Collections.reverse(mSave);
-            for (int i = 0; i < mSave.size(); i++) {
-                mList.add(i, mGson.fromJson(mSave.get(i), Category.class));
-            }
-            mCategoryAdapter = new CategoryAdapter(mList);
-            mRecyclerView.setAdapter(mCategoryAdapter);
-        } else {
-            if (NetworkAvailale(getContext())) {
-                Bquery();
-                mProgressBar.setVisibility(View.VISIBLE);
-            }else {
+        if (NetworkAvailale(getContext())) {
+            Bquery();
+            mProgressBar.setVisibility(View.VISIBLE);
+        }else {
+            if (mSet != null) {
+                mSave.addAll(mSet);
+                Collections.sort(mSave,mComparator);
+                Collections.reverse(mSave);
+                for (int i = 0; i < mSave.size(); i++) {
+                    mList.add(i, mGson.fromJson(mSave.get(i), Category.class));
+                }
+                mCategoryAdapter = new CategoryAdapter(mList);
+                mRecyclerView.setAdapter(mCategoryAdapter);
+            } else {
                 Toast.makeText(getContext(), "暂无网络，请检查网络", Toast.LENGTH_SHORT).show();
             }
         }
@@ -115,9 +115,7 @@ public class TechnologyFragment extends BaseFragment {
         if(mList.size() > 0){
             mList.clear();
         }
-        if (mSet == null) {
-            mSet = new TreeSet<>(mComparator);
-        }
+
         BmobQuery<BookInformation> bmobQuery = new BmobQuery<>();
         bmobQuery.addWhereEqualTo("category","technology");
         bmobQuery.order("-createdAt");
@@ -127,6 +125,7 @@ public class TechnologyFragment extends BaseFragment {
             public void done(List<BookInformation> object, BmobException e) {
                 if(e == null){
                     mSave = new ArrayList<>(object.size());
+                    mSet = new TreeSet<>(mComparator);
                     for(int i = 0; i < object.size(); i++){
                         Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
                                 , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),

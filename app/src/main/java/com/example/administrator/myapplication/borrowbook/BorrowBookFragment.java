@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,8 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by 37289 on 2017/11/11.
@@ -54,6 +57,7 @@ public class BorrowBookFragment extends BaseFragment {
     private BmobUser _user;
     private ComparatorImpl mComparator;
     private SharedPreferences mPreferences;
+    private ProgressBar mProgerssbar;
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle saveInstanceState){
@@ -80,6 +84,7 @@ public class BorrowBookFragment extends BaseFragment {
                     if (_user != null) {
                         if (NetworkAvailale(getContext())) {
                             Bquery();
+                            mProgerssbar.setVisibility(View.VISIBLE);
                             mBookAdapter.notifyDataSetChanged();
                             mBookDetail.setVisibility(View.VISIBLE);
                         }else {
@@ -109,6 +114,7 @@ public class BorrowBookFragment extends BaseFragment {
         mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.recyclerview_detail);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mList=new ArrayList<>();
+        mProgerssbar = (ProgressBar) getActivity().findViewById(R.id.borrow_progressbar);
 
         mAccountName = (TextView) getActivity().findViewById(R.id.borrow_account);
         mPreferences = getContext().getSharedPreferences("userFile",Context.MODE_PRIVATE);
@@ -139,13 +145,10 @@ public class BorrowBookFragment extends BaseFragment {
             mAccountName.setText("未登录");
             mBookCount.setText(" ");
         }
-
-
-
     }
 
     public void Bquery(){
-        if(mList != null) {
+        if(mList.size() > 0) {
             mList.clear();
         }
 
@@ -159,11 +162,11 @@ public class BorrowBookFragment extends BaseFragment {
                 _set = new TreeSet<>(mComparator);
                 _save = new ArrayList<>(object.size());
                 if(e==null){
+                    mProgerssbar.setVisibility(View.GONE);
                     for (int i = 0; i < object.size(); i++) {
                         Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
                                 , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
                                 object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
-                        Log.d("HomeFragment", "Book = " + a1.toString());
                         mList.add(a1);
                         _save.add(i, _gson.toJson(a1));
                     }
@@ -173,6 +176,12 @@ public class BorrowBookFragment extends BaseFragment {
                 mBookCount.setText(Integer.toString(object.size()));
                 mBookAdapter = new BookAdapter(mList);
                 mRecyclerView.setAdapter(mBookAdapter);
+                mRecyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mBookAdapter.notifyDataSetChanged();
+                    }
+                });
             }
         });
     }
@@ -187,10 +196,26 @@ public class BorrowBookFragment extends BaseFragment {
                     Glide.with(getContext()).load(list.get(0).getImage().getFileUrl()).into(mAccountImage);
                 }
                 else{
-                    Log.d(TAG, "error message " + e.getMessage() + " errorCode = " + e.getErrorCode());
+                    Log.d(TAG, "error Message = " + e.getMessage() + ", error Code = " + e.getErrorCode());
                 }
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        switch (requestCode){
+            case 1:
+                if(resultCode == RESULT_OK){
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Bquery();
+                        }
+                    }, 200);
+                }
+                break;
+        }
     }
 
     class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
@@ -238,7 +263,7 @@ public class BorrowBookFragment extends BaseFragment {
                     _intent.putExtra("bookCategory", TAG);
                     _intent.putExtra("objectId", _category.get_objectId());
                     _intent.putExtra("borrowper", _category.getBorrowper());
-                    startActivity(_intent);
+                    startActivityForResult(_intent,1);
                 }
             });
             return  holder;

@@ -103,7 +103,6 @@ public class AccountRegisterFragment extends BaseFragment {
                         mName = mEditName.getText().toString();
                         mPart = mEditPart.getText().toString();
                         mTeam = mEditTeam.getText().toString();
-                        Log.d("BACED", mVerifyCode + phoneVerify);
 
                         UserInformation userInformation = new UserInformation();
                         userInformation.setPart(mPart);

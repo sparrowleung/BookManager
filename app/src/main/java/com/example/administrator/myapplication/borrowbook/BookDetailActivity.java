@@ -1,7 +1,9 @@
 package com.example.administrator.myapplication.borrowbook;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.support.v7.app.ActionBar;
@@ -17,6 +19,7 @@ import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.account.AccountActivity;
 import com.example.administrator.myapplication.base.BaseActivity;
 import com.example.administrator.myapplication.bmob.BookInformation;
+import com.example.administrator.myapplication.bmob.Summary;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -44,6 +47,7 @@ public class BookDetailActivity extends BaseActivity{
 
     private String mObjectId;
     private String mBorrowper;
+    private String mCategory;
 
     @Override
     public void onCreate(Bundle saveInstanceState){
@@ -68,6 +72,7 @@ public class BookDetailActivity extends BaseActivity{
         mDate = new Date(System.currentTimeMillis());
         mObjectId = getIntent().getStringExtra("objectId");
         mBorrowper = getIntent().getStringExtra("borrowper");
+        mCategory = getIntent().getStringExtra("bookCategory");
 
         mBookInf = new BookInformation();
 
@@ -87,6 +92,7 @@ public class BookDetailActivity extends BaseActivity{
                             @Override
                             public void done(BmobException e) {
                                 if (e == null) {
+                                    SummaryChange(mCategory);
                                     Toast.makeText(BookDetailActivity.this, "借阅成功", Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -99,6 +105,7 @@ public class BookDetailActivity extends BaseActivity{
                 }
             }
         });
+
         mBack = (Button) findViewById(R.id.detail_back);
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,9 +121,10 @@ public class BookDetailActivity extends BaseActivity{
                         @Override
                         public void done(BmobException e) {
                             if (e == null) {
+                                SummaryChange(mCategory);
                                 Toast.makeText(BookDetailActivity.this, "归还成功", Toast.LENGTH_SHORT).show();
                             }else {
-                                Log.d("BookDetailActivity", "error Message : " + e.getMessage() + ", error Code = " + e.getErrorCode());
+                                Log.d(TAG, "error Message = " + e.getMessage() + ", error Code = " + e.getErrorCode());
                             }
                         }
                     });
@@ -153,5 +161,33 @@ public class BookDetailActivity extends BaseActivity{
             case android.R.id.home:finish();break;
         }
         return true;
+    }
+
+    public void SummaryChange(String category){
+        Summary _summary = new Summary();
+        _summary.setChange(Double.toString(Math.random()));
+        if(category.equals("TechnologyFragment")) {
+            _summary.update("iIqUZZZv", new UpdateListener() {
+                @Override
+                public void done(BmobException e) {
+                    if (e == null) {
+
+                    } else {
+                        Log.d(TAG, "error Message = " + e.getMessage() + ", error Code = " + e.getErrorCode());
+                    }
+                }
+            });
+        }else if(category.equals("LiteratureFragment")){
+            _summary.update("wmjW777E", new UpdateListener() {
+                @Override
+                public void done(BmobException e) {
+                    if (e == null) {
+
+                    } else {
+                        Log.d(TAG, "error Message = " + e.getMessage() + ", error Code = " + e.getErrorCode());
+                    }
+                }
+            });
+        }
     }
 }

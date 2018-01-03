@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.AdviceInformation;
+import com.example.administrator.myapplication.bmob.Summary;
 import com.example.administrator.myapplication.bmob.UserInformation;
 import com.example.administrator.myapplication.recycleview.Advice;
 
@@ -33,6 +35,7 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * Created by Administrator on 2017/10/30.
@@ -47,6 +50,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
     private CardView mShowAdvice;
     private CardView mCommitAdvice;
     private SwipeRefreshLayout mSwipeRefresh;
+    private ProgressBar mProgressBar;
 
     private EditText mNameEdit;
     private EditText mAuthorEdit;
@@ -129,17 +133,23 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
         mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.advice_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mList = new ArrayList<>();
+        mProgressBar = (ProgressBar) getActivity().findViewById(R.id.advice_progressbar);
 
-        if (_set != null) {
-            _save.addAll(_set);
-            Collections.sort(_save,mComparator);
-            for (int i = 0; i < _save.size(); i++) {
-                mList.add(i, _gson.fromJson(_save.get(i), Advice.class));
-            }
-            mAdviceAdapter = new AdviceAdapter(mList);
-            mRecyclerView.setAdapter(mAdviceAdapter);
-        } else {
+        if(NetworkAvailale(getContext())){
             Bquery();
+            mProgressBar.setVisibility(View.VISIBLE);
+        }else {
+            if (_set != null) {
+                _save.addAll(_set);
+                Collections.sort(_save, mComparator);
+                for (int i = 0; i < _save.size(); i++) {
+                    mList.add(i, _gson.fromJson(_save.get(i), Advice.class));
+                }
+                mAdviceAdapter = new AdviceAdapter(mList);
+                mRecyclerView.setAdapter(mAdviceAdapter);
+            } else {
+                Toast.makeText(getContext(), "暂无网络，请检查网络", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -175,6 +185,17 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
                             @Override
                             public void done(String s, BmobException e) {
                                 if (e == null) {
+                                    Summary _summary = new Summary();
+                                    _summary.setChange(Double.toString(Math.random()));
+                                    _summary.update("lASZ333A", new UpdateListener() {
+                                        @Override
+                                        public void done(BmobException e) {
+                                            if(e == null){
+                                            }else {
+                                                Log.d(TAG, "error Message = "+e.getMessage()+", error Code = "+e.getErrorCode());
+                                            }
+                                        }
+                                    });
                                     Toast.makeText(getContext(), "已收到您的建议，谢谢", Toast.LENGTH_SHORT).show();
 
                                 } else {
@@ -212,12 +233,15 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
             public void done(List<AdviceInformation> list, BmobException e) {
                 _save = new ArrayList<>(list.size());
                 if(e==null){
+                    mProgressBar.setVisibility(View.GONE);
                     for(int i = 0; i < list.size(); i++){
                         Advice _advice = new Advice(list.get(i).getCreatedAt(),list.get(i).getBookName(),list.get(i).getAuthor(),list.get(i).getPress()
                                 ,list.get(i).getPrice(), list.get(i).getReason(), list.get(i).getAdvicer());
                         mList.add(_advice);
                         _save.add(i, _gson.toJson(_advice));
                     }
+                }else {
+                    Log.d(TAG, "error Message = " + e.getMessage() + ", error Code = " + e.getErrorCode());
                 }
                 _set.addAll(_save);
                 _editor.putStringSet(TAG, _set).apply();
@@ -277,7 +301,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
                     if(e == null){
                         Glide.with(getContext()).load(list.get(0).getImage().getFileUrl()).into(viewHolder.mImage);
                     }else {
-                        Log.d("BuyAdviceFragment","errorMessage = "+e.getMessage()+" errorCode = "+e.getErrorCode());
+                        Log.d(TAG, "error Message = " +e.getMessage()+", error Code = "+e.getErrorCode());
                     }
                 }
             });

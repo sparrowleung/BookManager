@@ -121,45 +121,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         mNewsRecyclerView = (RecyclerView) mRootView.findViewById(R.id.recycle_newslist);
         mNewsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mNewsEditor = getContext().getSharedPreferences("newstips", Context.MODE_PRIVATE).edit();
-        mHotEditor = getContext().getSharedPreferences("hotbooks", Context.MODE_PRIVATE).edit();
-        mNewsPreferences = getContext().getSharedPreferences("newstips", Context.MODE_PRIVATE);
-        mHotPreferences = getContext().getSharedPreferences("hotbooks", Context.MODE_PRIVATE);
-        mNewsSet = mNewsPreferences.getStringSet("newstips",null);
-        mHotSet = mHotPreferences.getStringSet("hotbooks",null);
-        mGson = new Gson();
-
         CheckChangeTable();
-
-        if(mNewsSet != null){
-            mNewsSave = new ArrayList<>();
-            mNewsSave.addAll(mNewsSet);
-            Collections.sort(mNewsSave,mComparator);
-            Collections.reverse(mNewsSave);
-            for(int i = 0; i < mNewsSave.size(); i++){
-                mNewsList.add(i, mGson.fromJson(mNewsSave.get(i), News.class));
-            }
-
-            mNewsAdapter = new NewsTipsAdapter(mNewsList);
-            mNewsRecyclerView.setAdapter(mNewsAdapter);
-
-        }else {
-            NewsBquery();
-            mProgressBar1.setVisibility(View.VISIBLE);
-        }
-
-        if(mHotSet != null){
-            mHotSave = new ArrayList<>();
-            mHotSave.addAll(mHotSet);
-            for(int i = 0; i < mHotSave.size(); i++){
-                mBookList.add(i, mGson.fromJson(mHotSave.get(i), Category.class));
-            }
-            mAdapter = new HotBook(mBookList);
-            mBookRecyclerView.setAdapter(mAdapter);
-        }else {
-            HotBquery();
-            mProgressBar2.setVisibility(View.VISIBLE);
-        }
 
         mNewbook.setOnClickListener(this);
         mCategory.setOnClickListener(this);
@@ -276,7 +238,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                     _set.addAll(_save);
                     _editor.putStringSet("sum", _set).apply();
                 }else {
-                    Log.d(TAG, "error Message: " + e.getMessage() + " , error Code: " + e.getErrorCode());
+                    Log.d(TAG, "error Message = " + e.getMessage() + " , error Code = " + e.getErrorCode());
                 }
             }
         });
@@ -313,16 +275,59 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                                 }
                                 _save.add(i, _gson.toJson(_sum));
                             }
+                            LoadingInformation();
                             _set.addAll(_save);
                             _editor.putStringSet("sum", _set).apply();
                         } else {
-                            Log.d(TAG, "error Message: " + e.getMessage() + " , error Code: " + e.getErrorCode());
+                            Log.d(TAG, "error Message = " + e.getMessage() + " , error Code " + e.getErrorCode());
                         }
                     }
                 });
             }else {
                 SumBquery();
             }
+        }else {
+            LoadingInformation();
+        }
+    }
+
+    public void LoadingInformation(){
+
+        mNewsEditor = getContext().getSharedPreferences("newstips", Context.MODE_PRIVATE).edit();
+        mHotEditor = getContext().getSharedPreferences("hotbooks", Context.MODE_PRIVATE).edit();
+        mNewsPreferences = getContext().getSharedPreferences("newstips", Context.MODE_PRIVATE);
+        mHotPreferences = getContext().getSharedPreferences("hotbooks", Context.MODE_PRIVATE);
+        mNewsSet = mNewsPreferences.getStringSet("newstips",null);
+        mHotSet = mHotPreferences.getStringSet("hotbooks",null);
+        mGson = new Gson();
+
+        if(mNewsSet != null){
+            mNewsSave = new ArrayList<>();
+            mNewsSave.addAll(mNewsSet);
+            Collections.sort(mNewsSave,mComparator);
+            Collections.reverse(mNewsSave);
+            for(int i = 0; i < mNewsSave.size(); i++){
+                mNewsList.add(i, mGson.fromJson(mNewsSave.get(i), News.class));
+            }
+            mNewsAdapter = new NewsTipsAdapter(mNewsList);
+            mNewsRecyclerView.setAdapter(mNewsAdapter);
+
+        }else {
+            NewsBquery();
+            mProgressBar1.setVisibility(View.VISIBLE);
+        }
+
+        if(mHotSet != null){
+            mHotSave = new ArrayList<>();
+            mHotSave.addAll(mHotSet);
+            for(int i = 0; i < mHotSave.size(); i++){
+                mBookList.add(i, mGson.fromJson(mHotSave.get(i), Category.class));
+            }
+            mAdapter = new HotBook(mBookList);
+            mBookRecyclerView.setAdapter(mAdapter);
+        }else {
+            HotBquery();
+            mProgressBar2.setVisibility(View.VISIBLE);
         }
     }
 

@@ -25,7 +25,6 @@ public class BookManageApplication extends Application {
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
             if (activity != null) {
-                Log.d(_TAG, activity.getClass().getSimpleName() + " onCreated");
             }
         }
 
@@ -57,7 +56,6 @@ public class BookManageApplication extends Application {
         @Override
         public void onActivityDestroyed(Activity activity) {
             if (activity != null) {
-                Log.d(_TAG, activity.getClass().getSimpleName() + " onDestroyed");
             }
         }
     };

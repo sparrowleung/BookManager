@@ -1,5 +1,6 @@
 package com.example.administrator.myapplication.main;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
@@ -24,18 +25,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.account.AccountActivity;
 import com.example.administrator.myapplication.base.BaseActivity;
+import com.example.administrator.myapplication.base.BaseFragment;
+import com.example.administrator.myapplication.bmob.Summary;
 import com.example.administrator.myapplication.bmob.UserInformation;
 import com.example.administrator.myapplication.borrowbook.BorrowBookFragment;
 import com.example.administrator.myapplication.newsandtips.NewsAndTipsActivity;
+import com.example.administrator.myapplication.recycleview.Sum;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
@@ -45,13 +53,13 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.DownloadFileListener;
 import cn.bmob.v3.listener.FindListener;
 
+import static com.example.administrator.myapplication.base.BaseFragment.NetworkAvailale;
 import static com.mob.MobSDK.getContext;
 
 
 public class MainActivity extends BaseActivity {
 
     private DrawerLayout _drawerLayout;
-    private String _TAG = MainActivity.class.getSimpleName();
     private long mFirstTime;
     private NavigationView _navigationView;
     private Toolbar _toolBar;
@@ -68,8 +76,8 @@ public class MainActivity extends BaseActivity {
     private HomeFragment mFirstPageFragment;
     private BorrowBookFragment mBorrowBookFragment;
 
-    private SharedPreferences.Editor mEditor;
-    private SharedPreferences mPreferences;
+    private SharedPreferences.Editor mUserEditor;
+    private SharedPreferences mUserPreferences;
     private BmobUser _user;
 
     @Override
@@ -128,16 +136,18 @@ public class MainActivity extends BaseActivity {
         _unLogin = (View) _heartLayout.findViewById(R.id.nav_unlogin);
         _hearterImage = (ImageView) _heartLayout.findViewById(R.id.account_image);
 
-        mEditor = getSharedPreferences("userFile", MODE_PRIVATE).edit();
-        mPreferences = getSharedPreferences("userFile", MODE_PRIVATE);
+        mUserEditor = getSharedPreferences("userFile", MODE_PRIVATE).edit();
+        mUserPreferences = getSharedPreferences("userFile", MODE_PRIVATE);
 
         _user = BmobUser.getCurrentUser();
+
         if(_user != null) {
             _unLogin.setVisibility(View.GONE);
             _heartName.setVisibility(View.VISIBLE);
             _heaterName.setText(_user.getUsername());
-            if(mPreferences.getString("userName", null) != null){
-                Glide.with(getApplicationContext()).load(mPreferences.getString("imageUrl", null)).into(_hearterImage);
+            if(mUserPreferences.getString("userName", null) != null){
+                RequestOptions _options = new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE);
+                Glide.with(getApplicationContext()).load(mUserPreferences.getString("imageUrl", null)).apply(_options).into(_hearterImage);
             }else {
                 DownloadPicture();
             }
@@ -145,8 +155,6 @@ public class MainActivity extends BaseActivity {
             _heartName.setVisibility(View.GONE);
            _unLogin.setVisibility(View.VISIBLE);
         }
-
-
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
@@ -206,17 +214,18 @@ public class MainActivity extends BaseActivity {
             @Override
             public void done(List<UserInformation> object, BmobException e) {
                 if(e == null) {
-                    mEditor.putString("userName", object.get(0).getUsername());
-                    mEditor.putString("mobileNum", object.get(0).getMobilePhoneNumber());
-                    mEditor.putString("teamGroup", object.get(0).getTeamgroup());
-                    mEditor.putString("part", object.get(0).getPart());
-                    mEditor.putString("imageUrl", object.get(0).getImage().getFileUrl());
+                    mUserEditor.putString("userName", object.get(0).getUsername());
+                    mUserEditor.putString("mobileNum", object.get(0).getMobilePhoneNumber());
+                    mUserEditor.putString("teamGroup", object.get(0).getTeamgroup());
+                    mUserEditor.putString("part", object.get(0).getPart());
+                    mUserEditor.putString("imageUrl", object.get(0).getImage().getFileUrl());
                     Glide.with(getApplicationContext()).load(object.get(0).getImage().getFileUrl()).into(_hearterImage);
+                    mUserEditor.apply();
                 }
                 else{
-                    Log.d(_TAG, "error message " + e.getMessage() + " errorCode = " + e.getErrorCode());
+                    Log.d(TAG, "error Message = " + e.getMessage() + ", error Code = " + e.getErrorCode());
                 }
-                mEditor.apply();
+
             }
         });
     }

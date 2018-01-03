@@ -28,6 +28,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.bmob.Summary;
 import com.example.administrator.myapplication.bmob.UserInformation;
@@ -116,14 +118,16 @@ public class AccountFragment extends BaseFragment {
         mTextNickName.setText(mUser.getUsername());
         mNumbers.setText(mUser.getMobilePhoneNumber());
 
-        mPreferences = getContext().getSharedPreferences("userFile", MODE_PRIVATE);
+
         mEditor = getContext().getSharedPreferences("userFile", MODE_PRIVATE).edit();
+        mPreferences = getContext().getSharedPreferences("userFile", MODE_PRIVATE);
 
         if(mPreferences.getString("userName", null) != null){
             mEditNickName.setHint(mPreferences.getString("userName", null));
             mEditPart.setHint(mPreferences.getString("part", null));
             mEditTeam.setHint(mPreferences.getString("teamGroup", null));
-            Glide.with(getContext()).load(mPreferences.getString("imageUrl", null)).into(mImageView);
+            RequestOptions _options = new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE);
+            Glide.with(getContext()).load(mPreferences.getString("imageUrl", null)).apply(_options).into(mImageView);
         }
         else {
             Bquery();
@@ -237,17 +241,17 @@ public class AccountFragment extends BaseFragment {
                                     public void done(BmobException e) {
                                         if(e == null){
                                             Toast.makeText(getContext(),"更换头像成功",Toast.LENGTH_SHORT).show();
+                                           SharedPreferences.Editor _editor = getContext().getSharedPreferences("userFile", Context.MODE_PRIVATE).edit();
+                                            _editor.clear();
+                                            _editor.apply();
                                             Summary _summary = new Summary();
                                             _summary.setChange(Double.toString(Math.random()));
                                             _summary.update("flOv444A", new UpdateListener() {
                                                 @Override
                                                 public void done(BmobException e) {
                                                     if(e == null){
-                                                      SharedPreferences.Editor _editor = getContext().getSharedPreferences("userFile", Context.MODE_PRIVATE).edit();
-                                                      _editor.clear();
-                                                      _editor.apply();
                                                     }else {
-                                                        Log.d(TAG,"errorMessage = "+e.getMessage()+" errorCode = "+e.getErrorCode());
+                                                        Log.d(TAG, "error Message = "+e.getMessage()+", error Code = "+e.getErrorCode());
                                                     }
                                                 }
                                             });
@@ -256,12 +260,12 @@ public class AccountFragment extends BaseFragment {
                                             _intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                             startActivity(_intent);
                                         }else {
-                                            Log.d(TAG,"errorMessage = "+e.getMessage()+" errorCode = "+e.getErrorCode());
+                                            Log.d(TAG,"error Message = "+e.getMessage()+", error Code = "+e.getErrorCode());
                                         }
                                     }
                                 });
                             }else {
-                                Log.d(TAG,"errorMessage = "+e.getMessage()+" errorCode = "+e.getErrorCode());
+                                Log.d(TAG,"error Message = "+e.getMessage()+", error Code = "+e.getErrorCode());
                             }
                         }
                     });

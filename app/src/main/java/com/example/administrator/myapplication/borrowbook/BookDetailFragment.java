@@ -114,7 +114,6 @@ public class BookDetailFragment extends BaseFragment {
         _query.findObjects(new FindListener<BookInformation>() {
             @Override
             public void done(List<BookInformation> list, BmobException e) {
-                Log.d(TAG, "hasn't download ");
                 if(e == null){
                     BookInformation object = list.get(0);
                     mName.setText(object.getName());

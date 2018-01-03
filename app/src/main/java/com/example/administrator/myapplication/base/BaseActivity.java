@@ -1,6 +1,8 @@
 package com.example.administrator.myapplication.base;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,9 +18,12 @@ import com.example.administrator.myapplication.R;
 
 public class BaseActivity extends AppCompatActivity {
 
+    protected String TAG;
+
     @Override
     protected void onCreate(Bundle saveInstancedState){
         super.onCreate(saveInstancedState);
+        TAG = this.getClass().getSimpleName();
     }
 
     public void upDateActionBar(){
@@ -38,5 +43,4 @@ public class BaseActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.container,fragment);
         fragmentTransaction.commit();
     }
-
 }
