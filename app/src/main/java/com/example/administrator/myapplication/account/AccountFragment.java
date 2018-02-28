@@ -31,11 +31,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.myapplication.R;
+import com.example.administrator.myapplication.Utils.BmobRequest;
+import com.example.administrator.myapplication.Utils.onFindResultsListener;
+import com.example.administrator.myapplication.Utils.onUpdateObjectListener;
 import com.example.administrator.myapplication.bmob.Summary;
 import com.example.administrator.myapplication.bmob.UserInformation;
 import com.example.administrator.myapplication.base.BaseFragment;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -286,37 +290,60 @@ public class AccountFragment extends BaseFragment {
     }
 
     public void Bquery(){
-        BmobQuery<UserInformation> _query = new BmobQuery<>();
-        _query.addWhereEqualTo("username",mUser.getUsername());
-        _query.findObjects(new FindListener<UserInformation>() {
+
+        HashMap<String, Object> mHashMap = new HashMap<>();
+        mHashMap.put("username",mUser.getUsername());
+        BmobRequest.findRequest("index", mHashMap, new onFindResultsListener<UserInformation>() {
             @Override
-            public void done(List<UserInformation> list, BmobException e) {
-                if (e == null) {
-                    mEditNickName.setHint(list.get(0).getUsername());
-                    mEditPart.setHint(list.get(0).getPart());
-                    mEditTeam.setHint(list.get(0).getTeamgroup());
-                    Glide.with(getContext()).load(list.get(0).getImage().getFileUrl()).into(mImageView);
-                }
+            public void onSuccess(List<UserInformation> object){
+                mEditNickName.setHint(object.get(0).getUsername());
+                mEditPart.setHint(object.get(0).getPart());
+                mEditTeam.setHint(object.get(0).getTeamgroup());
+                Glide.with(getContext()).load(object.get(0).getImage().getFileUrl()).into(mImageView);
+            }
+
+            @Override
+            public void onFail(int errorCode, String errorMessage){
+
+            }
+
+            @Override
+            public void onComplete(boolean normal){
+
             }
         });
     }
 
     public void Bupdate(){
+
+
         UserInformation _user = new UserInformation();
         _user.setUsername(mNickName);
         _user.setPassword(mPassword);
         _user.setPart(mPart);
         _user.setTeamgroup(mTeamGroup);
-        _user.update(_user.getObjectId(),new UpdateListener() {
+        BmobRequest.updateObject(_user, _user.getObjectId(), new onUpdateObjectListener() {
             @Override
-            public void done(BmobException e) {
-                if(e == null){
-                    Toast.makeText(getContext(),"更新信息成功",Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(getContext(),"更新信息失败",Toast.LENGTH_SHORT).show();
-                }
+            public void onSuccess(String objectId) {
+                Toast.makeText(getContext(),"更新信息成功",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFail(int errorCode, String errorMessage) {
+                Toast.makeText(getContext(),"更新信息失败",Toast.LENGTH_SHORT).show();
             }
         });
+
+//        _user.update(_user.getObjectId(),new UpdateListener() {
+//            @Override
+//            public void done(BmobException e) {
+//                if(e == null){
+//
+//                }else {
+//
+//                }
+//            }
+//        });
     }
 
 }

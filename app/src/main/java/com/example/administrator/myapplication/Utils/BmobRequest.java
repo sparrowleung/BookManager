@@ -35,6 +35,13 @@ public class BmobRequest {
     }
 
     public static <E> void findRequest(@NonNull String order,
+                                        @NonNull int limit ,
+                                        @NonNull onFindResultsListener<E> call){
+        BmobQuery<E> query = new BmobQuery<>();
+        query.order(order).findObjects(call);
+    }
+
+    public static <E> void findRequest(@NonNull String order,
                                        @NonNull HashMap<String, Object> map,
                                        @NonNull onFindResultsListener<E> call){
         BmobQuery<E> query = new BmobQuery<>();
@@ -42,6 +49,17 @@ public class BmobRequest {
             query.addWhereEqualTo(entry.getKey(), entry.getValue());
         }
         query.order(order).findObjects(call);
+    }
+
+    public static <E> void findRequest(@NonNull String order,
+                                       @NonNull int limit,
+                                       @NonNull HashMap<String, Object> map,
+                                       @NonNull onFindResultsListener<E> call){
+        BmobQuery<E> query = new BmobQuery<>();
+        for(Map.Entry<String, Object> entry : map.entrySet()){
+            query.addWhereEqualTo(entry.getKey(), entry.getValue());
+        }
+        query.setLimit(limit).order(order).findObjects(call);
     }
 
     public static <E> void queryObject(@NonNull String objectId,

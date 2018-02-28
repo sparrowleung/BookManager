@@ -91,6 +91,7 @@ public class MainActivity extends BaseActivity {
         _toolBar = (Toolbar) findViewById(R.id.toolbar);
         _toolBar.setTitle("图书管理系统");
         setSupportActionBar(_toolBar);
+
         android.support.v7.app.ActionBar mActionBar = getSupportActionBar();
         if(mActionBar!=null){
             mActionBar.setDisplayHomeAsUpEnabled(true);

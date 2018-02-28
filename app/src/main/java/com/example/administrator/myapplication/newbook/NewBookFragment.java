@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
+import com.example.administrator.myapplication.Utils.BmobRequest;
+import com.example.administrator.myapplication.Utils.onFindResultsListener;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
 import com.example.administrator.myapplication.borrowbook.BookDetailActivity;
@@ -99,22 +101,27 @@ public class NewBookFragment extends BaseFragment{
         if (mSet == null) {
             mSet = new HashSet<>();
         }
-        BmobQuery<BookInformation> _query = new BmobQuery<>();
-        _query.order("-createdAt");
-        _query.setLimit(12);
-        _query.findObjects(new FindListener<BookInformation>() {
+        BmobRequest.findRequest("-createdAt", 12, new onFindResultsListener<BookInformation>() {
+
             @Override
-            public void done(List<BookInformation> object, BmobException e) {
+            public void onSuccess(List<BookInformation> object){
                 mSave = new ArrayList<>(object.size());
-                if(e == null){
-                    for(int i = 0; i < 10; i++) {
-                        Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
-                                , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
-                                object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
-                        mList.add(i, a1);
-                        mSave.add(i, mGson.toJson(a1));
-                    }
+                for(int i = 0; i < 10; i++) {
+                    Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
+                            , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
+                            object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
+                    mList.add(i, a1);
+                    mSave.add(i, mGson.toJson(a1));
                 }
+            }
+
+            @Override
+            public void onFail(int errorCode, String errorMessage){
+
+            }
+
+            @Override
+            public void onComplete(boolean normal){
                 mProgressBar.setVisibility(View.GONE);
                 mSet.addAll(mSave);
                 mEditor.putStringSet(_TAG, mSet).apply();

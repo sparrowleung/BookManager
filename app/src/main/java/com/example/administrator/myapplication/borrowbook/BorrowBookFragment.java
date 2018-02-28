@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
+import com.example.administrator.myapplication.Utils.BmobRequest;
+import com.example.administrator.myapplication.Utils.onFindResultsListener;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
 import com.example.administrator.myapplication.bmob.UserInformation;
@@ -26,6 +28,7 @@ import com.example.administrator.myapplication.recycleview.Category;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -152,28 +155,34 @@ public class BorrowBookFragment extends BaseFragment {
             mList.clear();
         }
 
-        BmobQuery<BookInformation> bmobQuery = new BmobQuery<>();
-        bmobQuery.addWhereEqualTo("borrowper",_user.getUsername());
-        bmobQuery.order("-updatedAt");
-        bmobQuery.setLimit(50);
-        bmobQuery.findObjects(new FindListener<BookInformation>() {
+        HashMap<String, Object> mHashMap = new HashMap<>();
+        BmobRequest.findRequest("-updatedAt", 50, mHashMap, new onFindResultsListener<BookInformation>() {
+
             @Override
-            public void done(List<BookInformation> object, BmobException e) {
+            public void onSuccess(List<BookInformation> object){
                 _set = new TreeSet<>(mComparator);
                 _save = new ArrayList<>(object.size());
-                if(e==null){
-                    mProgerssbar.setVisibility(View.GONE);
-                    for (int i = 0; i < object.size(); i++) {
-                        Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
-                                , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
-                                object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
-                        mList.add(a1);
-                        _save.add(i, _gson.toJson(a1));
-                    }
+                mProgerssbar.setVisibility(View.GONE);
+                for (int i = 0; i < object.size(); i++) {
+                    Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
+                            , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
+                            object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
+                    mList.add(a1);
+                    _save.add(i, _gson.toJson(a1));
                 }
+                mBookCount.setText(Integer.toString(object.size()));
+            }
+
+            @Override
+            public void onFail(int errorCode, String errorMessage){
+
+            }
+
+            @Override
+            public void onComplete(boolean normal){
                 _set.addAll(_save);
                 _editor.putStringSet(TAG, _set).apply();
-                mBookCount.setText(Integer.toString(object.size()));
+
                 mBookAdapter = new BookAdapter(mList);
                 mRecyclerView.setAdapter(mBookAdapter);
                 mRecyclerView.post(new Runnable() {
@@ -187,19 +196,26 @@ public class BorrowBookFragment extends BaseFragment {
     }
 
     public void DownloadImage(){
-        BmobQuery<UserInformation> _query = new BmobQuery<>();
-        _query.addWhereEqualTo("mobilePhoneNumber",_user.getMobilePhoneNumber());
-        _query.findObjects(new FindListener<UserInformation>() {
+
+        HashMap<String, Object> mHashMap = new HashMap<>();
+        mHashMap.put("mobilePhoneNumber",_user.getMobilePhoneNumber());
+        BmobRequest.findRequest("index", mHashMap, new onFindResultsListener<UserInformation>() {
             @Override
-            public void done(List<UserInformation> list, BmobException e) {
-                if(e == null) {
-                    Glide.with(getContext()).load(list.get(0).getImage().getFileUrl()).into(mAccountImage);
-                }
-                else{
-                    Log.d(TAG, "error Message = " + e.getMessage() + ", error Code = " + e.getErrorCode());
-                }
+            public void onSuccess(List<UserInformation> object){
+                Glide.with(getContext()).load(object.get(0).getImage().getFileUrl()).into(mAccountImage);
+            }
+
+            @Override
+            public void onFail(int errorCode, String errorMessage){
+
+            }
+
+            @Override
+            public void onComplete(boolean normal){
+
             }
         });
+
     }
 
     @Override

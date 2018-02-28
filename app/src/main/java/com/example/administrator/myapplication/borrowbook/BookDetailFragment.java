@@ -1,6 +1,8 @@
 package com.example.administrator.myapplication.borrowbook;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,10 +13,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
+import com.example.administrator.myapplication.Utils.BmobRequest;
+import com.example.administrator.myapplication.Utils.onFindResultsListener;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
 import com.example.administrator.myapplication.recycleview.Category;
 
+import java.util.HashMap;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -52,6 +57,18 @@ public class BookDetailFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle saveInstanceState){
         super.onActivityCreated(saveInstanceState);
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+        dialog.setMessage("Nothing but all");
+        dialog.setTitle("Nothing");
+        dialog.setPositiveButton("Sure", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.create().show();
+
         mBookName = getActivity().getIntent().getStringExtra("bookName");
         mBookAuthor = getActivity().getIntent().getStringExtra("bookAuthor");
         mBookPress = getActivity().getIntent().getStringExtra("bookPress");
@@ -101,43 +118,51 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     public void Bquery(){
-        BmobQuery<BookInformation> _query = new BmobQuery<>();
+
+        HashMap<String , Object> mHashMap = new HashMap<String, Object>();
         if(!mBookName.equals(null)) {
-            _query.addWhereEqualTo("name", mBookName);
+            mHashMap.put("name", mBookName);
         }
-        if(!mBookName.equals(null)) {
-            _query.addWhereEqualTo("author", mBookAuthor);
+        if(!mBookAuthor.equals(null)) {
+            mHashMap.put("author", mBookAuthor);
         }
-        if(!mBookName.equals(null)) {
-            _query.addWhereEqualTo("press", mBookPress);
+        if(!mBookPress.equals(null)) {
+            mHashMap.put("press", mBookPress);
         }
-        _query.findObjects(new FindListener<BookInformation>() {
+        BmobRequest.findRequest("index", mHashMap, new onFindResultsListener<BookInformation>() {
             @Override
-            public void done(List<BookInformation> list, BmobException e) {
-                if(e == null){
-                    BookInformation object = list.get(0);
-                    mName.setText(object.getName());
+            public void onSuccess(List<BookInformation> list){
+                BookInformation object = list.get(0);
+                mName.setText(object.getName());
 
-                    mAuthor.setText(object.getAuthor());
+                mAuthor.setText(object.getAuthor());
 
-                    mPress.setText(object.getPress());
+                mPress.setText(object.getPress());
 
-                    if(object.getCategory().equals("literature")){
-                        mCategory.setText("文学");
-                    }else {
-                        mCategory.setText("技术");
-                    }
-
-                    mBorrowper.setText(object.getBorrowper());
-
-                    if(object.getState()) {
-                        mState.setText("可借阅");
-                    }else {
-                        mState.setText("已外借");
-                    }
-
-                    Glide.with(getContext()).load(object.getPhoto().getFileUrl()).into(mImageView);
+                if(object.getCategory().equals("literature")){
+                    mCategory.setText("文学");
+                }else {
+                    mCategory.setText("技术");
                 }
+
+                mBorrowper.setText(object.getBorrowper());
+
+                if(object.getState()) {
+                    mState.setText("可借阅");
+                }else {
+                    mState.setText("已外借");
+                }
+
+                Glide.with(getContext()).load(object.getPhoto().getFileUrl()).into(mImageView);
+            }
+
+            @Override
+            public void onFail(int errorCode, String errorMessage){
+
+            }
+
+            @Override
+            public void onComplete(boolean normal){
 
             }
         });

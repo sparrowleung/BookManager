@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -192,61 +193,26 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                 mNewsRecyclerView.setAdapter(mNewsAdapter);
             }
         });
-//        BmobQuery<NewsTipsInformation> _newsQuery=new BmobQuery<>();
-//        _newsQuery.order("-createdAt");
-//        _newsQuery.findObjects(new FindListener<NewsTipsInformation>() {
-//            @Override
-//            public void done(List<NewsTipsInformation> list, BmobException e) {
-//                if (e == null) {
-//                    mNewsSet = new TreeSet<>(mComparator);
-//                    mNewsSave = new ArrayList<>(list.size());
-//                    if (list.size() >= 2) {
-//                        for (int i = 0; i < 2; i++) {
-//                            News _news = new News(list.get(i).getTitle(), list.get(i).getSubTitle(), list.get(i).getCreatedAt());
-//                            mNewsSave.add(i, mGson.toJson(_news));
-//                            mNewsList.add(_news);
-//                        }
-//                    } else {
-//                        for (int i = 0; i < list.size(); i++) {
-//                            News _news = new News(list.get(i).getTitle(), list.get(i).getSubTitle(), list.get(i).getCreatedAt());
-//                            mNewsList.add(i, _news);
-//                            mNewsSave.add(i, mGson.toJson(_news));
-//                        }
-//                    }
-//                    mProgressBar1.setVisibility(View.GONE);
-//                    mNewsSet.addAll(mNewsSave);
-//                    mNewsEditor.putStringSet("newstips", mNewsSet).apply();
-//                    mNewsAdapter = new NewsTipsAdapter(mNewsList);
-//                    mNewsRecyclerView.setAdapter(mNewsAdapter);
-//                }
-//            }
-//        });
+
     }
 
     public void HotBquery(){
         if(mBookList.size() > 0) {
             mBookList.clear();
         }
-        BmobRequest.findRequest("-borrowcount", new onFindResultsListener<BookInformation>() {
+
+        BmobRequest.findRequest("-borrowcount", 6,new onFindResultsListener<BookInformation>() {
             @Override
             public  void onSuccess(List<BookInformation> object){
-                if (object.size() >= 6) {
-                    for (int i = 0; i < 6; i++) {
-                        Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
-                                , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
-                                object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
-                        mBookList.add(i, a1);
-                        mHotSave.add(i, mGson.toJson(a1));
-                    }
-                } else {
-                    for (int i = 0; i < object.size(); i++) {
-                        Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
-                                , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
-                                object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
-                        mBookList.add(i, a1);
-                        mHotSave.add(i, mGson.toJson(a1));
-                    }
+
+                for (int i = 0; i < object.size(); i++) {
+                    Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
+                            , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
+                            object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
+                    mBookList.add(i, a1);
+                    mHotSave.add(i, mGson.toJson(a1));
                 }
+
             }
 
             @Override
@@ -263,40 +229,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                 mBookRecyclerView.setAdapter(mAdapter);
             }
         });
-
-//        BmobQuery<BookInformation> _query=new BmobQuery<>();
-//        _query.order("-borrowcount");
-//        _query.findObjects(new FindListener<BookInformation>() {
-//            @Override
-//            public void done(List<BookInformation> object, BmobException e) {
-//                if (e == null) {
-//                    mHotSave = new ArrayList<>(object.size());
-//                    mHotSet = new TreeSet<>(mComparator);
-//                    if (object.size() >= 6) {
-//                        for (int i = 0; i < 6; i++) {
-//                            Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
-//                                    , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
-//                                    object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
-//                            mBookList.add(i, a1);
-//                            mHotSave.add(i, mGson.toJson(a1));
-//                        }
-//                    } else {
-//                        for (int i = 0; i < object.size(); i++) {
-//                            Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
-//                                    , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
-//                                    object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
-//                            mBookList.add(i, a1);
-//                            mHotSave.add(i, mGson.toJson(a1));
-//                        }
-//                    }
-//                    mProgressBar2.setVisibility(View.GONE);
-//                    mHotSet.addAll(mHotSave);
-//                    mHotEditor.putStringSet("hotbooks", mHotSet).apply();
-//                    mAdapter = new HotBook(mBookList);
-//                    mBookRecyclerView.setAdapter(mAdapter);
-//                }
-//            }
-//        });
 
     }
 
@@ -323,24 +255,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
             }
         });
-//        BmobQuery<Summary> _query = new BmobQuery<>();
-//        _query.findObjects(new FindListener<Summary>() {
-//            @Override
-//            public void done(List<Summary> list, BmobException e) {
-//                _save = new ArrayList<>();
-//                _set = new TreeSet<>(new ComparatorImpl());
-//                if(e == null){
-//                    for(int i = 0; i < list.size(); i++){
-//                        Sum _sum = new Sum(list.get(i).getObjectId(), list.get(i).getUpdatedAt(), list.get(i).getTable());
-//                        _save.add(i, _gson.toJson(_sum));
-//                    }
-//                    _set.addAll(_save);
-//                    _editor.putStringSet("sum", _set).apply();
-//                }else {
-//                    Log.d(TAG, "error Message = " + e.getMessage() + " , error Code = " + e.getErrorCode());
-//                }
-//            }
-//        });
+
+        LoadingInformation();
     }
 
     public void CheckChangeTable(){
@@ -385,35 +301,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
                     }
                 });
-//                BmobQuery<Summary> _query = new BmobQuery<>();
-//                _query.findObjects(new FindListener<Summary>() {
-//                    @Override
-//                    public void done(List<Summary> list, BmobException e) {
-//                        _save = new ArrayList<>();
-//                        _set = new TreeSet<>(new ComparatorImpl());
-//                        if (e == null) {
-//                            for (int i = 0; i < list.size(); i++) {
-//                                Sum _sum = new Sum(list.get(i).getObjectId(), list.get(i).getUpdatedAt(), list.get(i).getTable());
-//
-//                                for (int j = 0; j < _list.size(); j++) {
-//                                    if (_sum.getmObjectId().equals(_list.get(j).getmObjectId())) {
-//                                        if (!_sum.getmUpdatedAt().equals(_list.get(j).getmUpdatedAt())) {
-//                                            SharedPreferences.Editor _editor = getContext().getSharedPreferences(_sum.getTable(), Context.MODE_PRIVATE).edit();
-//                                            _editor.clear();
-//                                            _editor.apply();
-//                                        }
-//                                    }
-//                                }
-//                                _save.add(i, _gson.toJson(_sum));
-//                            }
-//                            LoadingInformation();
-//                            _set.addAll(_save);
-//                            _editor.putStringSet("sum", _set).apply();
-//                        } else {
-//                            Log.d(TAG, "error Message = " + e.getMessage() + " , error Code " + e.getErrorCode());
-//                        }
-//                    }
-//                });
             }else {
                 SumBquery();
             }

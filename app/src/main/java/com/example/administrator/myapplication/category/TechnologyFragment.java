@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
+import com.example.administrator.myapplication.Utils.BmobRequest;
+import com.example.administrator.myapplication.Utils.onFindResultsListener;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
 import com.example.administrator.myapplication.borrowbook.BookDetailActivity;
@@ -25,6 +27,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -116,27 +119,32 @@ public class TechnologyFragment extends BaseFragment {
             mList.clear();
         }
 
-        BmobQuery<BookInformation> bmobQuery = new BmobQuery<>();
-        bmobQuery.addWhereEqualTo("category","technology");
-        bmobQuery.order("-createdAt");
-        bmobQuery.setLimit(50);
-        bmobQuery.findObjects(new FindListener<BookInformation>() {
-            @Override
-            public void done(List<BookInformation> object, BmobException e) {
-                if(e == null){
-                    mSave = new ArrayList<>(object.size());
-                    mSet = new TreeSet<>(mComparator);
-                    for(int i = 0; i < object.size(); i++){
-                        Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
-                                , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
-                                object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
-                        mList.add(i, a1);
-                        mSave.add(i, mGson.toJson(a1));
-                    }
-                    mSet.addAll(mSave);
-                    mEditor.putStringSet(_TAG, mSet).apply();
+        HashMap<String, Object> mHashMap = new HashMap<String, Object>();
+        mHashMap.put("category", "technology");
+        BmobRequest.findRequest("-createdAt", 50, mHashMap, new onFindResultsListener<BookInformation>() {
 
+            @Override
+            public void onSuccess(List<BookInformation> object){
+                mSave = new ArrayList<>(object.size());
+                mSet = new TreeSet<>(mComparator);
+                for(int i = 0; i < object.size(); i++){
+                    Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
+                            , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),
+                            object.get(i).getCategory(), object.get(i).getBorrowper(), object.get(i).getPhoto(), object.get(i).getBorrowtime(), object.get(i).getBacktime());
+                    mList.add(i, a1);
+                    mSave.add(i, mGson.toJson(a1));
                 }
+                mSet.addAll(mSave);
+                mEditor.putStringSet(_TAG, mSet).apply();
+            }
+
+            @Override
+            public void onFail(int errorCode, String errorMessage){
+
+            }
+
+            @Override
+            public void onComplete(boolean normal){
                 mProgressBar.setVisibility(View.GONE);
                 mCategoryAdapter = new CategoryAdapter(mList);
                 mRecyclerView.setAdapter(mCategoryAdapter);

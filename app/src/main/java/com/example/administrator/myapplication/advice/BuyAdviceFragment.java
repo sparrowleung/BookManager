@@ -206,28 +206,6 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
                                 Toast.makeText(getContext(), "信息有误，请修正后再提交", Toast.LENGTH_SHORT).show();
                             }
                         });
-//                        _advice.save(new SaveListener<String>() {
-//                            @Override
-//                            public void done(String s, BmobException e) {
-//                                if (e == null) {
-//                                    Summary _summary = new Summary();
-//                                    _summary.setChange(Double.toString(Math.random()));
-//                                    _summary.update("lASZ333A", new UpdateListener() {
-//                                        @Override
-//                                        public void done(BmobException e) {
-//                                            if(e == null){
-//                                            }else {
-//                                                Log.d(TAG, "error Message = "+e.getMessage()+", error Code = "+e.getErrorCode());
-//                                            }
-//                                        }
-//                                    });
-//                                    Toast.makeText(getContext(), "已收到您的建议，谢谢", Toast.LENGTH_SHORT).show();
-//
-//                                } else {
-//                                    Toast.makeText(getContext(), "信息有误，请修正后再提交", Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        });
                     }
                     else {
                         Toast.makeText(getContext(),"请填写完整信息",Toast.LENGTH_SHORT).show();
@@ -252,7 +230,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
         if(_set == null){
             _set = new TreeSet<>(new ComparatorImpl());
         }
-//        BmobQuery<AdviceInformation> _query = new BmobQuery<>();
+
         BmobRequest.findRequest(new onFindResultsListener<AdviceInformation>() {
             @Override
             public void onSuccess(List<AdviceInformation> list){
@@ -279,27 +257,7 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
                 mRecyclerView.setAdapter(mAdviceAdapter);
             }
         });
-//        _query.findObjects(new FindListener<AdviceInformation>() {
-//            @Override
-//            public void done(List<AdviceInformation> list, BmobException e) {
-//                _save = new ArrayList<>(list.size());
-//                if(e==null){
-//                    mProgressBar.setVisibility(View.GONE);
-//                    for(int i = 0; i < list.size(); i++){
-//                        Advice _advice = new Advice(list.get(i).getCreatedAt(),list.get(i).getBookName(),list.get(i).getAuthor(),list.get(i).getPress()
-//                                ,list.get(i).getPrice(), list.get(i).getReason(), list.get(i).getAdvicer());
-//                        mList.add(_advice);
-//                        _save.add(i, _gson.toJson(_advice));
-//                    }
-//                }else {
-//                    Log.d(TAG, "error Message = " + e.getMessage() + ", error Code = " + e.getErrorCode());
-//                }
-//                _set.addAll(_save);
-//                _editor.putStringSet(TAG, _set).apply();
-//                mAdviceAdapter = new AdviceAdapter(mList);
-//                mRecyclerView.setAdapter(mAdviceAdapter);
-//            }
-//        });
+
     }
 
     class AdviceAdapter extends RecyclerView.Adapter<AdviceAdapter.ViewHolder>{
