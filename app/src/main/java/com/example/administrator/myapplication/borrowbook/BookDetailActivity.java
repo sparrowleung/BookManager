@@ -1,11 +1,8 @@
 package com.example.administrator.myapplication.borrowbook;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.DialogPreference;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +13,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.administrator.myapplication.R;
+import com.example.administrator.myapplication.Utils.BmobRequest;
+import com.example.administrator.myapplication.Utils.onUpdateObjectListener;
 import com.example.administrator.myapplication.account.AccountActivity;
 import com.example.administrator.myapplication.base.BaseActivity;
 import com.example.administrator.myapplication.bmob.BookInformation;
@@ -88,13 +87,16 @@ public class BookDetailActivity extends BaseActivity{
                         mBookInf.setBorrowper(mUser.getUsername());
                         mBookInf.setState(false);
                         mBookInf.setBorrowtime(mDate);
-                        mBookInf.update(mObjectId, new UpdateListener() {
+                        BmobRequest.updateObject(mBookInf, mObjectId, new onUpdateObjectListener() {
                             @Override
-                            public void done(BmobException e) {
-                                if (e == null) {
-                                    SummaryChange(mCategory);
-                                    Toast.makeText(BookDetailActivity.this, "借阅成功", Toast.LENGTH_SHORT).show();
-                                }
+                            public void onSuccess(String objectId) {
+                                SummaryChange(mCategory);
+                                Toast.makeText(BookDetailActivity.this, "借阅成功", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFail(int errorCode, String errorMessage) {
+                                Log.d(TAG, "error Message = " + errorMessage + ", error Code = " + errorCode);
                             }
                         });
                         setResult(RESULT_OK);
@@ -117,15 +119,16 @@ public class BookDetailActivity extends BaseActivity{
                     mBookInf.setState(true);
                     mBookInf.setBorrowtime(new Date(System.currentTimeMillis()));
                     mBookInf.setBacktime(mDate);
-                    mBookInf.update(mObjectId, new UpdateListener() {
+                    BmobRequest.updateObject(mBookInf, mObjectId, new onUpdateObjectListener() {
                         @Override
-                        public void done(BmobException e) {
-                            if (e == null) {
-                                SummaryChange(mCategory);
-                                Toast.makeText(BookDetailActivity.this, "归还成功", Toast.LENGTH_SHORT).show();
-                            }else {
-                                Log.d(TAG, "error Message = " + e.getMessage() + ", error Code = " + e.getErrorCode());
-                            }
+                        public void onSuccess(String objectId) {
+                            SummaryChange(mCategory);
+                            Toast.makeText(BookDetailActivity.this, "归还成功", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFail(int errorCode, String errorMessage) {
+                            Log.d(TAG, "error Message = " + errorMessage + ", error Code = " + errorCode);
                         }
                     });
                     setResult(RESULT_OK);
@@ -167,25 +170,28 @@ public class BookDetailActivity extends BaseActivity{
         Summary _summary = new Summary();
         _summary.setChange(Double.toString(Math.random()));
         if(category.equals("TechnologyFragment")) {
-            _summary.update("iIqUZZZv", new UpdateListener() {
+            BmobRequest.updateObject(_summary, "iIqUZZZv", new onUpdateObjectListener() {
                 @Override
-                public void done(BmobException e) {
-                    if (e == null) {
+                public void onSuccess(String objectId) {
 
-                    } else {
-                        Log.d(TAG, "error Message = " + e.getMessage() + ", error Code = " + e.getErrorCode());
-                    }
+                }
+
+                @Override
+                public void onFail(int errorCode, String errorMessage) {
+                    Log.d(TAG, "error Message = " + errorMessage + ", error Code = " + errorCode);
                 }
             });
-        }else if(category.equals("LiteratureFragment")){
-            _summary.update("wmjW777E", new UpdateListener() {
-                @Override
-                public void done(BmobException e) {
-                    if (e == null) {
 
-                    } else {
-                        Log.d(TAG, "error Message = " + e.getMessage() + ", error Code = " + e.getErrorCode());
-                    }
+        }else if(category.equals("LiteratureFragment")){
+            BmobRequest.updateObject(_summary, "wmjW777E", new onUpdateObjectListener() {
+                @Override
+                public void onSuccess(String objectId) {
+
+                }
+
+                @Override
+                public void onFail(int errorCode, String errorMessage) {
+                    Log.d(TAG, "error Message = " + errorMessage + ", error Code = " + errorCode);
                 }
             });
         }

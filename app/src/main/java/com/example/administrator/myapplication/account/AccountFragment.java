@@ -316,7 +316,6 @@ public class AccountFragment extends BaseFragment {
 
     public void Bupdate(){
 
-
         UserInformation _user = new UserInformation();
         _user.setUsername(mNickName);
         _user.setPassword(mPassword);
@@ -334,16 +333,7 @@ public class AccountFragment extends BaseFragment {
             }
         });
 
-//        _user.update(_user.getObjectId(),new UpdateListener() {
-//            @Override
-//            public void done(BmobException e) {
-//                if(e == null){
-//
-//                }else {
-//
-//                }
-//            }
-//        });
+
     }
 
 }

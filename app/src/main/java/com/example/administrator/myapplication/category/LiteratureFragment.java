@@ -106,7 +106,7 @@ public class LiteratureFragment extends BaseFragment {
             mList.clear();
         }
 
-        HashMap mHashMap = new HashMap();
+        HashMap<String, Object> mHashMap = new HashMap<>();
         mHashMap.put("category","literature");
         BmobRequest.findRequest("-createdAt", 50, mHashMap, new onFindResultsListener<BookInformation>(){
             @Override

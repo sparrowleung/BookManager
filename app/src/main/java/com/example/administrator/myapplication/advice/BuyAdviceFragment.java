@@ -30,6 +30,7 @@ import com.example.administrator.myapplication.recycleview.Advice;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -302,16 +303,24 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
             viewHolder.mPress.setText(_advice.getAuthor());
             viewHolder.mAdvicer.setText(_advice.getAdvicer());
             viewHolder.mPrice.setText(Double.toString(_advice.getPrice()));
-            BmobQuery<UserInformation> _user = new BmobQuery<>();
-            _user.addWhereEqualTo("username",_advice.getAdvicer());
-            _user.findObjects(new FindListener<UserInformation>() {
+
+            HashMap<String, Object> mHashMap = new HashMap<>();
+            mHashMap.put("username",_advice.getAdvicer());
+            BmobRequest.findRequest("index", mHashMap, new onFindResultsListener<UserInformation>() {
+
                 @Override
-                public void done(List<UserInformation> list, BmobException e) {
-                    if(e == null){
-                        Glide.with(getContext()).load(list.get(0).getImage().getFileUrl()).into(viewHolder.mImage);
-                    }else {
-                        Log.d(TAG, "error Message = " +e.getMessage()+", error Code = "+e.getErrorCode());
-                    }
+                public void onSuccess(List<UserInformation> object){
+                    Glide.with(getContext()).load(object.get(0).getImage().getFileUrl()).into(viewHolder.mImage);
+                }
+
+                @Override
+                public void onFail(int errorCode, String errorMessage){
+                    Log.d(TAG, "error Message = " + errorMessage + ", error Code = " + errorCode);
+                }
+
+                @Override
+                public void onComplete(boolean normal){
+
                 }
             });
 
