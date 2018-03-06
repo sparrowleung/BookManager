@@ -92,7 +92,6 @@ public class PreferenceKit {
     }
 
 
-
     public static class ComparatorImpl implements Comparator<String>{
         @Override
         public int compare(String lhs, String rhs){
@@ -105,7 +104,7 @@ public class PreferenceKit {
             case INTEGER:
                 return mSharedPreferences.getInt(key, -1);
             case FLOAT:
-                return mSharedPreferences.getFloat(String, -1f);
+                return mSharedPreferences.getFloat(key, -1f);
             case LONG:
                 return mSharedPreferences.getLong(key, -1L);
             case STRING:
