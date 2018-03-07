@@ -32,6 +32,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.Utils.BmobRequest;
+import com.example.administrator.myapplication.Utils.PreferenceKit;
 import com.example.administrator.myapplication.Utils.onFindResultsListener;
 import com.example.administrator.myapplication.Utils.onUpdateObjectListener;
 import com.example.administrator.myapplication.bmob.Summary;
@@ -86,7 +87,6 @@ public class AccountFragment extends BaseFragment {
 
     private BmobUser mUser;
     private Uri mUri;
-    private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
 
     @Override
@@ -124,14 +124,14 @@ public class AccountFragment extends BaseFragment {
 
 
         mEditor = getContext().getSharedPreferences("userFile", MODE_PRIVATE).edit();
-        mPreferences = getContext().getSharedPreferences("userFile", MODE_PRIVATE);
+//        mPreferences = getContext().getSharedPreferences("userFile", MODE_PRIVATE);
 
-        if(mPreferences.getString("userName", null) != null){
-            mEditNickName.setHint(mPreferences.getString("userName", null));
-            mEditPart.setHint(mPreferences.getString("part", null));
-            mEditTeam.setHint(mPreferences.getString("teamGroup", null));
+        if(PreferenceKit.getPreference(getContext(),"userFile").get("userName") != null){
+            mEditNickName.setHint(PreferenceKit.getPreference(getContext(),"userFile").get("userName"));
+            mEditPart.setHint(PreferenceKit.getPreference(getContext(),"userFile").get("part"));
+            mEditTeam.setHint(PreferenceKit.getPreference(getContext(),"userFile").get("teamGroup"));
             RequestOptions _options = new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE);
-            Glide.with(getContext()).load(mPreferences.getString("imageUrl", null)).apply(_options).into(mImageView);
+            Glide.with(getContext()).load(PreferenceKit.getPreference(getContext(),"userFile").get("imageUrl")).apply(_options).into(mImageView);
         }
         else {
             Bquery();
@@ -171,8 +171,7 @@ public class AccountFragment extends BaseFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         BmobUser.logOut();
-                        mEditor.clear();
-                        mEditor.commit();
+                        PreferenceKit.getEditor( getContext(), "userFile").cleanAll();
                         Intent intent = getContext().getPackageManager()
                                 .getLaunchIntentForPackage(getContext().getPackageName());
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -245,9 +244,7 @@ public class AccountFragment extends BaseFragment {
                                     public void done(BmobException e) {
                                         if(e == null){
                                             Toast.makeText(getContext(),"更换头像成功",Toast.LENGTH_SHORT).show();
-                                           SharedPreferences.Editor _editor = getContext().getSharedPreferences("userFile", Context.MODE_PRIVATE).edit();
-                                            _editor.clear();
-                                            _editor.apply();
+                                            PreferenceKit.getEditor( getContext(), "userFile").cleanAll();
                                             Summary _summary = new Summary();
                                             _summary.setChange(Double.toString(Math.random()));
                                             _summary.update("flOv444A", new UpdateListener() {

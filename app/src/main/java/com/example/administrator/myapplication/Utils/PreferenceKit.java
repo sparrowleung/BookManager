@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by 37289 on 2018/2/28.
  */
@@ -17,17 +19,31 @@ import java.util.TreeSet;
 public class PreferenceKit {
 
     public static SharedPreferences mSharedPreferences;
+    public static SharedPreferences.Editor mSharePreferenceEditor;
     public static PreferenceKit mPreferenceKit;
     public static Object mObject = new Object();
 
     public PreferenceKit(Context context,String fileName){
-        mSharedPreferences = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        mSharedPreferences = context.getSharedPreferences(fileName, MODE_PRIVATE);
+    }
+
+    public PreferenceKit(String fileName, Context context){
+        mSharePreferenceEditor = context.getSharedPreferences(fileName, MODE_PRIVATE).edit();
     }
 
     public static PreferenceKit getPreference(Context context, String fileName){
         synchronized (mObject){
             if(mPreferenceKit != null){
                 mPreferenceKit = new PreferenceKit(context,fileName);
+            }
+        }
+        return mPreferenceKit;
+    }
+
+    public static PreferenceKit getEditor(Context context, String fileName){
+        synchronized (mObject){
+            if(mPreferenceKit != null){
+                mPreferenceKit = new PreferenceKit(fileName, context);
             }
         }
         return mPreferenceKit;
@@ -60,8 +76,12 @@ public class PreferenceKit {
         mSharedPreferences.edit().putStringSet(key, mSet).apply();
     }
 
-    public <T> T get(String key, DataType dataType){
+    private  <T> T get(String key, DataType dataType){
         return (T) getValue(key, dataType);
+    }
+
+    public String get(String key){
+        return get(key, DataType.STRING);
     }
 
     public Map<String, ?> getAll(){
@@ -91,6 +111,11 @@ public class PreferenceKit {
         mEditor.apply();
     }
 
+    public void cleanAll(){
+
+        mSharePreferenceEditor.clear();
+        mSharePreferenceEditor.apply();
+    }
 
     public static class ComparatorImpl implements Comparator<String>{
         @Override
