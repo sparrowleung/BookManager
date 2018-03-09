@@ -22,6 +22,7 @@ import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.Utils.BmobRequest;
 import com.example.administrator.myapplication.Utils.onFindResultsListener;
 import com.example.administrator.myapplication.Utils.onSaveObjectListener;
+import com.example.administrator.myapplication.Utils.onUpdateObjectListener;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.AdviceInformation;
 import com.example.administrator.myapplication.bmob.Summary;
@@ -190,13 +191,15 @@ public class BuyAdviceFragment extends BaseFragment implements View.OnClickListe
                             public void onSuccess(String objectId) {
                                 Summary _summary = new Summary();
                                 _summary.setChange(Double.toString(Math.random()));
-                                _summary.update("lASZ333A", new UpdateListener() {
+                                BmobRequest.updateObject(_summary, "lASZ333A", new onUpdateObjectListener() {
                                     @Override
-                                    public void done(BmobException e) {
-                                        if(e == null){
-                                        }else {
-                                            Log.d(TAG, "error Message = "+e.getMessage()+", error Code = "+e.getErrorCode());
-                                        }
+                                    public void onSuccess(String objectId) {
+
+                                    }
+
+                                    @Override
+                                    public void onFail(int errorCode, String errorMessage) {
+                                        Log.d(TAG, "error Message = "+ errorMessage +", error Code = "+errorCode);
                                     }
                                 });
                                 Toast.makeText(getContext(), "已收到您的建议，谢谢", Toast.LENGTH_SHORT).show();

@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.Utils.BmobRequest;
+import com.example.administrator.myapplication.Utils.PreferenceKit;
 import com.example.administrator.myapplication.Utils.onFindResultsListener;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
@@ -50,8 +51,6 @@ public class TechnologyFragment extends BaseFragment {
     private List<Category> mList;
     private CategoryAdapter mCategoryAdapter;
 
-    private SharedPreferences.Editor mEditor;
-    private SharedPreferences mPreferences;
     private List<String> mSave;
     private Set<String> mSet;
     private Gson mGson;
@@ -72,10 +71,7 @@ public class TechnologyFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mList = new ArrayList<>();
 
-        mSave = new ArrayList<>();
-        mEditor = getContext().getSharedPreferences(_TAG, Context.MODE_PRIVATE).edit();
-        mPreferences = getContext().getSharedPreferences(_TAG, Context.MODE_PRIVATE);
-        mSet = mPreferences.getStringSet(_TAG, null);
+        mSave = PreferenceKit.getPreference(getContext(), _TAG).getAll(_TAG);
         mGson = new Gson();
         mProgressBar = (ProgressBar) getActivity().findViewById(R.id.techno_progressbar);
 
@@ -83,8 +79,7 @@ public class TechnologyFragment extends BaseFragment {
             Bquery();
             mProgressBar.setVisibility(View.VISIBLE);
         }else {
-            if (mSet != null) {
-                mSave.addAll(mSet);
+            if (mSave != null) {
                 Collections.sort(mSave,mComparator);
                 Collections.reverse(mSave);
                 for (int i = 0; i < mSave.size(); i++) {
@@ -135,7 +130,7 @@ public class TechnologyFragment extends BaseFragment {
                     mSave.add(i, mGson.toJson(a1));
                 }
                 mSet.addAll(mSave);
-                mEditor.putStringSet(_TAG, mSet).apply();
+                PreferenceKit.getPreference(getContext(), _TAG).put(_TAG, mSet);
             }
 
             @Override

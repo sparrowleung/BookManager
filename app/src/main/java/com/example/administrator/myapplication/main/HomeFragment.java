@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.Utils.BmobRequest;
+import com.example.administrator.myapplication.Utils.PreferenceKit;
 import com.example.administrator.myapplication.Utils.onFindResultsListener;
 import com.example.administrator.myapplication.advice.BuyAdviceActivity;
 import com.example.administrator.myapplication.advice.BuyAdviceFragment;
@@ -56,6 +57,9 @@ import cn.bmob.v3.listener.SaveListener;
 
 public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
+    private static String NewFileName = "newstips";
+    private static String HotFileName = "hotbooks";
+
     private View mRootView;
     private RecyclerView mBookRecyclerView;
     private RecyclerView mNewsRecyclerView;
@@ -75,10 +79,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     private CardView mNotice;
     private CardView mHotBook;
 
-    private SharedPreferences.Editor mNewsEditor;
-    private SharedPreferences.Editor mHotEditor;
-    private SharedPreferences mNewsPreferences;
-    private SharedPreferences mHotPreferences;
     private Set<String> mNewsSet;
     private Set<String> mHotSet;
     private List<String> mHotSave;
@@ -159,24 +159,18 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             mNewsList.clear();
         }
 
-        BmobRequest.findRequest("-createdAt", new onFindResultsListener<NewsTipsInformation>() {
+        BmobRequest.findRequest("-createdAt", 2,new onFindResultsListener<NewsTipsInformation>() {
             @Override
-            public void onSuccess(List<NewsTipsInformation> list){
+            public void onSuccess(List<NewsTipsInformation> list) {
                 mNewsSet = new TreeSet<>(mComparator);
                 mNewsSave = new ArrayList<>(list.size());
-                if (list.size() >= 2) {
-                    for (int i = 0; i < 2; i++) {
-                        News _news = new News(list.get(i).getTitle(), list.get(i).getSubTitle(), list.get(i).getCreatedAt());
-                        mNewsSave.add(i, mGson.toJson(_news));
-                        mNewsList.add(_news);
-                    }
-                } else {
-                    for (int i = 0; i < list.size(); i++) {
-                        News _news = new News(list.get(i).getTitle(), list.get(i).getSubTitle(), list.get(i).getCreatedAt());
-                        mNewsList.add(i, _news);
-                        mNewsSave.add(i, mGson.toJson(_news));
-                    }
+
+                for (int i = 0; i < list.size(); i++) {
+                    News _news = new News(list.get(i).getTitle(), list.get(i).getSubTitle(), list.get(i).getCreatedAt());
+                    mNewsList.add(i, _news);
+                    mNewsSave.add(i, mGson.toJson(_news));
                 }
+
             }
 
             @Override
@@ -188,7 +182,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             public void onComplete(boolean normal){
                 mProgressBar1.setVisibility(View.GONE);
                 mNewsSet.addAll(mNewsSave);
-                mNewsEditor.putStringSet("newstips", mNewsSet).apply();
+                PreferenceKit.getPreference(getContext(), NewFileName).put(NewFileName, mNewsSet);
                 mNewsAdapter = new NewsTipsAdapter(mNewsList);
                 mNewsRecyclerView.setAdapter(mNewsAdapter);
             }
@@ -224,7 +218,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             public  void onComplete(boolean normal){
                 mProgressBar2.setVisibility(View.GONE);
                 mHotSet.addAll(mHotSave);
-                mHotEditor.putStringSet("hotbooks", mHotSet).apply();
+                PreferenceKit.getPreference(getContext(), HotFileName).put(HotFileName, mHotSet);
                 mAdapter = new HotBook(mBookList);
                 mBookRecyclerView.setAdapter(mAdapter);
             }
@@ -311,17 +305,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
     public void LoadingInformation(){
 
-        mNewsEditor = getContext().getSharedPreferences("newstips", Context.MODE_PRIVATE).edit();
-        mHotEditor = getContext().getSharedPreferences("hotbooks", Context.MODE_PRIVATE).edit();
-        mNewsPreferences = getContext().getSharedPreferences("newstips", Context.MODE_PRIVATE);
-        mHotPreferences = getContext().getSharedPreferences("hotbooks", Context.MODE_PRIVATE);
-        mNewsSet = mNewsPreferences.getStringSet("newstips",null);
-        mHotSet = mHotPreferences.getStringSet("hotbooks",null);
+        mNewsSave = PreferenceKit.getPreference(getContext(), NewFileName).getAll(NewFileName);
+        mHotSave = PreferenceKit.getPreference(getContext(), HotFileName).getAll(HotFileName);
         mGson = new Gson();
 
-        if(mNewsSet != null){
-            mNewsSave = new ArrayList<>(); 
-            mNewsSave.addAll(mNewsSet);
+        if(mNewsSave != null){
             Collections.sort(mNewsSave,mComparator);
             Collections.reverse(mNewsSave);
             for(int i = 0; i < mNewsSave.size(); i++){
@@ -335,9 +323,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
             mProgressBar1.setVisibility(View.VISIBLE);
         }
 
-        if(mHotSet != null){
-            mHotSave = new ArrayList<>();
-            mHotSave.addAll(mHotSet);
+        if(mHotSave != null){
+
             for(int i = 0; i < mHotSave.size(); i++){
                 mBookList.add(i, mGson.fromJson(mHotSave.get(i), Category.class));
             }

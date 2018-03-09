@@ -239,32 +239,36 @@ public class AccountFragment extends BaseFragment {
                             if(e == null){
                                  UserInformation _user = new UserInformation();
                                 _user.setImage(_file);
-                                _user.update(mUser.getObjectId(),new UpdateListener() {
+                                BmobRequest.updateObject(_user, mUser.getObjectId(), new onUpdateObjectListener() {
                                     @Override
-                                    public void done(BmobException e) {
-                                        if(e == null){
-                                            Toast.makeText(getContext(),"更换头像成功",Toast.LENGTH_SHORT).show();
-                                            PreferenceKit.getEditor( getContext(), "userFile").cleanAll();
-                                            Summary _summary = new Summary();
-                                            _summary.setChange(Double.toString(Math.random()));
-                                            _summary.update("flOv444A", new UpdateListener() {
-                                                @Override
-                                                public void done(BmobException e) {
-                                                    if(e == null){
-                                                    }else {
-                                                        Log.d(TAG, "error Message = "+e.getMessage()+", error Code = "+e.getErrorCode());
-                                                    }
-                                                }
-                                            });
-                                            Intent _intent = getContext().getPackageManager()
-                                                    .getLaunchIntentForPackage(getContext().getPackageName());
-                                            _intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                            startActivity(_intent);
-                                        }else {
-                                            Log.d(TAG,"error Message = "+e.getMessage()+", error Code = "+e.getErrorCode());
-                                        }
+                                    public void onSuccess(String objectId) {
+                                        Toast.makeText(getContext(),"更换头像成功",Toast.LENGTH_SHORT).show();
+                                        PreferenceKit.getEditor( getContext(), "userFile").cleanAll();
+                                        Summary _summary = new Summary();
+                                        _summary.setChange(Double.toString(Math.random()));
+                                        BmobRequest.updateObject(_summary, "flOv444A", new onUpdateObjectListener(){
+                                            @Override
+                                            public void onSuccess(String objectId){
+
+                                            }
+
+                                            @Override
+                                            public void onFail(int errorCode, String errorMessage){
+                                                Log.d(TAG, "error Message = "+ errorMessage +", error Code = "+errorCode);
+                                            }
+                                        });
+                                        Intent _intent = getContext().getPackageManager()
+                                                .getLaunchIntentForPackage(getContext().getPackageName());
+                                        _intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(_intent);
+                                    }
+
+                                    @Override
+                                    public void onFail(int errorCode, String errorMessage) {
+                                        Log.d(TAG, "error Message = "+ errorMessage +", error Code = "+errorCode);
                                     }
                                 });
+
                             }else {
                                 Log.d(TAG,"error Message = "+e.getMessage()+", error Code = "+e.getErrorCode());
                             }

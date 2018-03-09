@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.Utils.BmobRequest;
+import com.example.administrator.myapplication.Utils.PreferenceKit;
 import com.example.administrator.myapplication.Utils.onFindResultsListener;
 import com.example.administrator.myapplication.base.BaseFragment;
 import com.example.administrator.myapplication.bmob.BookInformation;
@@ -48,8 +49,6 @@ public class NewBookFragment extends BaseFragment{
     private String _TAG = NewBookFragment.class.getSimpleName();
     private ProgressBar mProgressBar;
 
-    private SharedPreferences.Editor mEditor;
-    private SharedPreferences mPreferences;
     private List<String> mSave;
     private Set<String> mSet;
     private Gson mGson;
@@ -69,15 +68,11 @@ public class NewBookFragment extends BaseFragment{
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         mList=new ArrayList<>();
 
-        mSave = new ArrayList<>();
-        mEditor = getContext().getSharedPreferences(_TAG, Context.MODE_PRIVATE).edit();
-        mPreferences = getContext().getSharedPreferences(_TAG, Context.MODE_PRIVATE);
-        mSet = mPreferences.getStringSet(_TAG, null);
+        mSave = PreferenceKit.getPreference(getContext(), _TAG).getAll(_TAG);
         mGson = new Gson();
         mProgressBar = (ProgressBar) getActivity().findViewById(R.id.newbook_progressbar);
 
-        if(mSet != null){
-            mSave.addAll(mSet);
+        if(mSave != null){
             Collections.sort(mSave,mComparator);
             for(int i = 0; i < mSave.size(); i++){
                 mList.add(i, mGson.fromJson(mSave.get(i), Category.class));
@@ -124,7 +119,7 @@ public class NewBookFragment extends BaseFragment{
             public void onComplete(boolean normal){
                 mProgressBar.setVisibility(View.GONE);
                 mSet.addAll(mSave);
-                mEditor.putStringSet(_TAG, mSet).apply();
+                PreferenceKit.getPreference(getContext(), _TAG).put(_TAG, mSet);
                 mNewBookAdapter=new NewBookAdapter(mList);
                 mRecyclerView.setAdapter(mNewBookAdapter);
             }

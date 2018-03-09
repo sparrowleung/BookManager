@@ -47,9 +47,6 @@ public class NewsAndTipsFragment extends BaseFragment {
     private RecyclerView mRecyclerView;
     private NewsTipsAdapter mAdapter;
 
-    private SharedPreferences mShared;
-    private List<String> _save;
-    private Set<String> _set;
     private Gson mGson;
     private ComparatorImpl mComparator = new ComparatorImpl();
 
@@ -64,17 +61,14 @@ public class NewsAndTipsFragment extends BaseFragment {
     public void onActivityCreated(Bundle saveInstanceState){
         super.onActivityCreated(saveInstanceState);
 
-        mShared = getContext().getSharedPreferences("newstips",Context.MODE_PRIVATE);
         mRecyclerView=(RecyclerView) getActivity().findViewById(R.id.recyclerview_news);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mList=new ArrayList<>();
         mEndLine=(View) getActivity().findViewById(R.id.news_view);
         mEndLine.setVisibility(View.VISIBLE);
+        InitSharePreferences("newstips");
         mGson = new Gson();
-        _set = mShared.getStringSet("newstips",null);
 
         if(_set != null){
-            _save = new ArrayList<>();
             _save.addAll(_set);
             Collections.sort(_save,mComparator);
             Collections.reverse(_save);
