@@ -162,7 +162,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         BmobRequest.findRequest("-createdAt", 2,new onFindResultsListener<NewsTipsInformation>() {
             @Override
             public void onSuccess(List<NewsTipsInformation> list) {
-                mNewsSet = new TreeSet<>(mComparator);
                 mNewsSave = new ArrayList<>(list.size());
 
                 for (int i = 0; i < list.size(); i++) {

@@ -47,7 +47,6 @@ public class NewsAndTipsFragment extends BaseFragment {
     private RecyclerView mRecyclerView;
     private NewsTipsAdapter mAdapter;
 
-    private Gson mGson;
     private ComparatorImpl mComparator = new ComparatorImpl();
 
     @Override
@@ -66,14 +65,14 @@ public class NewsAndTipsFragment extends BaseFragment {
         mEndLine=(View) getActivity().findViewById(R.id.news_view);
         mEndLine.setVisibility(View.VISIBLE);
         InitSharePreferences("newstips");
-        mGson = new Gson();
+
 
         if(_set != null){
             _save.addAll(_set);
             Collections.sort(_save,mComparator);
             Collections.reverse(_save);
             for(int i = 0; i < _save.size(); i++){
-                mList.add(i, mGson.fromJson(_save.get(i), News.class));
+                mList.add(i, _gson.fromJson(_save.get(i), News.class));
             }
             mAdapter = new NewsTipsAdapter(mList);
             mRecyclerView.setAdapter(mAdapter);
