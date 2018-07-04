@@ -51,7 +51,7 @@ public class LiteratureFragment extends BaseFragment {
 
     private RecyclerView mRecyclerView;
     private List<Category> mList;
-    private CategoryAdapter mCategoryAdapter;
+    private BookDetailListAdapter mCategoryAdapter;
 
     private List<String> mSave;
     private Set<String> mSet;
@@ -88,7 +88,7 @@ public class LiteratureFragment extends BaseFragment {
                 for(int i = 0; i < mSave.size(); i++){
                     mList.add(i, mGson.fromJson(mSave.get(i), Category.class));
                 }
-                mCategoryAdapter = new CategoryAdapter(mList);
+                mCategoryAdapter = new BookDetailListAdapter(getContext(),mList, _TAG);
                 mRecyclerView.setAdapter(mCategoryAdapter);
             }
 
@@ -127,7 +127,7 @@ public class LiteratureFragment extends BaseFragment {
             @Override
             public void onComplete(boolean normal){
                 mProgressBar.setVisibility(View.GONE);
-                mCategoryAdapter = new CategoryAdapter(mList);
+                mCategoryAdapter = new BookDetailListAdapter(getContext(),mList, _TAG);
                 mRecyclerView.setAdapter(mCategoryAdapter);
                 mRecyclerView.post(new Runnable() {
                     @Override
@@ -156,72 +156,72 @@ public class LiteratureFragment extends BaseFragment {
         }
     }
 
-    class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder>{
-
-        private List<Category> _list;
-
-        class ViewHolder extends RecyclerView.ViewHolder{
-            View _view;
-            ImageView _image;
-            TextView _name;
-            TextView _author;
-            TextView _press;
-            TextView _status;
-
-            public ViewHolder(View view){
-                super(view);
-                _view = view;
-                _image = (ImageView) view.findViewById(R.id.category_image);
-                _name = (TextView) view.findViewById(R.id.category_name);
-                _author = (TextView)view.findViewById(R.id.category_author);
-                _press = (TextView) view.findViewById(R.id.category_press);
-                _status = (TextView) view.findViewById(R.id.category_status);
-            }
-        }
-
-        public CategoryAdapter(List<Category> Categorylist){
-            _list = Categorylist;
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int type){
-            View view=LayoutInflater.from(getContext()).inflate(R.layout.recycler_category,viewGroup,false);
-            final ViewHolder viewHolder=new ViewHolder(view);
-            viewHolder._view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = viewHolder.getAdapterPosition();
-                    Category _category = _list.get(position);
-                    Intent _intent=new Intent(getActivity(), BookDetailActivity.class);
-                    _intent.putExtra("bookName", _category.getName());
-                    _intent.putExtra("bookAuthor", _category.getAuthor());
-                    _intent.putExtra("bookPress", _category.getPress());
-                    _intent.putExtra("bookCategory", _TAG);
-                    _intent.putExtra("objectId", _category.get_objectId());
-                    _intent.putExtra("borrowper", _category.getBorrowper());
-                    startActivityForResult(_intent,1);
-                }
-            });
-            return viewHolder;
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder viewHolder, int position){
-            Category _category = _list.get(position);
-            viewHolder._name.setText(_category.getName());
-            viewHolder._author.setText(_category.getAuthor());
-            viewHolder._press.setText(_category.getPress());
-            if(_category.getState()) {
-                viewHolder._status.setText("可    借");
-            }else {
-                viewHolder._status.setText("已借出");
-            }
-            Glide.with(getContext()).load(_category.getPhoto().getFileUrl()).into(viewHolder._image);
-        }
-
-        @Override
-        public int getItemCount(){
-            return _list.size();
-        }
-    }
+//    class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder>{
+//
+//        private List<Category> _list;
+//
+//        class ViewHolder extends RecyclerView.ViewHolder{
+//            View _view;
+//            ImageView _image;
+//            TextView _name;
+//            TextView _author;
+//            TextView _press;
+//            TextView _status;
+//
+//            public ViewHolder(View view){
+//                super(view);
+//                _view = view;
+//                _image = (ImageView) view.findViewById(R.id.category_image);
+//                _name = (TextView) view.findViewById(R.id.category_name);
+//                _author = (TextView)view.findViewById(R.id.category_author);
+//                _press = (TextView) view.findViewById(R.id.category_press);
+//                _status = (TextView) view.findViewById(R.id.category_status);
+//            }
+//        }
+//
+//        public CategoryAdapter(List<Category> Categorylist){
+//            _list = Categorylist;
+//        }
+//
+//        @Override
+//        public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int type){
+//            View view=LayoutInflater.from(getContext()).inflate(R.layout.recycler_category,viewGroup,false);
+//            final ViewHolder viewHolder=new ViewHolder(view);
+//            viewHolder._view.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    int position = viewHolder.getAdapterPosition();
+//                    Category _category = _list.get(position);
+//                    Intent _intent=new Intent(getActivity(), BookDetailActivity.class);
+//                    _intent.putExtra("bookName", _category.getName());
+//                    _intent.putExtra("bookAuthor", _category.getAuthor());
+//                    _intent.putExtra("bookPress", _category.getPress());
+//                    _intent.putExtra("bookCategory", _TAG);
+//                    _intent.putExtra("objectId", _category.get_objectId());
+//                    _intent.putExtra("borrowper", _category.getBorrowper());
+//                    startActivityForResult(_intent,1);
+//                }
+//            });
+//            return viewHolder;
+//        }
+//
+//        @Override
+//        public void onBindViewHolder(ViewHolder viewHolder, int position){
+//            Category _category = _list.get(position);
+//            viewHolder._name.setText(_category.getName());
+//            viewHolder._author.setText(_category.getAuthor());
+//            viewHolder._press.setText(_category.getPress());
+//            if(_category.getState()) {
+//                viewHolder._status.setText("可    借");
+//            }else {
+//                viewHolder._status.setText("已借出");
+//            }
+//            Glide.with(getContext()).load(_category.getPhoto().getFileUrl()).into(viewHolder._image);
+//        }
+//
+//        @Override
+//        public int getItemCount(){
+//            return _list.size();
+//        }
+//    }
 }
