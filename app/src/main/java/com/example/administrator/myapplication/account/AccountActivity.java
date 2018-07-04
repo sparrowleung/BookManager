@@ -20,7 +20,6 @@ import cn.smssdk.EventHandler;
 public class AccountActivity extends BaseActivity {
 
     private Toolbar mToolbar;
-    private EventHandler _eventHandler;
 
     @Override
     public void onCreate(Bundle saveInstanceState){

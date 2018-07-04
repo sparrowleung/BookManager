@@ -197,7 +197,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         BmobRequest.findRequest("-borrowcount", 6,new onFindResultsListener<BookInformation>() {
             @Override
             public  void onSuccess(List<BookInformation> object){
-
+                mHotSet = new TreeSet<>(mComparator);
+                mHotSave = new ArrayList<>(object.size());
                 for (int i = 0; i < object.size(); i++) {
                     Category a1 = new Category(object.get(i).getObjectId(), object.get(i).getCreatedAt(), object.get(i).getName()
                             , object.get(i).getAuthor(), object.get(i).getBorrowcount(), object.get(i).getPress(), object.get(i).getPrice(), object.get(i).getState(),

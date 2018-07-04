@@ -21,7 +21,7 @@ public class PreferenceKit {
     public static SharedPreferences mSharedPreferences;
     public static SharedPreferences.Editor mSharePreferenceEditor;
     public static PreferenceKit mPreferenceKit;
-    public static Object mObject = new Object();
+    public static final Object mObject = new Object();
 
     public PreferenceKit(Context context,String fileName){
         mSharedPreferences = context.getSharedPreferences(fileName, MODE_PRIVATE);
@@ -33,7 +33,7 @@ public class PreferenceKit {
 
     public static PreferenceKit getPreference(Context context, String fileName){
         synchronized (mObject){
-            if(mPreferenceKit != null){
+            if(mPreferenceKit == null){
                 mPreferenceKit = new PreferenceKit(context,fileName);
             }
         }
@@ -42,7 +42,7 @@ public class PreferenceKit {
 
     public static PreferenceKit getEditor(Context context, String fileName){
         synchronized (mObject){
-            if(mPreferenceKit != null){
+            if(mPreferenceKit == null){
                 mPreferenceKit = new PreferenceKit(fileName, context);
             }
         }

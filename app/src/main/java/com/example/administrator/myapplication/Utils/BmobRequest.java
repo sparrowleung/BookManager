@@ -38,7 +38,7 @@ public class BmobRequest {
                                         @NonNull int limit ,
                                         @NonNull onFindResultsListener<E> call){
         BmobQuery<E> query = new BmobQuery<>();
-        query.order(order).findObjects(call);
+        query.setLimit(limit).order(order).findObjects(call);
     }
 
     public static <E> void findRequest(@NonNull String order,
